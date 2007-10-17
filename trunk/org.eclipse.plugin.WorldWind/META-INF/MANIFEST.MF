@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WorldWind RCP Plug-in
+Bundle-SymbolicName: org.eclipse.plugin.WorldWind;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.plugin.worldwind.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true
+Bundle-ClassPath: .,
+ lib/gluegen-rt.jar,
+ lib/jogl.jar,
+ lib/worldwind.jar,
+ lib/wwcontrib.jar,
+ config/,
+ lib/log4j-1.2.15.jar
