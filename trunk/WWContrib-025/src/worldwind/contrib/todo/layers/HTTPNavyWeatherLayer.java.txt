@@ -1,0 +1,129 @@
+package worldwind.contrib.layers.loop;
+
+
+import gov.nasa.worldwind.geom.Sector;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Vector;
+
+import worldwind.contrib.layers.GroundOverlayLayer;
+import worldwind.contrib.parsers.ParserUtils;
+
+/**
+ * Navy Research Labs Monterey near real-time weather from
+ * http://www.nrlmry.navy.mil/
+ * <p>Each Layer is a sequence of images from a HTTP server of the form:
+ * 20061017.0600.multisat.ir.cloudtop.global.nogaps.jpg
+ * @author Owner
+ *
+ */
+public class HTTPNavyWeatherLayer extends TimeLoopGroundOverlay
+{
+//	private static final Logger logger = Logger.getLogger(HTTPNavyWeatherLayer.class.getName());
+	
+	private URL directoryURL;
+	private Sector bbox;
+	
+	private Vector<ParserUtils.HTTPImageFrame> frames;
+
+	
+	/**
+	 * Layer constructor
+	 * @param title
+	 * @param directoryURL
+	 * @param bbox
+	 * @param world
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public HTTPNavyWeatherLayer(ParserUtils.HTTPDataSet ds)  
+		throws MalformedURLException , IOException
+	{
+		super(ds.name); //, world);
+		
+		this.directoryURL = ds.directoryURL;
+		this.bbox = ds.bbox;
+		
+
+        this.frames = loadFrames(); 
+	}
+
+	/*
+	 * Load frames from HTTP directory. These map to GroundOverlays
+	 */
+	private Vector<ParserUtils.HTTPImageFrame> loadFrames()
+		throws IOException
+	{
+	    // NRL frames are of the form: 
+	    // 20061017.0600.multisat.ir.cloudtop.global.nogaps.jpg
+	    // A Date extraction string is used to extract each frame's date.
+	    // It means: For each HTTP directory entry:
+		// Split by "."  Year = field:0, substr(0,4), Month = field:0 substr(4,6),....
+		final String qryStr = "SPLIT=.&Y=0 0 4&M=0 4 6&D=0 6 8&h=1 0 2&m=1 2 4&s=NULL";
+		
+	    return ParserUtils.parseHTTPDirectory(directoryURL	// HTML to parse
+	    		, directoryURL.toString()			// base URL ( to construct frames)
+	    		, null								// frame name filters 
+	    		, ParserUtils.httpQryStr2Properties(qryStr)		// Date extraction string (from frameurl)
+	    		);
+	}
+	
+	/**
+	 * Add ground overlays from a specified range of HTTP frames
+	 */
+	public void buildOverlays (int startFrame, int endFrame) // ParserUtils.HTTPDataSet ds,   
+		throws MalformedURLException , IOException
+	{
+        for (int i = startFrame; i < endFrame; i++) {
+        	final GroundOverlayLayer layer = new GroundOverlayLayer(
+					frames.get(i).date
+					, this.bbox
+					, new URL(frames.get(i).frameUrl)
+					, frames.get(i).frameExt 
+					);
+        	
+        	layer.setBaseCachePath("Earth/" + getName().replaceAll(" ", "") + "/");
+        	add(layer);
+		}
+	}
+
+	/**
+	 * Build ground overlays from all frames in the HTTP directory
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public void buildOverlays ()    
+		throws MalformedURLException , IOException
+	{
+	    for (int i = 0; i < frames.size(); i++) {
+	    	final GroundOverlayLayer layer = new GroundOverlayLayer(
+					frames.get(i).date
+					, this.bbox
+					, new URL(frames.get(i).frameUrl)
+					, frames.get(i).frameExt 
+					);
+	    	
+	    	layer.setBaseCachePath("Earth/" + getName().replaceAll(" ", "") + "/");
+	    	add(layer);
+		}
+	}
+	
+	public Vector<ParserUtils.HTTPImageFrame> getFrames() {
+		return frames;
+	}
+
+	/**
+	 * Get names for each HTTP frame (ussually a date)
+	 * @return
+	 */
+	public String[] getFrameNames() {
+		String[] names = new String[frames.size()];
+		for (int i = 0; i < names.length; i++) {
+			names[i] = frames.get(i).date;
+		}
+		return names;
+	}
+	
+}
