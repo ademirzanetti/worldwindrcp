@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.plugin.worldwind.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.plugin.worldwind.Perspective"
+            icon="icons/16x16-browser.png"
+            id="org.eclipse.plugin.worldwind.Perspective"
+            name="World Wind Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.EarthView"
+            icon="icons/16x16-nasa.png"
+            id="org.eclipse.plugin.worldwind.views.EarthView"
+            name="Earth View">
+      </view>
+      <category
+            id="WWPlugin"
+            name="World Wind">
+      </category>
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.LayersView"
+            icon="icons/16x16-layers.png"
+            id="org.eclipse.plugin.worldwind.views.LayersView"
+            name="Layer Navigator">
+      </view>
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.WebBrowserView"
+            icon="icons/16x16-browser.png"
+            id="org.eclipse.plugin.worldwind.views.WebBrowserView"
+            name="Web Browser">
+      </view>
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.GeoSearchView"
+            icon="icons/16x16-yahoo.png"
+            id="org.eclipse.plugin.worldwind.views.GeoSearchView"
+            name="GeoSearch View">
+      </view>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.plugin.WorldWind.application"
+            name="World Wind Geobrowser">
+         <property
+               name="windowImages"
+               value="icons/16x16-nasa.png,icons/32x32-nasa.png">
+         </property>
+         <property
+               name="appName"
+               value="World Wind Geobrowser">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,187,390,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,210,390,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               id="wwplugin.views.LayersView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               id="org.eclipse.plugin.worldwind.views.WebBrowserView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="WorldWindCommands"
+            id="ww.commands">
+      </category>
+      <command
+            name="Open File"
+            description="Open file"
+            categoryId="ww.commands"
+            id="org.eclipse.plugin.worldwind.OpenFile">
+      </command>
+      <command
+            name="Open Weather Wizard"
+            description="Open the Weather Wizard"
+            categoryId="ww.commands"
+            id="org.eclipse.plugin.worldwind.WeatherWizard">
+      </command>
+      <command
+            name="Open WMS Wizard"
+            description="Open the WMS Wizard"
+            categoryId="ww.commands"
+            id="org.eclipse.plugin.worldwind.WMSWizard">
+      </command>
+      <command
+            name="Open Web Browser"
+            description="Open Web Browser"
+            categoryId="ww.commands"
+            id="org.eclipse.plugin.worldwind.Open.WebBrowser">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X">
+      </key>
+      <key
+            commandId="org.eclipse.plugin.worldwind.OpenFile"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+O">
+      </key>
+      <key
+            commandId="org.eclipse.plugin.worldwind.WeatherWizard"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+1">
+      </key>
+      <key
+            commandId="org.eclipse.plugin.worldwind.WMSWizard"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+2">
+      </key>
+      <key
+            commandId="org.eclipse.plugin.worldwind.Open.WebBrowser"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3">
+      </key>
+   </extension>
+
+</plugin>
