@@ -466,33 +466,12 @@ public class DemoSWT
     	RenderableLayer layer = new RenderableLayer();
     	
     	try {
-    		MeshReader.Sinc("c:/tmp/mysinc.dat", 10, 10);
-        	MeshReader reader = new MeshDATReader("c:/tmp/mysinc.dat");
-        	Mesh mesh = new Mesh(reader);
+//    		MeshReader.Sinc("c:/tmp/mysinc.dat", 10, 10);
+//        	MeshReader reader = new MeshDATReader("c:/tmp/mysinc.dat");
+//        	Mesh mesh = new Mesh(reader);
         	
         	layer.setName("Mesh View");
-        	layer.addRenderable(mesh);
-/*
-        	// Generate meridians
-            ArrayList<Position> positions = new ArrayList<Position>(3);
-            for (double lon = -180; lon < 180; lon += 10)
-            {
-                Angle longitude = Angle.fromDegrees(lon);
-                positions.clear();
-                positions.add(new Position(Angle.NEG90, longitude, 10e3));
-                positions.add(new Position(Angle.ZERO, longitude, 10e3));
-                positions.add(new Position(Angle.POS90, longitude, 10e3));
-                Polyline polyline = new Polyline(positions);
-                polyline.setNumEdgeIntervals(36);
-                layer.addRenderable(polyline);
-            }
-        	
-        	SurfaceQuad quad = new SurfaceQuad(world.getModel().getGlobe()
-        			, new LatLon(Angle.ZERO, Angle.ZERO)
-        			, 10e6, 10e6, Angle.fromDegrees(45.0));
-        	
-        	layer.addRenderable(quad);
-*/        	
+//        	layer.addRenderable(mesh);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
