@@ -29,7 +29,7 @@ public class Perspective implements IPerspectiveFactory
 		layout.setEditorAreaVisible(false);
 
 		// TopLeft: Places & GeoSearch
-		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.2f, editorArea);
+		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.18f, editorArea);
 		
 		//topLeft.addPlaceholder(LayersView.ID + ":*");
 		topLeft.addView(PlacesView.ID);

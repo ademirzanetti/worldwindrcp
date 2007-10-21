@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import org.eclipse.plugin.worldwind.actions.ICommandIds;
-import org.eclipse.plugin.worldwind.views.LayersView;
 import org.eclipse.plugin.worldwind.views.PlacesView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
@@ -51,7 +50,7 @@ public class OpenFileAction extends Action
 		
 		// Files can be: kml, kmz or xml
 		String path 		= dialog.open();
-		String fileName	= dialog.getFileName();
+		String fileName		= dialog.getFileName();
 		
 		// Grab layers view (where kml objects will be added)
 		//LayersView view = (LayersView)Activator.getView(window, LayersView.ID);
