@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.Vector;
@@ -14,6 +15,7 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import worldwind.contrib.Messages;
+import worldwind.contrib.parsers.WMS_Capabilities;
 
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureData;
@@ -564,17 +566,56 @@ public class GroundOverlayLayer extends AbstractLayer
 		return tile.getCentroidPoint(globe);
 	}
 
+	public String toKML() {
+		return toKML(true, false);
+	}
 
-	public String toKML() 
+	/**
+	 * Build KML for this {@link GroundOverlayLayer}
+	 * @param useAbsolutePaths if true will use absolute paths for URLs
+	 * @return
+	 */
+	public String toKML(boolean useAbsolutePaths, boolean nameIsTimeSpan) 
 	{
 		Sector bbox = tile.getSector();
+		
 		if ( bbox == null ) return null;
 
+		String icon;
+		
+		// Absolute paths?
+		try {
+			icon = useAbsolutePaths 
+				? textureURL.toString() 
+				: new File(textureURL.toURI()).getName() ;
+		} catch (URISyntaxException e) {
+			icon = textureURL.toString();
+			logger.error("Unable to build icon with abs path: " + useAbsolutePaths 
+					+ ":" + e.getMessage() );
+		}
+
+		// Time Spans?
+		String isoDate = null;
+		if ( nameIsTimeSpan) {
+			try {
+				isoDate = WMS_Capabilities.isoTime2String(
+						WMS_Capabilities.splitISOTime(getName()) );
+			} catch (Exception e) {
+				logger.error("Unable to build ISO date from layer name:" + getName());
+			}
+		}
+		
 		return "<GroundOverlay><name>" + getName() + "</name>" + Messages.NL
 			+ "<description>" + getTitle() 
 			+ "</description>" + Messages.NL
+			
+			// Use the frame name as time span
+			+ ( nameIsTimeSpan && isoDate != null
+					? "<TimeSpan><begin>" + isoDate + "</begin></TimeSpan>" + Messages.NL 
+					: "")
+					
 			+ "<Icon><href><![CDATA[" 
-				+ textureURL //( textureURL != null ? textureURL : textureFile ) 
+				+ icon  
 				+ "]]></href></Icon>" + Messages.NL
 			+ "<LatLonBox><north>" + bbox.getMaxLatitude().degrees + "</north>"
 			+ "<south>" + bbox.getMinLatitude().degrees + "</south>"
@@ -583,17 +624,5 @@ public class GroundOverlayLayer extends AbstractLayer
 			+ "</GroundOverlay>" + Messages.NL;
 	}
 	
-//	public static void main(String[] args) {
-//		try {
-//			
-//			scaleImage(new File("C:/tmp/imgs/00Z01SEP2001 (T=1).png")
-//				, "PNG", 1024, 1024 );
-//
-//			
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 }

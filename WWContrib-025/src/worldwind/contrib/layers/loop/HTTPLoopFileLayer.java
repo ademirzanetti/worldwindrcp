@@ -26,7 +26,6 @@ public class HTTPLoopFileLayer extends TimeLoopGroundOverlay
 	{
 		super(ds.name);
 		
-//		this.directoryURL = ds.directoryURL;
 		this.bbox 	= ds.bbox;
         this.frames = loadFrames(ds); 
 		

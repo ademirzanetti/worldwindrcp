@@ -517,10 +517,25 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	}
 	
 	/**
-	 * toKML
-	 * @return KML representation of this layer used to cache it on disk
+	 * Build a KML fragment representing this layer using absolute
+	 * path names.
+	 * @return KML fragment
 	 */
-	public String toKML() 
+	public String toKML() {
+		return toKML(true, false);
+	}
+	
+	/**
+	 * Build a KML fragment representing this layer.
+	 * @param 	useAbsolutePaths if true icon hrefs will use absolute paths.
+	 * 			false is useful for building a KMZ with relative images
+	 * @param	nameIsTimeSpan if true overlay (frame) name represents the
+	 * 			KML time span (This will only work is the name is an ISO compliant
+	 * 			time
+	 * @return KML fragment representation of this layer.
+	 */
+	public String toKML(boolean useAbsolutePaths
+			, boolean nameIsTimeSpan ) 
 	{
 		StringBuffer buf = new StringBuffer("<Folder><name>" + getName() + "</name>" + Messages.NL);
 		
@@ -530,12 +545,16 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 					+ "]]></description>" + Messages.NL);
 		
 		// append legend (screen overlay)
-		if ( legend != null )
-			buf.append(legend.toKML());
+		if ( legend != null ) {
+			buf.append(legend.toKML(useAbsolutePaths) + Messages.NL);
+		}
 			
-		for (GroundOverlayLayer ov : overlays) {
-			if ( ov.toKML() != null )
-				buf.append(ov.toKML() + Messages.NL);
+		for (GroundOverlayLayer ov : overlays) 
+		{
+			final String dummy = ov.toKML(useAbsolutePaths, nameIsTimeSpan);
+			
+			if ( dummy != null )
+				buf.append(dummy + Messages.NL);
 		}
 		
 		buf.append("</Folder>");
