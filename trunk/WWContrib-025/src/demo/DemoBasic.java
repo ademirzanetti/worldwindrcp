@@ -15,11 +15,12 @@ import gov.nasa.worldwind.layers.Earth.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import demo.todo.layers.VirtualEarthLayer;
+
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 //import worldwind.contrib.layers.todo.VirtualEarthLayer;
 import worldwind.contrib.parsers.ParserUtils;
-import worldwind.contrib.todo.layers.VirtualEarthLayer;
 
 
 import java.awt.*;
