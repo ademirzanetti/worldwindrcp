@@ -56,6 +56,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import demo.todo.mesh.Mesh;
+import demo.todo.mesh.MeshDATReader;
+import demo.todo.mesh.MeshReader;
+
 
 
 import worldwind.contrib.Messages;
@@ -71,9 +75,6 @@ import worldwind.contrib.parsers.ParserUtils;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.SimpleWMSParser;
 import worldwind.contrib.parsers.WMS_Capabilities;
-import worldwind.contrib.todo.mesh.Mesh;
-import worldwind.contrib.todo.mesh.MeshDATReader;
-import worldwind.contrib.todo.mesh.MeshReader;
 
 
 public class DemoSWT 
@@ -465,7 +466,7 @@ public class DemoSWT
     	RenderableLayer layer = new RenderableLayer();
     	
     	try {
-    		MeshReader.Sinc("c:/tmp/mysinc.dat", 20, 20);
+    		MeshReader.Sinc("c:/tmp/mysinc.dat", 10, 10);
         	MeshReader reader = new MeshDATReader("c:/tmp/mysinc.dat");
         	Mesh mesh = new Mesh(reader);
         	
