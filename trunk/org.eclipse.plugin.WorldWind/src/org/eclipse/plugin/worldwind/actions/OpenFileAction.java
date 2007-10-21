@@ -10,6 +10,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 
 import org.eclipse.plugin.worldwind.actions.ICommandIds;
 import org.eclipse.plugin.worldwind.views.LayersView;
+import org.eclipse.plugin.worldwind.views.PlacesView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 import worldwind.contrib.layers.GeoRSSLayer;
@@ -53,7 +54,8 @@ public class OpenFileAction extends Action
 		String fileName	= dialog.getFileName();
 		
 		// Grab layers view (where kml objects will be added)
-		LayersView view = (LayersView)Activator.getView(window, LayersView.ID);
+		//LayersView view = (LayersView)Activator.getView(window, LayersView.ID);
+		PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
 		
 		try {
 			if (  fileName.indexOf(".kml") != -1

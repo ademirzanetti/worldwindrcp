@@ -42,6 +42,14 @@
       </view>
       <view
             category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.PlacesView"
+            icon="icons/16x16-nasa.png"
+            id="org.eclipse.plugin.worldwind.views.PlacesView"
+            name="Places">
+      </view>
+      <view
+            allowMultiple="true"
+            category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.WebBrowserView"
             icon="icons/16x16-browser.png"
             id="org.eclipse.plugin.worldwind.views.WebBrowserView"
@@ -75,11 +83,11 @@
          </property>
          <property
                name="startupMessageRect"
-               value="7,187,390,20">
+               value="7,255,445,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,210,390,15">
+               value="5,275,445,15">
          </property>
          <property
                name="preferenceCustomization"

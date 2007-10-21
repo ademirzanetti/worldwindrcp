@@ -3,6 +3,7 @@ package org.eclipse.plugin.worldwind.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 
@@ -19,6 +20,9 @@ public class OpenWebBrowserAction extends Action
     private final IWorkbenchWindow window;
 	private final String ICON_WEBBROWSER = "icons/16x16-browser.png";
 	
+	private int instanceNum = 0;
+	
+	
 	public OpenWebBrowserAction(String text, IWorkbenchWindow window) {
         super(text);
         this.window = window;
@@ -34,16 +38,14 @@ public class OpenWebBrowserAction extends Action
     public void run() {
         if ( window != null) {
         	try {
-        		window.getActivePage().showView(WebBrowserView.ID);
+        		window.getActivePage().showView(WebBrowserView.ID
+        				, Integer.toString(instanceNum++)
+        				, IWorkbenchPage.VIEW_ACTIVATE);
 			} 
         	catch (PartInitException e) {
 				Messages.showErrorMessage(window.getShell()
 						, Messages.getText("err.dialog.title")
-						, Messages.getText(""
-								, new Object[] { Messages.getText("view.web.browser.name")
-										, e.getMessage()
-									}
-								)
+						, e.getMessage()
 						);
 			}
         }

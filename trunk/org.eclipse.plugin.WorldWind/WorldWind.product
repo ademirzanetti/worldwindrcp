@@ -18,8 +18,8 @@ plugin_customization.ini</programArgs>
    <windowImages i16="icons/16x16-nasa.png" i32="icons/32x32-nasa.png"/>
 
    <splash
-      startupProgressRect="5,210,390,15"
-      startupMessageRect="7,187,390,20"
+      startupProgressRect="5,275,445,15"
+      startupMessageRect="7,255,445,20"
       startupForegroundColor="FFFFFF" />
    <launcher>
       <solaris/>
