@@ -18,6 +18,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.plugin.worldwind.views.EarthView;
 import org.eclipse.plugin.worldwind.views.GeoSearchView;
 import org.eclipse.plugin.worldwind.views.LayersView;
+import org.eclipse.plugin.worldwind.views.PlacesView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 public class Perspective implements IPerspectiveFactory 
@@ -27,16 +28,26 @@ public class Perspective implements IPerspectiveFactory
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(false);
 
-		IFolderLayout folder = layout.createFolder("Layers", IPageLayout.LEFT, 0.2f, editorArea);
-		folder.addPlaceholder(LayersView.ID + ":*");
-		folder.addView(LayersView.ID);
-		folder.addView(GeoSearchView.ID);
+		// TopLeft: Places & GeoSearch
+		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.2f, editorArea);
 		
-		IFolderLayout folder1 = layout.createFolder("Earth", IPageLayout.RIGHT, 1.0f, editorArea);
-		folder1.addView(EarthView.ID);
-		folder1.addView(WebBrowserView.ID);
+		//topLeft.addPlaceholder(LayersView.ID + ":*");
+		topLeft.addView(PlacesView.ID);
+		topLeft.addView(GeoSearchView.ID);
 		
+		// Bottom left: Layers view
+		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f,
+		 	   "topLeft");
+		bottomLeft.addView(LayersView.ID);
+
+		// TopRight: Earth & web browser
+		IFolderLayout topRight = layout.createFolder("Earth", IPageLayout.RIGHT, 1.0f, editorArea);
+		topRight.addView(EarthView.ID);
+		topRight.addView(WebBrowserView.ID);
+		
+		// These layers cannt be closed
 		layout.getViewLayout(LayersView.ID).setCloseable(false);
+		layout.getViewLayout(PlacesView.ID).setCloseable(false);
 		layout.getViewLayout(EarthView.ID).setCloseable(false);
 		layout.getViewLayout(GeoSearchView.ID).setCloseable(false);
 	}

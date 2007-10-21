@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
-import org.eclipse.plugin.worldwind.views.LayersView;
+import org.eclipse.plugin.worldwind.views.PlacesView;
 import org.eclipse.ui.IWorkbenchWindow;
 
 
@@ -13,8 +13,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import worldwind.contrib.layers.loop.HTTPLoopFileLayer;
 import worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-//import worldwind.contrib.layers.loop.HTTPGOESLoopFileLayer;
-//import worldwind.contrib.layers.loop.HTTPNavyWeatherLayer;
 import worldwind.contrib.parsers.ParserUtils;
 
 public class WeatherWizard extends Wizard 
@@ -63,7 +61,7 @@ public class WeatherWizard extends Wizard
 				);
 		try 
 		{
-			LayersView view = (LayersView)Activator.getView(window, LayersView.ID);
+			PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
 			
 			if ( view != null ) 
 			{
@@ -73,23 +71,10 @@ public class WeatherWizard extends Wizard
 				// build only the latest MAX_FRAMES overlays
 				((HTTPLoopFileLayer)layer).buildOverlays(HTTPSatLoopLayerList.MAX_FRAMES);
 				
-/*				
-				// Load Layers + time steps into the layers view
-				if ( layer instanceof HTTPNavyWeatherLayer) { 
-					logger.debug("# of NRL frames=" + ((HTTPNavyWeatherLayer)layer).getFrames().size());
-					
-					// NRL
-					((HTTPNavyWeatherLayer)layer).buildOverlays(i, j);
-				}
-				else {
-					logger.debug("# of GOES frames=" + ((HTTPGOESLoopFileLayer)layer).getFrames().size());
-					
-					// GOES
-					((HTTPGOESLoopFileLayer)layer).buildOverlays(i, j);
-				}
-*/				
 				addLayers(layer, view);
-				//canvas.repaint();
+				
+				// show places view
+				window.getActivePage().showView(PlacesView.ID);
 			}
 			
 			return true;
@@ -106,7 +91,7 @@ public class WeatherWizard extends Wizard
 	/*
 	 * Add time steps (as children) of the layer into the Layers View
 	 */
-	private void addLayers(TimeLoopGroundOverlay layer , LayersView view) 
+	private void addLayers(TimeLoopGroundOverlay layer , PlacesView view) 
 	{
 		view.addOverlays(new TimeLoopGroundOverlay[]{layer}, false);
 	}

@@ -26,6 +26,7 @@ import org.eclipse.plugin.worldwind.views.LayersView.TreeObject;
 import org.eclipse.plugin.worldwind.views.LayersView.TreeParent;
 import org.eclipse.swt.widgets.Composite;
 
+import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.NASAWMSLayerList;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
@@ -42,13 +43,6 @@ public class LayersTree extends CheckboxTreeViewer
 	// Nodes checked by default
 	private Vector<TreeObject> checkedTreeNodes = new Vector<TreeObject>();
 
-	// World Wind built-in Layers 
-	// These are checked by default
-//	private static Vector<TreeObject> defaultLayers = new Vector<TreeObject>();
-
-	// NASA World Wind WMS Built in layers
-	// These are not checked by default
-//	private static NASAWMSLayerList nasaWmsLayerList;
 	
 	public LayersTree(Composite parent, int style) {
 		super(parent, style);
@@ -118,24 +112,6 @@ public class LayersTree extends CheckboxTreeViewer
 		setCheckedElements(checkedNodesToArray());
 	}
 
-	/*
-	 * Built-in layers are not cached and cannot be removed
-	 */
-//	void addBuiltInTreeObject(TreeParent parent
-//			, TreeObject[] children
-//			, boolean addToModel
-//			, boolean checked) 
-//	{
-//		addTreeObject(parent, children, addToModel, checked);
-//		
-//		// add parent
-//		defaultLayers.add(parent);
-//		
-//		// add children
-//		for (TreeObject treeObject : children) {
-//			defaultLayers.add(treeObject);
-//		}
-//	}
 	
 	/**
 	 * Add a layer to the view
@@ -283,31 +259,6 @@ public class LayersTree extends CheckboxTreeViewer
 	    return top;
 	}
 	
-	/**
-	 * Built-in layers cannot be removed
-	 */
-/*	
-	static boolean isBuiltinLayer(String name)
-	{
-		if ( name.equals(Messages.getText("layer.nasa.builtin.name")) )
-			return true;
-		
-		// children of layer above
-		for (TreeObject layer : defaultLayers) {
-			if ( layer.getName().equalsIgnoreCase(name))
-				return true;
-		}
-
-		if ( name.equals(Messages.getText("layer.nasa.wms.name")) )
-			return true;
-		
-	    for (Layer layer : nasaWmsLayerList) {
-			if ( layer.getName().equalsIgnoreCase(name) )
-				return true;
-		}
-		return false;
-	}
-*/
 	/*
 	 * Add layers from the WW model to the tree. T
 	 * These are built-in (cannot be removed) and enabled by default
@@ -315,16 +266,11 @@ public class LayersTree extends CheckboxTreeViewer
 	private TreeParent buildDefaultWorldWindLayers()
 	{
 		// Initialize model
-		EarthView.initWorldWindLayerModel();
+		//EarthView.initWorldWindLayerModel();
 		
         // Add World Wind built-in layers (all enabled)
 		LayerList layerList = EarthView.world.getModel().getLayers();
        
-//        for (Layer layer : layerList) {
-//        	final TreeObject to = new TreeObject(layer, LayersView.guessIcon(layer.getName()));
-//
-//        	defaultLayers.add(to);
-//        }
 
         // WW parent layer for Model layers
         RenderableLayer topLayer = new RenderableLayer();
@@ -351,5 +297,32 @@ public class LayersTree extends CheckboxTreeViewer
 		return parent;
 	}
 	
+	/**
+	 * Add a rime loop overlay to the tree
+	 */
+	void addTimeLoopGroundOverlays(TimeLoopGroundOverlay[] ovs) 
+	{
+		for (TimeLoopGroundOverlay aov : ovs) 
+		{
+			TreeParent parent = new TreeParent(aov, LayersView.guessIcon(aov.getName()));
+			
+			// View children
+			TreeObject[] children = new TreeObject[aov.getOverlays().size()];
+			
+			// Children as ground overlays
+			GroundOverlayLayer[] childOvs = new GroundOverlayLayer[aov.getOverlays().size()];
+			
+			aov.getOverlays().toArray(childOvs);
+			
+			for (int i = 0; i < children.length; i++) {
+				children[i] = new TreeObject(childOvs[i]
+						, LayersView.guessIcon(childOvs[i].getName())
+						);
+			}
+			
+			// Add to view
+			addTreeObject(parent, children, false, false);
+		}
+	}
 	
 }

@@ -65,6 +65,13 @@ public class EarthView extends ViewPart
 	
 	private HeartBeatProbe probe;
 	private StatusLine statusLine;
+
+	/**
+	 * Initialize the default WW layers
+	 */
+	static {
+		initWorldWindLayerModel();
+	}
 	
 	/*
 	 * Heartbeat Probe: It uses a thread to probe WW for active tasks
@@ -284,16 +291,16 @@ public class EarthView extends ViewPart
 	}
 	
 	
+	public EarthView() {
+		
+	}
+	
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
-	public void createPartControl(Composite parent) {
-		
-		// WW
-//        world.setPreferredSize(new Dimension(ApplicationWorkbenchWindowAdvisor.INITIAL_WIDTH
-//        		, ApplicationWorkbenchWindowAdvisor.INITIAL_HEIGHT));
-		
+	public void createPartControl(Composite parent) 
+	{
         // Build GUI: top(SWT)->Frame(AWT)->Panel(AWT)->WorldWindowGLCanvas(AWT)
 		Composite top = new Composite(parent, SWT.EMBEDDED);
 		top.setLayoutData(new GridData(GridData.FILL_BOTH));
