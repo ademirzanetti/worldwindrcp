@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -110,6 +111,7 @@ public class KMLSource
 		if ( contentType.equals(SimpleHTTPClient.CT_KMZ))  
 		{
 			final String docName = unZip(file);
+			
 			if ( docName == null)
 				throw new IOException("No KML document within zip " + file);
 			
@@ -136,7 +138,7 @@ public class KMLSource
 	}
 	
 	/*
-	 * Unzip file into WW cache dir 
+	 * Unzip a file into WW cache 
 	 */
 	private String unZip (File zipFile) throws Exception
 	{
@@ -396,22 +398,124 @@ public class KMLSource
 		
 		return buf.toString();
 	}
+
+	/**
+	 * Build a KMZ file for a WW layers: {@link TimeLoopGroundOverlay} or
+	 * {@link GroundOverlayLayer}
+	 * @param 	kmzFile KMZ {@link File}
+	 * @param 	layer World Wind {@link Layer}: {@link TimeLoopGroundOverlay} or
+	 * 			{@link GroundOverlayLayer} only
+	 * @throws 	Exception
+	 */
+	static public void buildKMZ (File kmzFile, Layer layer)
+		throws Exception
+	{
+		if ( !(layer instanceof TimeLoopGroundOverlay) &&
+				!(layer instanceof GroundOverlayLayer) )
+			
+			throw new IOException("Invalid layer type:" + layer.getClass().getName());
+		
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(kmzFile));
+//		ZipEntry ze;
+		
+		// KML doc within zip
+		String kmlDoc;
+		
+		if (layer instanceof TimeLoopGroundOverlay) 
+		{
+			// time loop
+			final TimeLoopGroundOverlay loop = (TimeLoopGroundOverlay)layer;
+			
+			// relative paths
+			kmlDoc = loop.toKML(false, true);
+			
+			// add overlay files
+			for (GroundOverlayLayer ov : loop.getOverlays()) 
+			{
+				// file name
+				File f 			= new File( ov.getTextureURL().toURI());
+				String fName 	= f.getName();
+				
+				logger.debug("Adding Time Loop Ov to KMZ:" + fName);
+				
+				// Add Zip entry for this overlay
+				out.putNextEntry(new ZipEntry(fName));
+				out.write(Messages.readFile(f));
+				//writetoStream(new FileInputStream(f), out);
+			} 
+			
+			// Add legend: Legend is optional
+			if ( loop.getLegend() != null) {
+				File f = loop.getLegend().getFile();
+			
+				logger.debug("Adding Time Loop LEGEND to KMZ:" + f.getName());
+			
+				out.putNextEntry(new ZipEntry(f.getName()));
+				out.write(Messages.readFile(f));
+			}
+		}
+		else {
+			// ground overlay
+			final GroundOverlayLayer gov = (GroundOverlayLayer)layer;
+
+			// use relative paths
+			kmlDoc = gov.toKML(false, false);
+
+			// Add overlay
+			File f 			= new File( gov.getTextureURL().toURI());
+			String fName 	= f.getName();
+
+			logger.debug("Adding Ground Overlay to KMZ:" + fName);
+			
+			out.putNextEntry(new ZipEntry(fName));
+			out.write(Messages.readFile(f));
+			//writetoStream(new FileInputStream(f), out);
+		}
+		
+		//logger.debug("KML Doc size=" + ( kmlDoc != null ?  kmlDoc.length() : kmlDoc ) );
+		//logger.debug("KML Doc " + kmlDoc );
+		
+		// Add doc kml
+		out.putNextEntry(new ZipEntry("doc.kml"));
+		out.write(kmlDoc.getBytes());
+		
+		out.close();
+	}
 	
+/*	
+	static void writetoStream (InputStream in, OutputStream out)
+		throws IOException
+	{
+	    InputStream buffer  	= in; //new BufferedInputStream(in);   
+	    OutputStream buffer2  	= out; //new BufferedOutputStream(out);
+	    int c;
+	    
+	    while ((c = buffer.read()) != -1) 
+	    {
+	      buffer2.write(c);
+	    } 
+	    //buffer2.close();
+	}
+*/
+/*	
 	// test only
 	public static void main(String[] args) {
 		try {
 			//String url = "http://services.google.com/earth/kmz/cumbria_waymarking_n.kmz";
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String file = "src/demo/xml/KML_Samples.kml";
-			//String file = "C:/Documents and Settings/All Users/Application Data/WorldWindData/rsig2dviz_16162_.kml";
+			String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-			String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
+			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
 			//KMLSource kml = new KMLSource(new URL(url));
 			
-			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);// .CT_KML);
+			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KMZ);
 			
-			System.out.println(KMLSource.toTimeLoopGroundOverlay(kml.getDocument()).toKML());
+			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
 			
+			
+	        buildKMZ(new File("c:/tmp/junk/moo.kmz"), overlay);
+	        
 			//System.out.println(kml.toKML());
 //			LayerList list = kml.toLayerList();
 //			
@@ -430,5 +534,5 @@ public class KMLSource
 			e.printStackTrace();
 		}
 	}
-	
+*/	
 }

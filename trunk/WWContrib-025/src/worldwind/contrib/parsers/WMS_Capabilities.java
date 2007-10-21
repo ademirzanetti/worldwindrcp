@@ -629,6 +629,20 @@ public class WMS_Capabilities
     	return new int[] {inc, incWhat};
     }
 
+    /**
+     * Create a well formed ISO time YYYY-MM-DDThh:mm:ssZ from an array of time vales
+     * returned by splitISOTime (0=year, 1=month, 2=day, 3=hh, 4=min, 5 = ss;)
+     * @return ISO time in the format: YYYY-MM-DDThh:mm:ssZ
+     * @param isoTime array of time values (0=year, 1=month, 2=day, 3=hh, 4=min, 5 = ss;)
+     */
+    public static String isoTime2String (final int isoTime[] )
+    {   
+        nf.setMinimumIntegerDigits(2);
+        return isoTime[0] + "-" + nf.format(isoTime[1]) + "-" + nf.format(isoTime[2])
+            + "T" + nf.format(isoTime[3]) + ":" + nf.format(isoTime[4]) + ":" + nf.format(isoTime[5]) + "Z";
+    }
+
+    
 	public void setTotalLayers(int totalLayers) {
 		this.totalLayers = totalLayers;
 	}

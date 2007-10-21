@@ -409,13 +409,23 @@ public class ScreenOverlayLayer extends AbstractLayer
     	this.resizeBehavior = resizeBehavior;
     }
  
-    public String toKML() {
-
+    public String toKML(boolean useAbsolutePaths) 
+    {
+    	String icon = ( iconURL != null ? iconURL.toString() : iconFile.toString() );
+    	
+    	icon = useAbsolutePaths ? icon : new File(icon).getName();
+    	
     	return " <ScreenOverlay>" + Messages.NL
     		+ "<name>" + getName() + "</name>" + Messages.NL
     		+ "<Icon><href><![CDATA[" 
-			+ ( iconURL != null ? iconURL : iconFile ) 
+			+ icon  
 			+ "]]></href></Icon>" + Messages.NL
+			
+			// position: top left
+			+ "<screenXY  x=\"0\" y=\"1\" xunits=\"fraction\" yunits=\"fraction\"/>" + Messages.NL
+			+ "<overlayXY  x=\"0\" y=\"1\" xunits=\"fraction\" yunits=\"fraction\"/>" + Messages.NL
+			
+			// size
 			+ ( resizeBehavior.equals(RESIZE_KEEP_FIXED_SIZE) 
 					? "<size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>" 
 							+ Messages.NL
@@ -424,4 +434,10 @@ public class ScreenOverlayLayer extends AbstractLayer
 				)
 			+ "</ScreenOverlay>" + Messages.NL ;
      }
+    
+    public File getFile () throws Exception {
+    	return iconFile != null 
+    			? iconFile
+    			: new File( iconURL.toURI());
+    }
 }
