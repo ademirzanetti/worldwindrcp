@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.views;
 
 import java.io.ByteArrayInputStream;
@@ -40,6 +50,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.part.ViewPart;
@@ -55,6 +67,11 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.GroundOverlayLoopList
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
 
+/**
+ * Places View
+ * @author Vladimir Silva
+ *
+ */
 public class PlacesView extends ViewPart
 	implements GroundOverlayLoopListener
 {
@@ -70,19 +87,25 @@ public class PlacesView extends ViewPart
 	// A hashtable to track animations
 	private ConcurrentHashMap<String, AnimationJob> animatedJobs 
 		= new ConcurrentHashMap<String, AnimationJob>();
+
+	/** Local Actions */
 	
-	// Actions for TimeLoopGrounOverlay player
+	// Local Actions for TimeLoopGrounOverlay player
 	private Action actionPlay;
 	private Action actionStop;
 
 	// remove a node from the tree
 	private Action actionRemoveNode;
 	
+	// Save layer: KMZ only
+	private Action actionSaveLayer;
+	
 	// node double click
 	private Action doubleClickAction;
 	
 	private ImageDescriptor ICON_PLAY = Activator.getImageDescriptor("icons/16x16-play.png");
 	private ImageDescriptor ICON_STOP = Activator.getImageDescriptor("icons/16x16-stop.png");
+	private ImageDescriptor ICON_SAVE = Activator.getImageDescriptor("icons/16x16-saveas.png");
 	
 	@Override
 	public void createPartControl(Composite parent) 
@@ -568,6 +591,8 @@ public class PlacesView extends ViewPart
 		// manager.add(actionPause);
 		manager.add(actionStop);
 		manager.add(new Separator());
+		manager.add(actionSaveLayer);
+		manager.add(new Separator());
 		manager.add(actionRemoveNode);
 	}
 
@@ -679,6 +704,47 @@ public class PlacesView extends ViewPart
 						, ((TreeObject)obj).getLayer());
 			}
 		};
+
+		// Save layer as KMZ 
+		actionSaveLayer = new Action() {
+			public void run() 
+			{
+				ISelection selection 	= treeViewer.getSelection();
+				Object obj 				= ((IStructuredSelection)selection).getFirstElement();
+				
+				if ( obj == null ) return;
+					
+				Layer layer = ((TreeObject)obj).getLayer();
+
+				try {
+					// Save
+					Shell shell = getViewSite().getShell();
+					
+			    	String[] extensions 	= new String[] { "*.kmz" };
+			    	String[] filterNames 	= new String[] { "Google Earth KMZ (*.kmz)" };
+					
+					FileDialog dialog 	= new FileDialog(shell, SWT.SAVE);
+
+					dialog.setFilterExtensions(extensions);
+					dialog.setFilterNames(filterNames);
+					
+					String path 		= dialog.open();
+
+					if ( path == null) return;
+					
+					logger.debug("Saving " + layer + " as " + path);
+
+					KMLSource.buildKMZ(new File(path), layer);
+					
+				} catch (Exception e) {
+					Messages.showErrorMessage(getViewSite().getShell()
+							, Messages.getText("err.dialog.title")
+							, "Error saving " + layer + ": " + e.getMessage() );
+				}
+			}
+		};
+		actionSaveLayer.setToolTipText(Messages.getText("layer.action.save"));
+		actionSaveLayer.setImageDescriptor(ICON_SAVE);
 		
 	}
 	

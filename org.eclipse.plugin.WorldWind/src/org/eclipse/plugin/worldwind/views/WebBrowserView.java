@@ -224,9 +224,6 @@ public class WebBrowserView extends ViewPart
 	{
 		try {
 			// Grab layers view
-//			LayersView view = (LayersView)Activator.getView(getViewSite().getWorkbenchWindow()
-//					, LayersView.ID);
-
 			PlacesView view = (PlacesView)Activator.getView(getViewSite().getWorkbenchWindow()
 					, PlacesView.ID);
 			
@@ -237,11 +234,10 @@ public class WebBrowserView extends ViewPart
 	}
 	
 	/**
-	 * Deal with KML or KMZ files
+	 * Add s KML or KMZ file source to the {@link PlacesView}
 	 * @param kml {@link KMLSource} object
-	 * @param view
+	 * @param view {@link PlacesView} where the source will be added
 	 */
-	//public static void handleKmlKmz ( KMLSource kml , LayersView view ) 
 	public static void handleKmlKmz ( KMLSource kml , PlacesView view )
 	{
 		try {
@@ -251,15 +247,13 @@ public class WebBrowserView extends ViewPart
 				throw new Exception("No Ground, Screen or Placemark overlays in document.");
 			
 			view.addKMLSource(kml, false);
-			//view.addLayerList(kml.getDocument().getName(), list, false);
 			
 			// show view
 			view.getViewSite().getWorkbenchWindow().getActivePage().showView(EarthView.ID);
 		} 
 		catch (Exception e) 
 		{
-			//view.setStatusErrorMessage(e.getMessage());
-			e.printStackTrace();
+			view.setStatusErrorMessage(e.getMessage());
 		}
 	}
 	
