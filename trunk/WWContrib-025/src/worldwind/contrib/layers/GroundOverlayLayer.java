@@ -102,7 +102,8 @@ public class GroundOverlayLayer extends AbstractLayer
 		initCache();
 		
 		logger.debug("title=" + title + ", s=" + sector 
-				+ " url=" + textureURL + " fs=" + fileSuffix + " fmt=" + formatName);
+				+ " url=" + textureURL + " fs=" + fileSuffix 
+				+ " fmt=" + formatName + " tile key=" + tileKey);
 	}
 
 	private void initCache () {
@@ -141,7 +142,7 @@ public class GroundOverlayLayer extends AbstractLayer
 
         dc.getGeographicSurfaceTileRenderer().setShowImageTileOutlines(true);
         
-        if ( ! isTileInMemory()) // isTextureInMemory(dc.getTextureCache()))//tile)) 
+        if ( ! isTileInMemory())  
         {
         	logger.debug("Texture " + tileKey + " not in memory. loading from disk");
         	
@@ -160,7 +161,11 @@ public class GroundOverlayLayer extends AbstractLayer
         				+ " key=" + tileKey); 
         
         		//downloadResource(getTextureURL(), WorldWind.dataFileCache().newFile(tileKey));
-        		synchFetch();
+        		if ( ! synchFetch() ) {
+        			logger.error("Synch fetch for " + textureURL + " FAILED");
+        			onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
+        			return;
+        		}
         		
         		// return the "loading.png" texture
         		try {
@@ -173,7 +178,7 @@ public class GroundOverlayLayer extends AbstractLayer
         	}
         }
         else {
-        	tile = getTileFromMemoryCache(); //tileKey);
+        	tile = getTileFromMemoryCache(); 
         	logger.debug("Loading tile from memory " + tileKey + " tile=" + tile);
         }
         
@@ -296,7 +301,14 @@ public class GroundOverlayLayer extends AbstractLayer
                         }
                         catch (IOException e)
                         {
-                            e.printStackTrace(); 
+                            logger.error("Unable to download " + r.getUrl()
+                            		+ ": " + e.getMessage());
+                            
+                            if ( outFile != null && outFile.exists()) {
+                            	logger.error("Deleting cache file " + outFile);
+                            	outFile.delete();
+                            }
+                            
                             return null;
                         }
                     }
@@ -307,7 +319,8 @@ public class GroundOverlayLayer extends AbstractLayer
         catch (Exception e)
         {
         	// Notify listeners of the error
-        	onError(this, e);
+        	onError(this, new Exception("Unable to download resource: " + resourceURL
+        			, e));
             //e.printStackTrace(); 
         }
     }
@@ -321,7 +334,7 @@ public class GroundOverlayLayer extends AbstractLayer
         }
     }
 
-    private TextureTile getTileFromMemoryCache() //Object key)
+    private TextureTile getTileFromMemoryCache() 
     {
     	TextureTile tile = (TextureTile) WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).getObject(tileKey); //tileKey);
     	logger.debug("Got tile from memory " + tile + " key=" + tileKey);
@@ -334,6 +347,11 @@ public class GroundOverlayLayer extends AbstractLayer
     	return bool;
     }
     
+    public boolean isTileInCache () {
+    	boolean bool = WorldWind.getDataFileCache().findFile(tileKey, false) != null;
+    	logger.debug("Tile in cache? " + bool);
+    	return bool;
+    }
 
     public Texture getTexture(TextureCache tc)
     {
@@ -472,11 +490,19 @@ public class GroundOverlayLayer extends AbstractLayer
 	/**
 	 * Fetch overlay URL into WW file cache to improve GUI response
 	 */
-	public void synchFetch() 
+	public boolean synchFetch() 
 	{
-		try {
+		try 
+		{
+			if ( tileKey == null )
+				throw new IOException("Invalid(NULL) tile key for layer " + getName() 
+						+ " Cache path=" + baseCachePath);
+			
+			logger.debug("Looking for tile key " + tileKey + " in WW cache");
+			
 			if ( WorldWind.getDataFileCache().findFile(tileKey, false) == null ) 
 			{ 
+				// Tile not in cache
 				File file = WorldWind.getDataFileCache().newFile(tileKey);
 				
 				if  ( textureURL.toString().startsWith("http")) {
@@ -506,10 +532,12 @@ public class GroundOverlayLayer extends AbstractLayer
 					}
 				}
 			}
+			return true;
 		}
 		catch (Exception ex) {
 			//ex.printStackTrace();
 			onError(this, ex);
+			return false;
 		}
 	}
 
