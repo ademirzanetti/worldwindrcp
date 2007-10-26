@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.plugin.worldwind;
 
+import java.util.ArrayList;
+
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -19,6 +22,9 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -28,6 +34,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import org.eclipse.plugin.worldwind.actions.OpenFileAction;
 import org.eclipse.plugin.worldwind.actions.OpenWebBrowserAction;
+import org.eclipse.plugin.worldwind.actions.ShowPerspectiveAction;
 import org.eclipse.plugin.worldwind.actions.WMSWizardAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
 import org.eclipse.plugin.worldwind.views.StatusLine;
@@ -48,6 +55,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
 	private OpenWebBrowserAction openWebBrowser;
+	
+	/** List of Actions used to open perspectives */
+	private ArrayList<Action> perspectiveActions = new ArrayList<Action>();
 	
 	// Status line
 	private static StatusLine statusLine;
@@ -80,6 +90,24 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 		openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
 		register(openWebBrowser);
+		
+		/*
+		 * Get All perspectives , and add actions to open them
+		 */
+		IWorkbench workbench 			=  window.getWorkbench();
+		IPerspectiveRegistry registry 	= workbench.getPerspectiveRegistry();
+		
+		IPerspectiveDescriptor[] descriptors = registry.getPerspectives();
+		
+		for (IPerspectiveDescriptor perspective : descriptors) {
+			perspectiveActions.add(new ShowPerspectiveAction(
+					perspective.getLabel()
+					, window
+					, perspective.getId()
+					)
+			);
+		}
+		
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
@@ -90,7 +118,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		fileMenu.add(openFileAction);
 		
 		fileMenu.add(weatherWizardAction);
-		fileMenu.add(new Separator());
+//		fileMenu.add(new Separator());
 		
 		fileMenu.add(wmsWizardAction);
 		fileMenu.add(new Separator());
@@ -99,6 +127,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 	    fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
+
+		// Create a Perspective switch menu only if 1+ perspectives available
+		if ( perspectiveActions.size() > 1 ) {
+		
+			MenuManager perspectiveMenu = new MenuManager("&Perpective"
+					, "org.eclipse.plugin.worldwind.PERSPECTIVES");
+
+			// Add perspective actions
+			for (Action action : perspectiveActions) {
+				perspectiveMenu.add(action);
+			}
+		
+			menuBar.add(perspectiveMenu);
+		}
+		
 	}
 
 	@Override
@@ -108,11 +151,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
         
         toolbar.add(weatherWizardAction);
-        toolbar.add(new Separator());
+//        toolbar.add(new Separator());
         
         toolbar.add(wmsWizardAction);
         
-        toolbar.add(new Separator());
+//        toolbar.add(new Separator());
         toolbar.add(openWebBrowser);
 	}
 	

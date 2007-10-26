@@ -314,7 +314,6 @@ public class EarthView extends ViewPart
         // max parent widget
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        
         // globe position listener
         Display display = getViewSite().getShell().getDisplay();
 

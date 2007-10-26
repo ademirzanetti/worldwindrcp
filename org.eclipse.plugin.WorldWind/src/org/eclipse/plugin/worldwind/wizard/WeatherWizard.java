@@ -1,5 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.wizard;
-
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.Wizard;
@@ -9,9 +18,7 @@ import org.eclipse.plugin.worldwind.views.PlacesView;
 import org.eclipse.ui.IWorkbenchWindow;
 
 
-
 import worldwind.contrib.layers.loop.HTTPLoopFileLayer;
-import worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.parsers.ParserUtils;
 
@@ -23,7 +30,6 @@ public class WeatherWizard extends Wizard
 	private DimSelectionPage page2;
 	
 	private IWorkbenchWindow window;
-//	private WorldWindowGLCanvas canvas;
 	
 	public WeatherWizard(IWorkbenchWindow window)  
 	{
@@ -69,7 +75,8 @@ public class WeatherWizard extends Wizard
 				logger.debug("# of dataset frames=" +( (HTTPLoopFileLayer)layer).getFrames().size() );
 				
 				// build only the latest MAX_FRAMES overlays
-				((HTTPLoopFileLayer)layer).buildOverlays(HTTPSatLoopLayerList.MAX_FRAMES);
+				//((HTTPLoopFileLayer)layer).buildOverlays(HTTPSatLoopLayerList.MAX_FRAMES);
+				((HTTPLoopFileLayer)layer).buildOverlays(i, j);
 				
 				addLayers(layer, view);
 				

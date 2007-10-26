@@ -63,7 +63,6 @@ import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.TiledWMSLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.GroundOverlayLoopListener;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
 
@@ -73,7 +72,7 @@ import worldwind.contrib.parsers.ParserUtils;
  *
  */
 public class PlacesView extends ViewPart
-	implements GroundOverlayLoopListener
+//	implements GroundOverlayLoopListener
 {
 	private static final Logger logger	= Logger.getLogger(PlacesView.class);
 	static public String ID 			= PlacesView.class.getName();
@@ -452,7 +451,7 @@ public class PlacesView extends ViewPart
 				//overlay.asynchFetchSome();
 				
 				// Listen for loop updates
-				overlay.addLoopListener(this);
+				//overlay.addLoopListener(this);
 				//overlay.play(); 
 
 				Display display = getViewSite().getShell().getDisplay();
@@ -469,7 +468,7 @@ public class PlacesView extends ViewPart
 			}
 			else { 
 				//overlay.stop();
-				overlay.removeLoopListener(this);
+				//overlay.removeLoopListener(this);
 				
 				// Get job from pool
 				AnimationJob job = animatedJobs.get(to.getID());
@@ -520,8 +519,8 @@ public class PlacesView extends ViewPart
 		{
 			logger.debug("Leaf layer "+ layer.getName());
 			
-			if ( layer instanceof GroundOverlayLayer)
-				((GroundOverlayLayer)layer).addOverlayListener(this);
+//			if ( layer instanceof GroundOverlayLayer)
+//				((GroundOverlayLayer)layer).addOverlayListener(this);
 			
 			// set tree check state
 			to.setEnabled(checked);
@@ -568,19 +567,19 @@ public class PlacesView extends ViewPart
 	/**
 	 * fires when an animated ground overlay loops thru
 	 */
-	public synchronized void statusChanged(final int current, final int total, final GroundOverlayLayer layer) 
-	{
-		if ( getViewSite() == null || getViewSite().getShell() == null ) return;
-		
-		Display display = getViewSite().getShell().getDisplay();
-		
-        display.syncExec(new Runnable() {
-        	public void run() {
-        		String message = layer + " ("  + current + "/" + total + ")" ;
-        		statusLine.setLoopStatusMessage(message);
-        	}
-        });
-	}
+//	public synchronized void statusChanged(final int current, final int total, final GroundOverlayLayer layer) 
+//	{
+//		if ( getViewSite() == null || getViewSite().getShell() == null ) return;
+//		
+//		Display display = getViewSite().getShell().getDisplay();
+//		
+//        display.syncExec(new Runnable() {
+//        	public void run() {
+//        		String message = layer + " ("  + current + "/" + total + ")" ;
+//        		statusLine.setLoopStatusMessage(message);
+//        	}
+//        });
+//	}
 
 	/******************************************************
 	 * End Ground Overlay listeners

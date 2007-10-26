@@ -62,6 +62,12 @@
             id="org.eclipse.plugin.worldwind.views.GeoSearchView"
             name="GeoSearch View">
       </view>
+      <view
+            name="VisAD SpreadSheet for Numerical Analysis"
+            class="org.eclipse.plugin.analytics.views.VisADSpreadSheetView"
+            id="org.eclipse.plugin.analytics.views.VisADSpreadSheetView">
+      </view>
+      
    </extension>
    <extension
          id="product"

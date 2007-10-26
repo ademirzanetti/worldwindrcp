@@ -36,7 +36,7 @@ public class AnimationJob extends Job
 {
 	private TimeLoopGroundOverlay layer;
 	private boolean done 	= false;
-	private long interval 	= 100000; 	// base sleep interval
+	private long interval 	= 80000; 	// base sleep interval
 	private int speed 		= 50;		// animation speed: 0..100
 	private Display display;
 	private StatusLine statusLine;
@@ -63,7 +63,7 @@ public class AnimationJob extends Job
 		// # of frames
 		int size = overlays.size();
 
-		monitor.beginTask(layer.getName(), size );
+//		monitor.beginTask(layer.getName(), size );
 		
 		try 
 		{
@@ -82,28 +82,50 @@ public class AnimationJob extends Job
 						+ " ("  + (i+1) + "/" + size + ")" ;
 	
 					
+					final boolean frameInCache = layer.isFrameinCache(i);
+					
 					if ( display != null && !display.isDisposed() ) {
 						display.syncExec(new Runnable() {
-							public void run() {
+							public void run() 
+							{
+								// show a frame update message
 								statusLine.setLoopStatusMessage(message);
+								
+								// if not in cache show a progress bar
+								if ( ! frameInCache ) {
+									statusLine.beginTask("Fetching " + message, IProgressMonitor.UNKNOWN);
+									statusLine.lockProgress();
+								}
 							}
 						});
 					}
 					
+					
 					// fetch & show frame
 					layer.showFrame(i);
 					
-					// repaint GUI
+					display.syncExec(new Runnable() {
+						public void run() 
+						{
+							// Reset the PB
+							if ( frameInCache ) return;
+							statusLine.taskDone();
+							statusLine.unlockProgress();
+						}
+					});
+			
+					// repaint globe
 					EarthView.repaint();
 					
-					monitor.worked(1);
+//					monitor.worked(1);
 					
 					try {
 						Thread.sleep(sleep);
 					} catch (Exception e) {
-						e.printStackTrace();
+						System.err.println(e);
 						done = true;
 					}
+					
 					if ( done ) break;
 				}
 			}
@@ -114,6 +136,7 @@ public class AnimationJob extends Job
 			
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			return Status.CANCEL_STATUS;
 		}
 

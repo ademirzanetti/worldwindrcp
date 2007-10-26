@@ -3,16 +3,16 @@
 
 <product name="World Wind Geobrowser" id="org.eclipse.plugin.WorldWind.product" application="org.eclipse.plugin.WorldWind.application" useFeatures="false">
 
-
    <configIni use="default"/>
 
    <launcherArgs>
       <programArgs>-pluginCustomization
 plugin_customization.ini</programArgs>
-      <vmArgsLin>-Djava.library.path=lib/native/linux</vmArgsLin>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.library.path=lib/native/osx</vmArgsMac>
-      <vmArgsSol>-Djava.library.path=lib/native/solaris</vmArgsSol>
-      <vmArgsWin>-Djava.library.path=lib/native/win32</vmArgsWin>
+      <vmArgs>-Xmx256m</vmArgs>
+      <vmArgsLin>-Djava.library.path=native/linux</vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.library.path=native/osx</vmArgsMac>
+      <vmArgsSol>-Djava.library.path=native/solaris</vmArgsSol>
+      <vmArgsWin>-Djava.library.path=native/win32</vmArgsWin>
    </launcherArgs>
 
    <windowImages i16="icons/16x16-nasa.png" i32="icons/32x32-nasa.png"/>
@@ -27,7 +27,6 @@ plugin_customization.ini</programArgs>
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -49,6 +48,7 @@ plugin_customization.ini</programArgs>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.plugin.Analytics"/>
       <plugin id="org.eclipse.plugin.WorldWind"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
