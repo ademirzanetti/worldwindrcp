@@ -1,5 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package worldwind.contrib.layers.loop;
-
 
 import gov.nasa.worldwind.geom.Sector;
 
@@ -10,6 +19,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import worldwind.contrib.Messages;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.parsers.ParserUtils;
 
@@ -110,7 +120,20 @@ public class HTTPLoopFileLayer extends TimeLoopGroundOverlay
 		logger.debug("Building overlay range " + start + "," + frames.size() 
 				+ " for " + getName());
 		
-	    for (int i = start; i < frames.size(); i++) {
+		buildOverlays(start, frames.size());
+	}
+
+	/**
+	 * Build ground overlays for a frame range in the HTTP directory of this data set.
+	 * @param startFrame
+	 * @param endFrame
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public void buildOverlays(int startFrame, int endFrame)  
+		throws MalformedURLException , IOException
+	{
+	    for (int i = startFrame; i < endFrame; i++) {
 	    	final GroundOverlayLayer layer = new GroundOverlayLayer(
 					frames.get(i).date
 					, this.bbox
@@ -118,7 +141,8 @@ public class HTTPLoopFileLayer extends TimeLoopGroundOverlay
 					, frames.get(i).frameExt 
 					);
 	    	
-	    	layer.setBaseCachePath("Earth/" + getName().replaceAll(" ", "") + "/");
+	    	layer.setBaseCachePath("Earth/" 
+	    			+ Messages.forCachePath(getName()) + "/");
 	    	add(layer);
 		}
 	}

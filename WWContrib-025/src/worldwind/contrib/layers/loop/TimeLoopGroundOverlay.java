@@ -51,7 +51,6 @@ public class TimeLoopGroundOverlay extends RenderableLayer
     private WorldWindowGLCanvas canvas = null;
     
 	// Animation loop status listeners
-    //private Vector<GroundOverlayLoopListener> listeners = new Vector<GroundOverlayLoopListener>();
     private CopyOnWriteArrayList<GroundOverlayLoopListener> listeners = new CopyOnWriteArrayList<GroundOverlayLoopListener>(); 
     	
     // Legend
@@ -575,8 +574,16 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		// hide all
 		setAllEnabled(false);
 		
-		layer.synchFetch();
-		layer.setEnabled(true);
+		if ( layer.synchFetch() )
+			layer.setEnabled(true);
+		else
+			logger.error("Showing frame "  +  index + " name=" + layer.getName() + " FAILED.");
+	}
+	
+	public boolean isFrameinCache (int index) 
+	{
+		if ( index < 0 || index > overlays.size()) return false;
+		return overlays.get(index).isTileInCache();
 	}
 	
 	/**

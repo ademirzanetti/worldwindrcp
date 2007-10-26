@@ -112,16 +112,16 @@ public class ParserUtils
 	public static Vector<HTTPDataSet> parseHTTPDatasetXMLFile(InputStream is)
 		throws Exception
 	{
-		Document document = ParserUtils.parse(is);
+		Document document 		= ParserUtils.parse(is);
 		
-		NodeList nl = document.getElementsByTagName("NRL_DataSet");
-		Vector<HTTPDataSet> v = new Vector<HTTPDataSet>(); 
+		NodeList nl 			= document.getElementsByTagName("NRL_DataSet");
+		Vector<HTTPDataSet> v 	= new Vector<HTTPDataSet>(); 
 		
 		for (int i = 0; i < nl.getLength(); i++) 
 		{
-			final Element e = (Element)nl.item(i);
-			final String name = ParserUtils.getAttributeValue(e, "Name");
-			final String url = ParserUtils.getNodeValue(e, "Directory_Url");
+			final Element e 	= (Element)nl.item(i);
+			final String name 	= ParserUtils.getAttributeValue(e, "Name");
+			final String url 	= ParserUtils.getNodeValue(e, "Directory_Url");
 
 			// ignore non-leaf nodes
 			if ( e.getElementsByTagName("NRL_DataSet").getLength() > 0 ) 
