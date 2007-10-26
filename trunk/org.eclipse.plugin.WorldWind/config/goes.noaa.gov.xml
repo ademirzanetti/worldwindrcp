@@ -585,7 +585,9 @@
 		</GeographicBoundingBox>
 	</NRL_DataSet>
 
+
 	<!-- NASA GOES Color: East West -->
+<!-- TIFFS can't be displayed in WW 	
 	<NRL_DataSet Name="GOES real-time color: East">
 		<Directory_Url>http://goes.gsfc.nasa.gov/goescolor/goeseast/hurricane2/geo/</Directory_Url>
 		<Description>Real-Time, Full-Resolution, Calibrated and Navigated GOES Images</Description>
@@ -631,5 +633,5 @@
 				</East>
 		</GeographicBoundingBox>
 	</NRL_DataSet>
-	
+ -->	
 </NRL_DataSet_List>

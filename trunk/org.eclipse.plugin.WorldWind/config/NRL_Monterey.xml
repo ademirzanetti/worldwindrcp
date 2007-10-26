@@ -162,7 +162,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 10 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/10-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/10-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -171,7 +171,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 1 Week">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/1-week</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/1-week/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -180,7 +180,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 6 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/6-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/6-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -189,7 +189,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 5 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/5-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/5-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -198,7 +198,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 4 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/4-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/4-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -207,7 +207,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 3 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/3-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/3-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -216,7 +216,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 2 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/2-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/2-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -225,7 +225,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 24 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/24-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/24-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -234,7 +234,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 12 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/12-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/12-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -252,7 +252,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations 3 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/3-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/geo/3-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -305,7 +305,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 10 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/10-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/10-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -314,7 +314,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 1 Week">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/1-week</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/1-week/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -323,7 +323,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 6 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/6-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/6-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -332,7 +332,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="5 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/5-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/5-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -341,7 +341,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 4 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/4-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/4-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -350,7 +350,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 3 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/3-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/3-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -359,7 +359,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 2 Day">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/2-day</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/2-day/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -368,7 +368,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 24 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/24-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/24-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -377,7 +377,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 12 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/12-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/12-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -386,7 +386,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 6 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/6-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/6-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
@@ -395,7 +395,7 @@
 								</GeographicBoundingBox>
 							</NRL_DataSet>
 							<NRL_DataSet Name="Rain Accumulations PMW 3 Hour">
-								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/3-hour</Directory_Url>
+								<Directory_Url>http://www.nrlmry.navy.mil/archdat/global/rain/accumulations/pmw/3-hour/</Directory_Url>
 								<GeographicBoundingBox>
 									<North><Value>60</Value></North>
 									<South><Value>-60</Value></South>
