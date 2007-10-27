@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/bufr-1.1.00.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/forms-1.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/geoapi-nogenerics-2.1-M2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/grib-5.1.01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-api-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-brewer-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-coverage-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-epsg-wkt-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-image-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-indexed-shapefile-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-main-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-referencing-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-render-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-shapefile-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gt2-shapefile-renderer-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j3dcore.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/j3dutils.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jai_codec.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jai_core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jai_imageio.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jcommon-1.0.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jfreechart-1.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jfreechart-1.0.5-experimental.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jh.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jh-2.0_02.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jide-oss-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jmf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jpf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jpf-boot.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jscience.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr108-0.01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jts-1.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/l2fprod-common-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netcdf-2.2.19.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/piccolo.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/piccolox.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/reference.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rs_flexdock-0.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saf.core.runtime.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saf.core.ui.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saf-gis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/sgt_src_v30.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/sgt_v30.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-jdk14.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/swingx-2007_03_04.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/TableLayout.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ucar_ma2-2.2.18.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vecmath.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vecmath-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-dep-1.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/verdi.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/visad.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wizard-0.1.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xstream-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gluegen-rt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogl.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
