@@ -488,6 +488,14 @@ public class GroundOverlayLayer extends AbstractLayer
 	}
 
 	/**
+	 * Get the base cache location of this overlay
+	 * @return base cache path string
+	 */
+	public String getBaseCachePath() {
+		return baseCachePath;
+	}
+	
+	/**
 	 * Fetch overlay URL into WW file cache to improve GUI response
 	 */
 	public boolean synchFetch() 
@@ -652,5 +660,30 @@ public class GroundOverlayLayer extends AbstractLayer
 			+ "</GroundOverlay>" + Messages.NL;
 	}
 	
+	private void deleteFromCache() 
+	{
+		logger.debug("Deleting tile " + tileKey + " from WW cache.");
+		
+		URL url = WorldWind.getDataFileCache().findFile(tileKey, false);
+		
+		if ( url == null) return;
+
+		try {
+			File f = new File(url.toURI());
+			
+			if ( ! f.exists()) return;
+			
+			logger.debug("Removing file from WW cache " + f);
+			f.delete();
+		} 
+		catch (URISyntaxException e) {
+			logger.error("Unable to delete cache folder: " + url + ":" + e.getMessage());
+		}
+	}
 	
+	@Override
+	public void dispose() {
+		super.dispose();
+		deleteFromCache();
+	}
 }
