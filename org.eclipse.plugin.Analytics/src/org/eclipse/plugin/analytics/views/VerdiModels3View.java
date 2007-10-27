@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
@@ -203,15 +202,15 @@ public class VerdiModels3View extends ViewPart
 			buttonBar.add(button5);
 
 			// Help btn
-		    JButton button6 = new JButton(Messages.getString("VerdiModels3View.11"));  //$NON-NLS-1$
-		    button6.addActionListener(new ActionListener(){
-
-				public void actionPerformed(ActionEvent e) {
-					showHelp();
-				}
-		    	
-		    });	    
-			buttonBar.add(button6);
+//		    JButton button6 = new JButton(Messages.getString("VerdiModels3View.11"));  //$NON-NLS-1$
+//		    button6.addActionListener(new ActionListener(){
+//
+//				public void actionPerformed(ActionEvent e) {
+//					showHelp();
+//				}
+//		    	
+//		    });	    
+//			buttonBar.add(button6);
 			
 			// Main panel
 			JPanel mainPanel = new JPanel(new BorderLayout());
