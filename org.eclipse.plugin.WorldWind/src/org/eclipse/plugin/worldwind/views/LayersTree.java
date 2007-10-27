@@ -209,7 +209,6 @@ public class LayersTree extends CheckboxTreeViewer
 						} catch (GLException e) 
 						{
 							// GLException: No OpenGL context current on this thread?
-							// Don't know what to do...
 						}
 					}
 				}
@@ -265,8 +264,6 @@ public class LayersTree extends CheckboxTreeViewer
 	 */
 	private TreeParent buildDefaultWorldWindLayers()
 	{
-		// Initialize model
-		//EarthView.initWorldWindLayerModel();
 		
         // Add World Wind built-in layers (all enabled)
 		LayerList layerList = EarthView.world.getModel().getLayers();
@@ -280,7 +277,6 @@ public class LayersTree extends CheckboxTreeViewer
 		TreeParent parent = new TreeParent(topLayer, Activator.ICON_NASA);
 		
 		// 1 TreeObject for each WW Layer
-		//for ( TreeObject to : defaultLayers)
 		for (Layer layer : layerList) 
 		{
 			final TreeObject to = new TreeObject(layer

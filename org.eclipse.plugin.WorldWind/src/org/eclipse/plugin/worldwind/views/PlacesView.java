@@ -425,18 +425,6 @@ public class PlacesView extends ViewPart
 	  
 		logger.debug("Layer " + layer.getName() + " type=" + layer.getClass().getName() );
 
-		// The real time weather node has too many layers. it cannot be checked
-		// Only its children can be checked
-//		if ( layer.getName().equalsIgnoreCase(Messages.getText("remote.layers.tree.lbl")))
-//		{
-//			Messages.showErrorMessage(getViewSite().getShell()
-//					, Messages.getText("err.dialog.title")
-//					, Messages.getText("err.msg.realtime.sat", new Object[] { layer.getName()} ));
-//
-//			treeViewer.setChecked(to, false);
-//			return;
-//		}
-		
 		// check all node children
 		treeViewer.setSubtreeChecked(to, checked);
 	  
@@ -472,10 +460,12 @@ public class PlacesView extends ViewPart
 				
 				// Get job from pool
 				AnimationJob job = animatedJobs.get(to.getID());
-				job.stop();
-
-				logger.debug("Stopped animated job " + job + " id=" + to.getID());
-				animatedJobs.remove(to.getID());
+				if ( job != null) {
+					logger.debug("Stopping animated job " + job + " id=" + to.getID());
+					
+					job.stop();
+					animatedJobs.remove(to.getID());
+				}
 			}
 		}
 		// If layer has children
@@ -658,25 +648,23 @@ public class PlacesView extends ViewPart
 		actionStop.setToolTipText(Messages.getText("layer.action.stop"));
 		actionStop.setImageDescriptor(ICON_STOP);
 		
-		// Remove a not built-in tree node
+		// Remove layer from tree node: All layers in this view can be removed
 		actionRemoveNode = new Action() {
 			public void run() {
 				IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
 				
 				TreeObject to = (TreeObject) selection.getFirstElement();
-				
-				final String name = to.getLayer().getName();
 
-				// built-in layers cannot be removed from the tree
-				if ( ! to.isRemovable()) { // LayersTree.isBuiltinLayer(name)) {
-					Messages.showErrorMessage(getViewSite().getShell()
-							, Messages.getText("err.dialog.title")
-							, Messages.getText("err.msg.builtin.layer", new Object[] {name}));
-					return;
+				try {
+					// Stop/Hide
+					handleCheckState(false, to);
+
+					// remove node from tree & dispose resources
+					treeViewer.removeTreeObject(selection.toArray());
+					
+				} catch (Exception e) {
+					logger.error(e);
 				}
-				
-				// remove node
-				treeViewer.removeTreeObject(selection.toArray());
 			}
 		};
 		

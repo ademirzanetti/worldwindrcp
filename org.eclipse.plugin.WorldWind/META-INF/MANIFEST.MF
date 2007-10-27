@@ -14,3 +14,5 @@ Bundle-ClassPath: .,
  lib/wwcontrib.jar,
  config/,
  lib/log4j-1.2.15.jar
+Export-Package: org.eclipse.plugin.worldwind.actions,
+ org.eclipse.plugin.worldwind.views
