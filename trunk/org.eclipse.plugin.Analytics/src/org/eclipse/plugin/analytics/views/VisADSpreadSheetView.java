@@ -13,7 +13,6 @@ package org.eclipse.plugin.analytics.views;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.plugin.analytics.AnalyticsActivator;
@@ -25,7 +24,6 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 
@@ -103,7 +101,7 @@ public class VisADSpreadSheetView extends ViewPart {
 	private void contributeToActionBars() {
 		IActionBars bars = getViewSite().getActionBars();
 		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+//		fillLocalToolBar(bars.getToolBarManager());
 		
 	}
 	
@@ -111,22 +109,22 @@ public class VisADSpreadSheetView extends ViewPart {
 	 * Local toolbars
 	 * @param manager
 	 */
-	private void fillLocalToolBar(IToolBarManager manager) {
-		final IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
-		
-		// A help action that opens the WebBrowser view to the VisAD spreadsheet
-		// help at http://www.ssec.wisc.edu/~curtis/ss.html
-		Action helpAction = new Action () {
-			public void run() {
-				openWebBrowserLocation(window
-						, Messages.getString("VisADSpreadSheetView.5")); //$NON-NLS-1$
-			}
-		};
-		helpAction.setToolTipText(Messages.getString("VisADSpreadSheetView.6")); //$NON-NLS-1$
-		helpAction.setImageDescriptor(AnalyticsActivator
-				.getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		manager.add(helpAction);
-	}
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		final IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
+//		
+//		// A help action that opens the WebBrowser view to the VisAD spreadsheet
+//		// help at http://www.ssec.wisc.edu/~curtis/ss.html
+//		Action helpAction = new Action () {
+//			public void run() {
+//				openWebBrowserLocation(window
+//						, Messages.getString("VisADSpreadSheetView.5")); //$NON-NLS-1$
+//			}
+//		};
+//		helpAction.setToolTipText(Messages.getString("VisADSpreadSheetView.6")); //$NON-NLS-1$
+//		helpAction.setImageDescriptor(AnalyticsActivator
+//				.getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		manager.add(helpAction);
+//	}
 	
 	/** Local pulldown */
 	private void fillLocalPullDown(IMenuManager manager) 
