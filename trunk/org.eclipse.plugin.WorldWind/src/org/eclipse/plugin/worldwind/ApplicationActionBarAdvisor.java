@@ -13,6 +13,7 @@ package org.eclipse.plugin.worldwind;
 import java.util.ArrayList;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -50,11 +51,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// them
 	// in the fill methods. This ensures that the actions aren't recreated
 	// when fillActionBars is called with FILL_PROXY.
-	private IWorkbenchAction exitAction;
+
 	private OpenFileAction openFileAction;
 	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
 	private OpenWebBrowserAction openWebBrowser;
+	private IWorkbenchAction exitAction;
+
+	// About - Help
+	private IWorkbenchAction aboutAction;
+	private IWorkbenchAction showHelpAction;
+	private IWorkbenchAction searchHelpAction;
 	
 	/** List of Actions used to open perspectives */
 	private ArrayList<Action> perspectiveActions = new ArrayList<Action>();
@@ -76,6 +83,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		exitAction = ActionFactory.QUIT.create(window);
 		register(exitAction);
+	
+		aboutAction = ActionFactory.ABOUT.create(window);
+		register(aboutAction);
+		
+		showHelpAction = ActionFactory.HELP_CONTENTS.create(window); 
+	    register(showHelpAction); 
+		
+		searchHelpAction = ActionFactory.HELP_SEARCH.create(window);
+		register(searchHelpAction);
 		
 		openFileAction = new OpenFileAction(Messages.getText("file.open.tooltip"), window);
 		register(openFileAction);
@@ -85,7 +101,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		register(wmsWizardAction);
 		
 		weatherWizardAction = new WeatherWizardAction(Messages.getText("weather.wiz.tooltip"), window);
-		
 		register(weatherWizardAction);
 		
 		openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
@@ -113,18 +128,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void fillMenuBar(IMenuManager menuBar) {
 		MenuManager fileMenu = new MenuManager(Messages.getText("menu.file.name"),
 				IWorkbenchActionConstants.M_FILE);
+
+		MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+		
 		menuBar.add(fileMenu);
 
+		// File
 		fileMenu.add(openFileAction);
-		
 		fileMenu.add(weatherWizardAction);
-//		fileMenu.add(new Separator());
-		
 		fileMenu.add(wmsWizardAction);
 		fileMenu.add(new Separator());
-		
 		fileMenu.add(openWebBrowser);
-		
 	    fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
 
@@ -141,7 +155,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 			menuBar.add(perspectiveMenu);
 		}
-		
+
+		// Add a group marker indicating where action set menus will appear.
+		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		menuBar.add(helpMenu);
+
+		// Help
+		helpMenu.add(showHelpAction);	
+		helpMenu.add(searchHelpAction);
+		helpMenu.add(aboutAction);
 	}
 
 	@Override

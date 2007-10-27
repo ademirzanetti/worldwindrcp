@@ -99,6 +99,14 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+               name="aboutImage"
+               value="icons/128-earth.png">
+         </property>
+         <property
+               name="aboutText"
+               value="World Wind Geobrowser &#x0A;&#x0A;(c) Copyright Vlaimir Silva and others 2007.&#x0A;&#x0A;Based on the World Wind Java SDK.&#x0A;Visit http://worldwind.arc.nasa.gov/java/">
+         </property>
       </product>
    </extension>
    <extension
@@ -180,6 +188,31 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+3">
       </key>
+   </extension>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.plugin.WorldWind.application"
+            name="Wold Wind Geobrowser">
+         <property
+               name="aboutText"
+               value="World Wind Geobrowser">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/16x16-nasa.png">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/32x32-nasa.png">
+         </property>
+         <property
+               name="appName"
+               value="World Wind Geobrowser">
+         </property>
+      </product>
    </extension>
 
 </plugin>
