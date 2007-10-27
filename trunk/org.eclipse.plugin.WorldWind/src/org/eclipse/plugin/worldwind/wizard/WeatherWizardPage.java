@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.wizard;
 
 import java.io.IOException;
@@ -185,7 +195,7 @@ public class WeatherWizardPage extends WizardPage
 			
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			setErrorMessage(e.getClass().getName() 
 					+ ": " + e.getMessage());
 			
@@ -243,30 +253,12 @@ public class WeatherWizardPage extends WizardPage
 		DimSelectionPage page2 = (DimSelectionPage )getWizard().getPage("page2");//super.getNextPage();
 		
 
-//		int srcIndex 				= getSourceIndex();
 		HTTPDataSet dataSet 		= getDataSets()[0];
 		String[] dates				= null;
 
 		layer = new HTTPLoopFileLayer(dataSet);
 		dates = ((HTTPLoopFileLayer)layer).getFrameNames();
 		
-/*		
-		// Get time steps from the respective source
-		if ( srcIndex == 0 ) {
-			// NRL (Navy Labs)
-			// Fetch layer time steps
-			layer = new HTTPNavyWeatherLayer(dataSet);
-			dates = ((HTTPNavyWeatherLayer)layer).getFrameNames();
-				
-		}
-		else {
-			// GOES
-			// fetch time steps
-			layer = new HTTPGOESLoopFileLayer(dataSet);
-			dates = ((HTTPGOESLoopFileLayer)layer).getFrameNames();
-				
-		}
-*/		
 		// load page 2 data: show times, no lat/lon
 		// All images are JPGs
 		page2.loadData(true, false,  dates, null , new String[] {"image/jpg"}); 

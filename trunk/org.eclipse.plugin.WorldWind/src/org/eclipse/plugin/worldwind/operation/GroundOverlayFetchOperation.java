@@ -17,6 +17,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
 
+/**
+ * JFace operation to pre-fetch ground overlay layers. Used by the WMS Wizard
+ * and others
+ * @author Owner
+ *
+ */
 public class GroundOverlayFetchOperation implements IRunnableWithProgress
 {
 	GroundOverlayLayer[] overlays;
