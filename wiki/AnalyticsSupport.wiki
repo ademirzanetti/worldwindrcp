@@ -1,0 +1,26 @@
+#labels Featured,Phase-Design
+= Analytics support =
+
+We are planing to add an Analytics plugin for our RCP app. With the following features:
+
+ * A view for the VisAD spreadsheet - http://www.ssec.wisc.edu/~curtis/ss.html. This view will support VisAD formats: Vis5D, COARDS NetCDF, DODS, etc.
+
+ * A view for the EPA Models-3 Community Multiscale Air Quality (CMAQ) Modeling System NetCDF format, using software developed by ANL dubbed Visualization Environment for Rich Data Interpretation (VERDI).
+
+
+= Details =
+
+A new Analytics Plugin has been built with 2 eclipse views:
+
+ * VisAD SpreadSheet view.
+ * Models3/Community Multiscale Air Quality (CMAQ) view.
+
+
+== VisAD SpreadSheet ==
+The VisAD SpreadSheet is a program that utilizes VisAD to visualize data sets and do simple computations, without forcing the user to do any Java programming (see http://www.ssec.wisc.edu/~curtis/ss.html).
+
+Here is a screen shot of the spreadsheet.
+
+http://www.ssec.wisc.edu/~curtis/snap1.jpg
+
+The main panel of the spreadsheet has been integrated as a Eclipse view into a new Analytics Plugin for the World Wind Geobrowser.
