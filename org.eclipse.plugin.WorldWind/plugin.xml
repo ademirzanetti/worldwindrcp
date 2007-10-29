@@ -74,18 +74,18 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.plugin.WorldWind.application"
-            name="World Wind Geobrowser">
+            name="World Wind Geo">
          <property
                name="windowImages"
                value="icons/16x16-nasa.png,icons/32x32-nasa.png">
          </property>
          <property
                name="appName"
-               value="World Wind Geobrowser">
+               value="World Wind Geo">
          </property>
          <property
                name="startupForegroundColor"
-               value="FFFFFF">
+               value="000000">
          </property>
          <property
                name="startupMessageRect"
@@ -105,7 +105,7 @@
          </property>
          <property
                name="aboutText"
-               value="World Wind Geobrowser &#x0A;&#x0A;(c) Copyright Vlaimir Silva and others 2007.&#x0A;&#x0A;Based on the World Wind Java SDK.&#x0A;Visit http://worldwind.arc.nasa.gov/java/">
+               value="World Wind Geo&#x0A;&#x0A;A browser for the GeoWeb&#x0A;(c) Copyright Vlaimir Silva and others 2007.&#x0A;&#x0A;Based on the World Wind Java SDK.&#x0A;Visit http://worldwind.arc.nasa.gov/java/">
          </property>
       </product>
    </extension>
