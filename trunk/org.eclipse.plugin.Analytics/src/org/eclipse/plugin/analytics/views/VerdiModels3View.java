@@ -14,8 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +105,7 @@ public class VerdiModels3View extends ViewPart
 					
 					if ( plot == null) return ; // canceled?
 					
-					// A window needs to be created for non countour plots
+					// A window needs to be created for non contour plots
 					if ( type != Type.CONTOUR) {
 						newJFrame(formula.getDataset().getName() + " - " + formula.getName() //$NON-NLS-1$
 							, 500
@@ -116,8 +114,10 @@ public class VerdiModels3View extends ViewPart
 							);  
 					}
 				} catch (Exception ex) {
-					ex.printStackTrace();
-					getGui().showMessage(Messages.getString("VerdiModels3View.3"), Messages.getString("VerdiModels3View.4") + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+					getGui().showMessage(Messages.getString("VerdiModels3View.3")
+							, Messages.getString("VerdiModels3View.4") 
+								+ ex.getClass().getName() 
+								+ ": "  + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 			}
@@ -135,11 +135,11 @@ public class VerdiModels3View extends ViewPart
 		    mainFrame.setPreferredSize(new Dimension(500, 800));
 		    
 		    // end program when this frame is closed
-		    mainFrame.addWindowListener(new WindowAdapter() {
-		      public void windowClosing(WindowEvent e) {
-		        System.exit(0);
-		      }
-		    });
+//		    mainFrame.addWindowListener(new WindowAdapter() {
+//		      public void windowClosing(WindowEvent e) {
+//		        System.exit(0);
+//		      }
+//		    });
 			
 			mainFrame.setContentPane(initComponents());
 		}
@@ -201,16 +201,6 @@ public class VerdiModels3View extends ViewPart
 		    button5.addActionListener(new PlotAction(Type.VECTOR));	    
 			buttonBar.add(button5);
 
-			// Help btn
-//		    JButton button6 = new JButton(Messages.getString("VerdiModels3View.11"));  //$NON-NLS-1$
-//		    button6.addActionListener(new ActionListener(){
-//
-//				public void actionPerformed(ActionEvent e) {
-//					showHelp();
-//				}
-//		    	
-//		    });	    
-//			buttonBar.add(button6);
 			
 			// Main panel
 			JPanel mainPanel = new JPanel(new BorderLayout());

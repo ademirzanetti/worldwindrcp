@@ -33,8 +33,8 @@ public class Perspective implements IPerspectiveFactory {
 		// Views are placed left of the editor area
 		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 1.0f, editorArea);
 
-		topLeft.addView(VisADSpreadSheetView.ID);
 		topLeft.addView(VerdiModels3View.ID);
+		topLeft.addView(VisADSpreadSheetView.ID);
 		
 		layout.getViewLayout(VisADSpreadSheetView.ID).setCloseable(false);
 		layout.getViewLayout(VerdiModels3View.ID).setCloseable(false);
