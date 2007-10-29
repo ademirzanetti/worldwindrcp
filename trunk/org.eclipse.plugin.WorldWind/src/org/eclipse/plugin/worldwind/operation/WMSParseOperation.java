@@ -86,8 +86,9 @@ public class WMSParseOperation implements IRunnableWithProgress
 			});
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new InterruptedException(e.getMessage());
+			//e.printStackTrace();
+			throw new InterruptedException(
+					e.getClass().getName()  + ": " + e.getMessage());
 		}
 
 		// done
