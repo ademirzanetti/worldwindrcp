@@ -1,4 +1,6 @@
+#summary World Wind Geo Analytics Support.
 #labels Featured,Phase-Design
+
 = Analytics support =
 
 We are planing to add an Analytics plugin for our RCP app. With the following features:
@@ -41,8 +43,6 @@ More documentation on VERDI is available from the downloads section of this site
 
 == Conclusion ==
 The combination of both: VisAD and VERDI provides a powerful numerical analysis plugin to the World Wind Geobrowser capable on handling most modeling data formats.
-
-
 
 
 
