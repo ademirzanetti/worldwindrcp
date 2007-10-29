@@ -1,5 +1,5 @@
 #labels Featured,Phase-Design
-= Over 500 Real Time Data sets plus full WMS Support =
+= Over 500 Real Time Data sets plus full WMS Support! =
 
 The World Wind Geo provides access to over 500 real time weather datasets out of the box:
 
