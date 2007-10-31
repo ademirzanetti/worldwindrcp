@@ -1,5 +1,7 @@
 package org.eclipse.plugin.worldwind;
 
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -24,5 +26,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
+		//configurer.setShowPerspectiveBar(true);
+		PlatformUI.getPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true); 
 	}
 }
