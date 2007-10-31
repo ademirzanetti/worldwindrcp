@@ -17,7 +17,7 @@ You can use Eclipse to download the source from the SVN server and build a binar
   * Check out the source projects: org.eclipse.plugin.WorldWind and org.eclipse.plugin.Analytics
   * At this point you can open the product descriptor (WorldWind.product within the WordWind project) and run the RCP application by clicking "Launch an Eclipse application"
   * The run will fail due to the missing OpenGL & Java 3D natives. Thus open the run config (Run/Open Run dialog) and add the following arguments to the "VM aguments" section of the arguments tab: -Xmx256m -Djava.library.path=${resource_loc:org.eclipse.plugin.WorldWind}/lib/native/win32
-  * Now the application shouls start successfully. Play around with the analytics perpective and use the help to read thru and download some test data files.
+  * Now the application should start successfully. Play around with the analytics perpective and use the help to read thru and download some test data files.
 
 ==To build a distro==
   * You will need to install the Eclipse delta pack. It allows you to build binaries for different OSes. The delta pack can be downloaded from: http://archive.eclipse.org/eclipse/downloads/drops/R-3.1-200506271435/index.php
