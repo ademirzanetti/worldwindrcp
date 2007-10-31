@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,29 @@ public class VerdiModels3View extends ViewPart
 	private static class Verdi extends VerdiApplication  
 	{
 		private JFrame mainFrame;
+
+		/**
+		 * Listen to dialog close events  
+		 * @author Owner
+		 */
+		private class DialogListener extends WindowAdapter {
+
+			JFrame dialog;
+			PlotPanel plotPanel;
+			
+			public DialogListener(JFrame dialog, PlotPanel plotPanel) {
+				this.dialog = dialog;
+				this.plotPanel = plotPanel;
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				plotPanel = null;
+				dialog.dispose();
+				dialog = null;
+				System.gc();
+			}
+		}
 		
 		/**
 		 * Plot Action  
@@ -99,19 +124,23 @@ public class VerdiModels3View extends ViewPart
 				try {
 					// plot 1st var from selected formula
 				    FormulaVariable formula = formulaList.variables().iterator().next();
-
 					
 					Plot plot = createPlot(type, formula);
 					
 					if ( plot == null) return ; // canceled?
 					
 					// A window needs to be created for non contour plots
-					if ( type != Type.CONTOUR) {
-						newJFrame(formula.getDataset().getName() + " - " + formula.getName() //$NON-NLS-1$
+					if ( type != Type.CONTOUR) 
+					{
+						PlotPanel plotPanel = new PlotPanel(plot, formula.getDataset().getName());
+						
+						JFrame frame = newJFrame(formula.getDataset().getName() + " - " + formula.getName()
 							, 500
 							, 500
-							, new PlotPanel(plot, formula.getDataset().getName()) 
+							, plotPanel 
 							);  
+						
+						frame.addWindowListener(new DialogListener(frame, plotPanel));
 					}
 				} catch (Exception ex) {
 					getGui().showMessage(Messages.getString("VerdiModels3View.3")
@@ -133,14 +162,6 @@ public class VerdiModels3View extends ViewPart
 			mainFrame = new JFrame(Messages.getString("VerdiModels3View.5")); //$NON-NLS-1$
 			
 		    mainFrame.setPreferredSize(new Dimension(500, 800));
-		    
-		    // end program when this frame is closed
-//		    mainFrame.addWindowListener(new WindowAdapter() {
-//		      public void windowClosing(WindowEvent e) {
-//		        System.exit(0);
-//		      }
-//		    });
-			
 			mainFrame.setContentPane(initComponents());
 		}
 
@@ -281,7 +302,7 @@ public class VerdiModels3View extends ViewPart
 		 * @param height
 		 * @param contents
 		 */
-		private void newJFrame(String title
+		private JFrame newJFrame(String title
 				, int width, int height, JPanel contents) 
 		{
 			JFrame frame = new JFrame(title);
@@ -289,21 +310,9 @@ public class VerdiModels3View extends ViewPart
 		    frame.setContentPane(contents);
 		    frame.pack();
 		    frame.setVisible(true);
+		    return frame;
 		}
 		
-		/**
-		 * Run App 
-		 */
-//		private void show() {
-//			mainFrame.pack();
-//			
-//		    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		    Dimension appSize = mainFrame.getSize();
-//		    mainFrame.setLocation(screenSize.width/2 - appSize.width/2,
-//		                   screenSize.height/2 - appSize.height/2);
-//		    mainFrame.setVisible(true);
-//			
-//		}
 		
 		public JFrame getMainFrame () {
 			return mainFrame;
