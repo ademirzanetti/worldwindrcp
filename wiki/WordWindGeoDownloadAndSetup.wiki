@@ -1,5 +1,5 @@
+#summary World Wind Geo new features.
 #labels Featured,Phase-Requirements,Phase-Design
-# World Wind Geo new features.
 
 = Our RCP application has been enhanced with an Analytics perpextive as described in the Wiki. However, there is not enough space to upload the new binaries. This page explains how to download the source and build a binary distro for your OS.=
 
