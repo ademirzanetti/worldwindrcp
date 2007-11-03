@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import org.eclipse.plugin.analytics.AnalyticsActivator;
 import org.eclipse.plugin.analytics.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -64,6 +65,11 @@ public class VerdiModels3View extends ViewPart
 {
 	public static final String ID = VerdiModels3View.class.getName();
 
+	// Init swing look & feel
+	static {
+		AnalyticsActivator.initSwingLookAndFeel();
+	}
+	
 	/**
 	 * This is an implementation of VERDI
 	 * Visualization Environment for Rich Data Interpretation:

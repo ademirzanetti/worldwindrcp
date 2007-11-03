@@ -21,13 +21,20 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="WWAnalyticsPlugin"
+            name="Analytics">
+      </category>
+         
       <view
+      		category="WWAnalyticsPlugin"
             name="VisAD SpreadSheet for Numerical Analysis"
             icon="icons/window_16.gif"
             class="org.eclipse.plugin.analytics.views.VisADSpreadSheetView"
             id="org.eclipse.plugin.analytics.views.VisADSpreadSheetView">
       </view>
       <view
+      		category="WWAnalyticsPlugin"
             name="Models-3/Community Multiscale Air Quality (CMAQ)"
             icon="icons/epa_16.png"
             class="org.eclipse.plugin.analytics.views.VerdiModels3View"
