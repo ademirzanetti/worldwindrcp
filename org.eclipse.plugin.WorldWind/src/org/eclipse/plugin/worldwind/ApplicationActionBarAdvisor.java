@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -29,9 +30,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 
 import org.eclipse.plugin.worldwind.actions.OpenFileAction;
 import org.eclipse.plugin.worldwind.actions.OpenWebBrowserAction;
@@ -52,19 +56,26 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// in the fill methods. This ensures that the actions aren't recreated
 	// when fillActionBars is called with FILL_PROXY.
 
+	// File Menu Actions
 	private OpenFileAction openFileAction;
 	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
 	private OpenWebBrowserAction openWebBrowser;
 	private IWorkbenchAction exitAction;
 
-	// About - Help
+	// Help Menu actions
 	private IWorkbenchAction aboutAction;
 	private IWorkbenchAction showHelpAction;
 	private IWorkbenchAction searchHelpAction;
 	
-	/** List of Actions used to open perspectives */
+	// Perspective Menu
+	private IContributionItem showViewsItem;
+	
+	/** List of Open perspective Actions (Perspective menu) */
 	private ArrayList<Action> perspectiveActions = new ArrayList<Action>();
+
+	/** List of Open Views Actions (Perspective menu) */
+	private ArrayList<Action> openViewActions = new ArrayList<Action>();
 	
 	// Status line
 	private static StatusLine statusLine;
@@ -81,21 +92,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// Registering also provides automatic disposal of the actions when
 		// the window is closed.
 
-		exitAction = ActionFactory.QUIT.create(window);
-		register(exitAction);
-	
-		aboutAction = ActionFactory.ABOUT.create(window);
-		register(aboutAction);
-		
-		showHelpAction = ActionFactory.HELP_CONTENTS.create(window); 
-	    register(showHelpAction); 
-		
-		searchHelpAction = ActionFactory.HELP_SEARCH.create(window);
-		register(searchHelpAction);
-		
+		// File Menu
 		openFileAction = new OpenFileAction(Messages.getText("file.open.tooltip"), window);
 		register(openFileAction);
-		
 		
 		wmsWizardAction = new WMSWizardAction(Messages.getText("wms.wiz.tooltip"), window);
 		register(wmsWizardAction);
@@ -105,11 +104,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 		openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
 		register(openWebBrowser);
+
+		exitAction = ActionFactory.QUIT.create(window);
+		register(exitAction);
 		
 		/*
-		 * Get All perspectives , and add actions to open them
+		 * Perpective Menu: Get All perspectives , and add actions to open them
 		 */
-		IWorkbench workbench 			=  window.getWorkbench();
+		IWorkbench workbench 			= window.getWorkbench();
 		IPerspectiveRegistry registry 	= workbench.getPerspectiveRegistry();
 		
 		IPerspectiveDescriptor[] descriptors = registry.getPerspectives();
@@ -119,9 +121,39 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 					perspective.getLabel()
 					, window
 					, perspective.getId()
+					, perspective.getImageDescriptor()
 					)
 			);
 		}
+		
+		// Get the 1st 4 views and add actions to open them
+		IViewRegistry viewRegistry 	= workbench.getViewRegistry();
+		IViewDescriptor[] views  	= viewRegistry.getViews();
+		
+		for (int i = 0; i < 4; i++) {
+			final IViewDescriptor view = views[i];
+			openViewActions.add(new ShowPerspectiveAction(
+					view.getLabel()
+					, window
+					, view.getId()
+					, view.getImageDescriptor()
+					, true
+					)
+			);
+		}
+		
+		// Show Views/Other contribution item
+		showViewsItem = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+		
+		// Help menu
+		aboutAction = ActionFactory.ABOUT.create(window);
+		register(aboutAction);
+		
+		showHelpAction = ActionFactory.HELP_CONTENTS.create(window); 
+	    register(showHelpAction); 
+		
+		searchHelpAction = ActionFactory.HELP_SEARCH.create(window);
+		register(searchHelpAction);
 		
 	}
 
@@ -129,7 +161,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		MenuManager fileMenu = new MenuManager(Messages.getText("menu.file.name"),
 				IWorkbenchActionConstants.M_FILE);
 
-		MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+		MenuManager helpMenu = new MenuManager(Messages.getText("menu.help.name"), IWorkbenchActionConstants.M_HELP);
 		
 		menuBar.add(fileMenu);
 
@@ -145,15 +177,32 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// Create a Perspective switch menu only if 1+ perspectives available
 		if ( perspectiveActions.size() > 1 ) {
 		
-			MenuManager perspectiveMenu = new MenuManager("&Perpective"
+			MenuManager perspectiveMenu = new MenuManager(
+					Messages.getText("menu.perspective.name")
 					, "org.eclipse.plugin.worldwind.PERSPECTIVES");
 
 			// Add perspective actions
 			for (Action action : perspectiveActions) {
 				perspectiveMenu.add(action);
 			}
-		
+			
+			// Show View Menu
+			MenuManager showViewMenuMgr = new MenuManager(
+					Messages.getText("menu.showview.name")
+					, "showView");
+
+			// Add perspective actions
+			for (Action action : openViewActions) {
+				showViewMenuMgr.add(action);
+			}
+			
+			showViewMenuMgr.add(showViewsItem);
+			
+			// Add show views menu
+			perspectiveMenu.add(showViewMenuMgr);
+			
 			menuBar.add(perspectiveMenu);
+			
 		}
 
 		// Add a group marker indicating where action set menus will appear.
@@ -173,11 +222,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
         
         toolbar.add(weatherWizardAction);
-//        toolbar.add(new Separator());
-        
         toolbar.add(wmsWizardAction);
-        
-//        toolbar.add(new Separator());
         toolbar.add(openWebBrowser);
 	}
 	
