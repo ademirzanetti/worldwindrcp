@@ -12,11 +12,12 @@ package org.eclipse.plugin.worldwind.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.WorkbenchException;
 
 /**
- * Action to switch perspectives
+ * Action to switch perspectives or open views
  * @author Owner
  *
  */
@@ -24,23 +25,41 @@ public class ShowPerspectiveAction extends Action
 {
 
     private IWorkbenchWindow window;
-	private String PerspectiveID;
-	
-	public ShowPerspectiveAction(String text, IWorkbenchWindow window, String PerspectiveID) 
+	private String ID;
+	private boolean isView = false;
+
+	public ShowPerspectiveAction(String text
+			, IWorkbenchWindow window
+			, String ID
+			, ImageDescriptor image)
 	{
-        super(text);
+        super(text, image);
         this.window = window;
-        this.PerspectiveID = PerspectiveID;
+        this.ID 	= ID;
+	}
+	
+	public ShowPerspectiveAction(String text
+			, IWorkbenchWindow window
+			, String ID
+			, ImageDescriptor image
+			, boolean isView) 
+	{
+        super(text, image);
+        this.window = window;
+        this.ID 	= ID;
+        this.isView	= isView;
 	}
 	
 	@Override
 	public void run() {
         if ( window != null) {
         	try {
-        		window.getWorkbench().showPerspective(PerspectiveID, window);
+        		if ( isView)
+        			window.getActivePage().showView(ID);
+        		else
+        			window.getWorkbench().showPerspective(ID, window);
 			} 
         	catch (WorkbenchException e) {
-        		//e.printStackTrace();
         		MessageDialog.openError(window.getShell()
 						, "Open View"
 						, e.getMessage()
