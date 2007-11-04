@@ -27,6 +27,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
@@ -51,6 +52,7 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.*;
 
@@ -156,7 +158,7 @@ public class WebBrowserView extends ViewPart
 
 
 	/**
-	 * 
+	 * Fires when the location in the web browser is changing
 	 * @param evt
 	 */
 	void locChanging (LocationEvent evt) 
@@ -178,10 +180,22 @@ public class WebBrowserView extends ViewPart
 			
 			if ( client.isContentTypeKML() || client.isContentTypeKMZ()) {
 				evt.doit = false;
-				//statusLine.unlockProgress();
 				
 				// handle kml/kmz
 				handleKmlKmz( location);
+			}
+			else {
+				// is this a DODS Request?
+				// GDS HTTP Headers: XDODS-Server=[3.1], Content-Description=[dods_info]
+				// THREDDS Headers: XDODS-Server=[opendap/3.7], Content-Description=[dods-error]
+				boolean isDODS = client.getHeaders().get("XDODS-Server") != null;
+				
+				if ( isDODS ) {
+					evt.doit = false;
+					
+					logger.debug("DODS URL detected: " + location);
+					handleDODSLocation(location);
+				}
 			}
 		} 
 		catch (IOException e) {
@@ -194,7 +208,58 @@ public class WebBrowserView extends ViewPart
 	}
 
 	/**
-	 * 
+	 * Handle a DODS request within the web browser. It will open the {@link VerdiModels3View}
+	 * from the Analytics plugin and load the remote dataset. Here are some DODS catalogs:
+	 * 	<br/>
+	 * 	<li>LAS: http://ferret.pmel.noaa.gov/thredds/dodsC/las/catalog.html
+	 * 	<li>Unidata: THREDSS http://motherlode.ucar.edu:8080/thredds/catalog.html
+	 * @param location URL. It must contain the suffix .dods
+	 */
+	private void handleDODSLocation(String location) {
+		try {
+			//"org.eclipse.plugin.analytics.views.VerdiModels3View";
+			final String VERDI_VIEW_ID = org.eclipse.plugin.analytics.views.VerdiModels3View.ID;
+
+			// Clean up URL: remove any .info|.das|.dds|.html
+			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
+			
+			// The suffix .dods is required in the URL for the dataset to be loaded
+			if ( location.indexOf(".dods") == -1) {
+				logger.debug("Appending suffix .dods to " + location);
+				location += ".dods";
+			}
+
+			// Show the Verdi view 
+			getViewSite().getWorkbenchWindow().getActivePage().showView(VERDI_VIEW_ID);
+			
+			// Get it
+			IViewPart view = Activator.getView(getViewSite().getWorkbenchWindow()
+					, VERDI_VIEW_ID);
+			
+			logger.debug("Opening remote DODS url " + location);
+
+			// load remote data set
+			if ( view == null ) {
+				MessageDialog.openError(getViewSite().getShell()
+						, Activator.PLUGIN_ID
+						, "Unable to load Verdi view"); //$NON-NLS-1$
+				return;
+			}
+			
+			// load remote dataset
+			((org.eclipse.plugin.analytics.views.VerdiModels3View)view).addDatasetFromUrl(location);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			MessageDialog.openError(getViewSite().getShell()
+					, Activator.PLUGIN_ID
+					, e.getMessage());
+
+		}
+	}
+	
+	/**
+	 * Fires after the web browser location has changed
 	 * @param event
 	 */
 	void locChanged (LocationEvent event) 
@@ -248,7 +313,7 @@ public class WebBrowserView extends ViewPart
 			
 			view.addKMLSource(kml, false);
 			
-			// show view
+			// show the earth view
 			view.getViewSite().getWorkbenchWindow().getActivePage().showView(EarthView.ID);
 		} 
 		catch (Exception e) 
