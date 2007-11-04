@@ -29,7 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.plugin.analytics.AnalyticsActivator;
 import org.eclipse.plugin.analytics.Messages;
 import org.eclipse.swt.SWT;
@@ -368,23 +370,26 @@ public class VerdiModels3View extends ViewPart
 	public void addDatasetFromUrl (String url) throws MalformedURLException 
 	{
 		DataManager manager 	= verdi.getDataManager(); 
-		String message			= null;
 		List<Dataset> dataSets	= null;
 		
 		try {
 			dataSets = manager.createDatasets(new URL(url));
-		} catch (Exception e) {
-			message = e.getMessage();
+		} 
+		catch (Exception e) {
+			// Create the required Status object
+	        Status status = new Status(IStatus.ERROR
+	        		, AnalyticsActivator.PLUGIN_ID, 0
+	        		, e.getMessage()
+	        		, e);
+
+	        // Display the dialog
+	        ErrorDialog.openError(getViewSite().getShell()
+	        		, AnalyticsActivator.PLUGIN_NAME
+	        		, Messages.getString("VerdiModels3View.14") + " " + url
+	        		, status);
+	        return;
 		}
 		 
-		if (dataSets == null || dataSets.equals(DataManager.NULL_DATASETS)) {
-			MessageDialog.openError(getViewSite().getShell()
-					, AnalyticsActivator.PLUGIN_NAME
-					, Messages.getString("VerdiModels3View.14") + " " + url 
-						+  (message != null  ? " - " + message : "") );
-			return;
-		}
-		
 		for (Dataset dataset : dataSets) {
 			verdi.getGui().loadDataset(dataset);
 		}
