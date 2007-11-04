@@ -4,4 +4,5 @@
 <toc label="Main Table of Contents">
 	<topic label="Communty Multiscale Air Quality (CMAQ) using VERDI"  href="help/verdiUserManual.htm"/> 
 	<topic label="VisAD SpreadSheet"  href="help/visad_ss.html"/> 
+	<topic label="Remote Access with OpeNDAP"  href="help/OpeNDAP.html"/>
 </toc>
