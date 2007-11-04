@@ -224,7 +224,10 @@ public class WebBrowserView extends ViewPart
 			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
 			
 			// The suffix .dods is required in the URL for the dataset to be loaded
-			if ( location.indexOf(".dods") == -1) {
+			if ( 	location.indexOf(".jnl") == -1 
+					&& location.indexOf(".grib") == -1 
+					&& location.indexOf(".dods") == -1) 
+			{
 				logger.debug("Appending suffix .dods to " + location);
 				location += ".dods";
 			}
