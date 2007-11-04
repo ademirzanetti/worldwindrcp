@@ -14,17 +14,13 @@ package org.eclipse.plugin.analytics.views;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.plugin.analytics.AnalyticsActivator;
 import org.eclipse.plugin.analytics.Messages;
-import org.eclipse.plugin.worldwind.actions.OpenWebBrowserAction;
-import org.eclipse.plugin.worldwind.views.WebBrowserView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 
 import visad.ss.SpreadSheet;
@@ -148,38 +144,38 @@ public class VisADSpreadSheetView extends ViewPart {
 	 * @param window
 	 * @param location
 	 */
-	public void openWebBrowserLocation (IWorkbenchWindow window, String location) 
-	{
-		// invalid wb window?
-		if ( window == null ) {
-			return;
-		}
-		
-		try {
-			// Display location on WB view
-			System.out.println("***Show WB. URL=" + location); // + " inst=" + wbInstanceNum);			
-
-			// Open web browser
-			(new OpenWebBrowserAction("", window)).run();
-			
-			WebBrowserView wb = (WebBrowserView)AnalyticsActivator.getView(window, WebBrowserView.ID );
-			
-			if ( wb == null ) {
-				MessageDialog.openError(window.getShell()
-						, AnalyticsActivator.PLUGIN_NAME
-						, Messages.getString("AnalyticsActivator.4")); //$NON-NLS-1$
-				return;
-			}
-			
-			// Set URL
-			wb.setUrl(location);
-		} 
-		catch (Exception e) {
-			MessageDialog.openError(window.getShell()
-					, AnalyticsActivator.PLUGIN_NAME
-					, Messages.getString("AnalyticsActivator.5") + e.getClass()  //$NON-NLS-1$
-						+ ": " + e.getMessage()); //$NON-NLS-1$
-		}
-	}
+//	public void openWebBrowserLocation (IWorkbenchWindow window, String location) 
+//	{
+//		// invalid wb window?
+//		if ( window == null ) {
+//			return;
+//		}
+//		
+//		try {
+//			// Display location on WB view
+//			System.out.println("***Show WB. URL=" + location); // + " inst=" + wbInstanceNum);			
+//
+//			// Open web browser
+//			(new OpenWebBrowserAction("", window)).run();
+//			
+//			WebBrowserView wb = (WebBrowserView)AnalyticsActivator.getView(window, WebBrowserView.ID );
+//			
+//			if ( wb == null ) {
+//				MessageDialog.openError(window.getShell()
+//						, AnalyticsActivator.PLUGIN_NAME
+//						, Messages.getString("AnalyticsActivator.4")); //$NON-NLS-1$
+//				return;
+//			}
+//			
+//			// Set URL
+//			wb.setUrl(location);
+//		} 
+//		catch (Exception e) {
+//			MessageDialog.openError(window.getShell()
+//					, AnalyticsActivator.PLUGIN_NAME
+//					, Messages.getString("AnalyticsActivator.5") + e.getClass()  //$NON-NLS-1$
+//						+ ": " + e.getMessage()); //$NON-NLS-1$
+//		}
+//	}
 	
 }

@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.plugin.analytics.AnalyticsActivator;
 import org.eclipse.plugin.analytics.Messages;
 import org.eclipse.swt.SWT;
@@ -40,6 +42,7 @@ import anl.verdi.core.VerdiApplication;
 import anl.verdi.core.VerdiGUI;
 import anl.verdi.data.DataLoader;
 import anl.verdi.data.DataManager;
+import anl.verdi.data.Dataset;
 import anl.verdi.formula.FormulaVariable;
 import anl.verdi.formula.Formula.Type;
 import anl.verdi.gui.DataSetPanel;
@@ -48,6 +51,7 @@ import anl.verdi.gui.FormulaListElement;
 import anl.verdi.gui.FormulaListModel;
 import anl.verdi.gui.FormulasPanel;
 import anl.verdi.loaders.Models3Loader;
+import anl.verdi.loaders.dap.OpenDAPLoader;
 import anl.verdi.plot.gui.DefaultPlotCreator;
 import anl.verdi.plot.gui.Plot;
 import anl.verdi.plot.gui.PlotPanel;
@@ -69,6 +73,9 @@ public class VerdiModels3View extends ViewPart
 	static {
 		AnalyticsActivator.initSwingLookAndFeel();
 	}
+	
+	// Verdi App
+	private Verdi verdi;
 	
 	/**
 	 * This is an implementation of VERDI
@@ -178,6 +185,8 @@ public class VerdiModels3View extends ViewPart
 		 */
 		static private DataManager createDataManager () {
 			List<DataLoader> dataLoaders = new ArrayList<DataLoader>();
+			
+			dataLoaders.add(new OpenDAPLoader());
 			dataLoaders.add(new Models3Loader());
 
 			return new DataManager(dataLoaders);
@@ -337,7 +346,7 @@ public class VerdiModels3View extends ViewPart
 		verdiFrame.add(panel);
 		
 		try {
-			Verdi verdi = new Verdi();
+			verdi = new Verdi();
 			
 			panel.add( verdi.getMainFrame().getContentPane(), BorderLayout.WEST);
 			
@@ -351,4 +360,33 @@ public class VerdiModels3View extends ViewPart
 		
 	}
 
+	/**
+	 * Load a remote dataset (OpeNDAP) fro example:
+	 * http://motherlode.ucar.edu:8080/thredds/dodsC/fmrc/NCEP/GFS/Alaska_191km/runs/NCEP-GFS-Alaska_191km_RUN_2007-11-02T12:00:00Z.dods  
+	 * @param url remote dataset url
+	 */
+	public void addDatasetFromUrl (String url) throws MalformedURLException 
+	{
+		DataManager manager 	= verdi.getDataManager(); 
+		String message			= null;
+		List<Dataset> dataSets	= null;
+		
+		try {
+			dataSets = manager.createDatasets(new URL(url));
+		} catch (Exception e) {
+			message = e.getMessage();
+		}
+		 
+		if (dataSets == null || dataSets.equals(DataManager.NULL_DATASETS)) {
+			MessageDialog.openError(getViewSite().getShell()
+					, AnalyticsActivator.PLUGIN_NAME
+					, Messages.getString("VerdiModels3View.14") + " " + url 
+						+  (message != null  ? " - " + message : "") );
+			return;
+		}
+		
+		for (Dataset dataset : dataSets) {
+			verdi.getGui().loadDataset(dataset);
+		}
+	}
 }
