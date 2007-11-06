@@ -17,6 +17,7 @@ import gov.nasa.worldwind.formats.georss.GeoRSSParser;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.layers.Earth.*;
 import gov.nasa.worldwind.layers.*;
+import gov.nasa.worldwind.render.Polyline;
 import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.SurfacePolygon;
 import gov.nasa.worldwind.render.SurfaceSector;
@@ -108,12 +109,12 @@ public class AWT1Up
                 
                 m.setLayers(layers);
                 
-//                m.getLayers().add(this.buildShapesLayer());
+                m.getLayers().add(this.buildShapesLayer());
 //                m.getLayers().add(this.buildIconLayer());
-                m.getLayers().add(this.buildGeoRSSLayer());
-                m.getLayers().add(this.buildPlacemarkLayer());
-                m.getLayers().add(this.buildScreenOverlayLayer());
-                m.getLayers().add(this.buildGroundOverlay());
+//                m.getLayers().add(this.buildGeoRSSLayer());
+//                m.getLayers().add(this.buildPlacemarkLayer());
+//                m.getLayers().add(this.buildScreenOverlayLayer());
+//                m.getLayers().add(this.buildGroundOverlay());
                 
 //                m.getLayers().add(this.buildWMSLayer());
 
@@ -399,9 +400,91 @@ public class AWT1Up
             polygon.setStroke(new BasicStroke(2f));
             layer.addRenderable(polygon);
 
+            addFilledPolylineBox(layer, Sector.fromDegrees(-15, 15 , -15, 15), 10e3, 6e5);
+//            addFilledPolylineBox(layer, Sector.fromDegrees(1, 1.9, 0, 0.9), 10e3, 150e3);
+//            addFilledPolylineBox(layer, Sector.fromDegrees(0, 0.9, 1, 1.9), 10e3, 80e3);
+//            addFilledPolylineBox(layer, Sector.fromDegrees(1, 1.9, 1, 1.9), 10e3, 200e3);
+
+            
             return layer;
         }
 
+        private void addFilledPolylineBox(RenderableLayer layer, Sector s, double bottomAlt, double topAlt) 
+        {
+            Polyline filledPolyline;
+            Color bottomColor = new Color(.3f, .3f, .3f);
+            Color darkSideColor = new Color(.5f, .5f, .5f);
+            Color lightSideColor = new Color(.7f, .7f, .7f);
+            Color topColor = new Color(.6f, .6f, .6f);            
+            ArrayList<Position> posList = new ArrayList<Position>();
+            posList.clear();	// Bottom face
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), bottomAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+            //filledPolyline.setFilled(true);
+            //filledPolyline.setColor(bottomColor);
+            layer.addRenderable(filledPolyline);
+            posList.clear();	// South face
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), bottomAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+            //filledPolyline.setFilled(true);
+            //filledPolyline.setColor(lightSideColor);
+            layer.addRenderable(filledPolyline);
+            posList.clear();	// North face
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), bottomAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+//            filledPolyline.setFilled(true);
+//            filledPolyline.setColor(darkSideColor);
+            layer.addRenderable(filledPolyline);
+            posList.clear();	// West face
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), bottomAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+            //filledPolyline.setFilled(true);
+            //filledPolyline.setColor(darkSideColor);
+            layer.addRenderable(filledPolyline);
+            posList.clear();	// East face
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), bottomAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), bottomAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+            //filledPolyline.setFilled(true);
+            //filledPolyline.setColor(lightSideColor);
+            layer.addRenderable(filledPolyline);
+            posList.clear();	// Top face
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMaxLongitude(), topAlt));
+            posList.add(new Position(s.getMaxLatitude(), s.getMinLongitude(), topAlt));
+            posList.add(new Position(s.getMinLatitude(), s.getMinLongitude(), topAlt));
+            filledPolyline = new Polyline(posList);
+            filledPolyline.setFollowGreatCircles(true);
+//            filledPolyline.setFilled(true);
+//            filledPolyline.setColor(topColor);
+            layer.addRenderable(filledPolyline);        	
+        }
+        
         private static final String lineTestString =
             "<gml:LineString> <gml:posList>45.256 -110.45 46.46 -109.48 43.84 -109.86</gml:posList></gml:LineString>";
         private static final String itemTestString =
