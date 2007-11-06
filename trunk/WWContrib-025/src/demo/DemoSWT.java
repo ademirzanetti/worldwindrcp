@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
@@ -23,6 +25,7 @@ import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.Polyline;
+import gov.nasa.worldwind.render.SurfaceImage;
 import gov.nasa.worldwind.render.SurfaceQuad;
 
 
@@ -407,6 +410,7 @@ public class DemoSWT
     		, new String[] {"2005-08-23T05Z", "2005-08-23T23Z", "2005-08-24T06Z", "2005-08-24T22Z"
     			, "2005-08-25T05Z", "2005-08-25T23Z", "2005-08-26T04Z", "2005-08-26T22Z"
     			, "2005-08-27T04Z", "2005-08-27T21Z", "2005-08-28T04Z", "2005-08-28T22Z"}
+    		, 0.1
     	);
     }
     
@@ -422,6 +426,7 @@ public class DemoSWT
     			+ "service=WMS&request=GetMap&layers=3169_21478&bbox=-65,-18.75,125,28.75"
     			+ "&width=1024&height=256&srs=EPSG:4326&format=image/png&version=1.1.1&styles=opaque"
     		, new String[] {"1991-06-16", "1991-06-17", "1991-06-18", "1991-06-19", "1991-06-20", "1991-06-21"}
+    		, 0.1
     	);
     }
     
@@ -430,7 +435,8 @@ public class DemoSWT
      * Animated screen overlay example:
      */
     private TimeLoopGroundOverlay buildAnimatedGroundOverlay(String title
-    		, Sector bbox, String urlPref, String[] frames)  
+    		, Sector bbox, String urlPref, String[] frames
+    		, double opacity)  
     {
         TimeLoopGroundOverlay overlay = 
         	new TimeLoopGroundOverlay(title);  
@@ -448,7 +454,7 @@ public class DemoSWT
             			, ParserUtils.getIconSuffix(icon));
     			
     			gov.setBaseCachePath("Earth/" + Messages.forCachePath(title) + "/"); 
-    			
+    			gov.setOpacity(opacity);
             	overlay.add(gov);
 			}
     		
@@ -496,10 +502,14 @@ public class DemoSWT
         			"http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1&transparent=true"
             			);
         	
-        	return new GroundOverlayLayer(title
+        	GroundOverlayLayer layer = new GroundOverlayLayer(title
         			, bbox
         			, url
         			, ParserUtils.getIconSuffix(url.toString()));
+        	
+        	
+        	layer.setOpacity(0.1);
+        	return layer;
 		} 
     	catch (Exception e) {
 			e.printStackTrace();
@@ -1003,6 +1013,8 @@ public class DemoSWT
 	{
 		try {
 			new DemoSWT().run();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
