@@ -26,8 +26,7 @@ You can use Eclipse to download the source from the SVN server and build a binar
   * Double click the binary to test the deployment. Any errors may be due to the missing OpenGL/Java 3D binaries or the data shape files.
 
 
-I know this is a pain but we have run out of space in our project to upload the latest binaries. We are trying to request extra space.
-
+Your comments are welcome!
 
 Regards,
 
