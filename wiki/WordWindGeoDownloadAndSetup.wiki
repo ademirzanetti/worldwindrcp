@@ -3,11 +3,11 @@
 
 = Downloading and building your own distro =
 
-World Wind Geo has been enhanced with an Analytics perpextive as described in the Wiki. However, there is not enough space to upload the new binaries. This page explains how to download the source and build a binary distro for your OS.
+World Wind Geo has been enhanced with an Analytics perpective as described in the Wiki. This page explains how to download the source and build a binary distro for your OS.
 
 = Details =
 
-You can use Eclipse to download the source from the SVN server and build a binary that includes the analytics perpective:
+You can use Eclipse to download the source from the SVN server and build a binary distribution.
 
 ==To Download the source==
 
