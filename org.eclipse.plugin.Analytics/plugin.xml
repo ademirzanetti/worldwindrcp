@@ -41,7 +41,7 @@
             id="org.eclipse.plugin.analytics.views.VerdiModels3View">
       </view>
    </extension>
-   
+   <!--
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -49,7 +49,7 @@
             primary="true">
       </toc>
    </extension>
-   
+   -->
 <!--
 This extension causes J3D errors when loading libraries from different
 class loaders
