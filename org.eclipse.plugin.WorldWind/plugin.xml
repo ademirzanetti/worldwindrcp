@@ -215,4 +215,39 @@
       </product>
    </extension>
 
+
+	<extension
+		point="org.eclipse.ui.actionSets">
+	
+		<actionSet label="Software Updates"
+				visible="true"
+	            id="org.eclipse.plugin.worldwind.softwareUpdates">
+	                     
+	           	<menu label="&amp;Software Updates"
+	                  path="help/helpEnd"
+	                  id="org.eclipse.plugin.worldwind.updateMenu">
+	                  
+	              <separator name="group0"> </separator>
+	              <separator name="group1"> </separator>
+	              
+	            </menu>
+	            
+	            <action label="&amp;Manage Configuration..."
+	                   icon="icons/full/elcl16/configs.gif"
+	                   helpContextId="org.eclipse.update.ui.newUpdates"
+	                   class="org.eclipse.plugin.worldwind.actions.ConfigurationManagerAction"
+	                   menubarPath="help/org.eclipse.plugin.worldwind.updateMenu/group0"
+	                   id="org.eclipse.plugin.worldwind.configManager">
+	            </action>
+	            
+	            <action label="&amp;Find and Install..."
+	                    icon="icons/full/elcl16/usearch_obj.gif"
+	                    helpContextId="org.eclipse.plugin.worldwind.newUpdates"
+	                    class="org.eclipse.plugin.worldwind.actions.FindInstallAction"
+	                    menubarPath="help/org.eclipse.plugin.worldwind.updateMenu/group0"
+	                    id="org.eclipse.plugin.worldwind.newUpdates">
+	            </action>
+	    </actionSet>
+	</extension>		
+
 </plugin>

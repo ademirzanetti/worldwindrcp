@@ -213,6 +213,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		helpMenu.add(showHelpAction);	
 		helpMenu.add(searchHelpAction);
 		helpMenu.add(aboutAction);
+		helpMenu.add(new Separator());
+        helpMenu.add(new GroupMarker(IWorkbenchActionConstants.HELP_START));
+        helpMenu.add(new GroupMarker(IWorkbenchActionConstants.HELP_END));
+        helpMenu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		
 	}
 
 	@Override

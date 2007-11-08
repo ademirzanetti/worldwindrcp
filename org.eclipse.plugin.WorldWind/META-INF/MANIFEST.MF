@@ -6,7 +6,9 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.plugin.worldwind.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.plugin.Analytics
+ org.eclipse.plugin.Analytics,
+ org.eclipse.update.ui,
+ org.eclipse.plugin.WorldWind.Help
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/gluegen-rt.jar,

@@ -60,6 +60,7 @@ plugin_customization.ini</programArgs>
       <plugin id="org.eclipse.core.databinding"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -83,6 +84,7 @@ plugin_customization.ini</programArgs>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.plugin.Analytics"/>
       <plugin id="org.eclipse.plugin.WorldWind"/>
+      <plugin id="org.eclipse.plugin.WorldWind.Help"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
@@ -96,6 +98,11 @@ plugin_customization.ini</programArgs>
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.eclipse.update.core"/>
+      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
+      <plugin id="org.eclipse.update.core.win32" fragment="true"/>
+      <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.mortbay.jetty"/>
    </plugins>
 
