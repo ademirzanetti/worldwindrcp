@@ -37,9 +37,9 @@ public class StatusLine
 		item1.setVisible(true);
 		this.statusLine.add(item1);
 		
-		StatusLineContributionItem item = new StatusLineContributionItem(HEARTBEAT, 60);
-		item.setVisible(true);
-		this.statusLine.add(item);
+//		StatusLineContributionItem item = new StatusLineContributionItem(HEARTBEAT, 60);
+//		item.setVisible(true);
+//		this.statusLine.add(item);
 		
 	}
 	
@@ -76,11 +76,11 @@ public class StatusLine
 		statusLine.getProgressMonitor().done();
 	}
 	
-	public synchronized void setHeartbeatMessage(String message) {
-		StatusLineContributionItem item =  (StatusLineContributionItem)statusLine.find(HEARTBEAT);
-		if ( item != null ) item.setText(message);
-		else statusLine.setMessage(message);
-	}
+//	public synchronized void setHeartbeatMessage(String message) {
+//		StatusLineContributionItem item =  (StatusLineContributionItem)statusLine.find(HEARTBEAT);
+//		if ( item != null ) item.setText(message);
+//		else statusLine.setMessage(message);
+//	}
 	
 	/**
 	 * Used to lock the progress bar. Threads in several views can control the PM.

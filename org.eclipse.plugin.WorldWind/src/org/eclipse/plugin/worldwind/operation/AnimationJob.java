@@ -84,6 +84,8 @@ public class AnimationJob extends Job
 					
 					final boolean frameInCache = layer.isFrameinCache(i);
 					
+//					monitor.beginTask(message, IProgressMonitor.UNKNOWN );
+					
 					if ( display != null && !display.isDisposed() ) {
 						display.syncExec(new Runnable() {
 							public void run() 
@@ -104,20 +106,20 @@ public class AnimationJob extends Job
 					// fetch & show frame
 					layer.showFrame(i);
 					
-					display.syncExec(new Runnable() {
-						public void run() 
-						{
-							// Reset the PB
-							if ( frameInCache ) return;
-							statusLine.taskDone();
-							statusLine.unlockProgress();
-						}
-					});
-			
+					if ( display != null && !display.isDisposed() ) {
+						display.syncExec(new Runnable() {
+							public void run() 
+							{
+								// Reset the PB
+								if ( frameInCache ) return;
+								statusLine.taskDone();
+								statusLine.unlockProgress();
+							}
+						});
+					}
+					
 					// repaint globe
 					EarthView.repaint();
-					
-//					monitor.worked(1);
 					
 					try {
 						Thread.sleep(sleep);
@@ -125,6 +127,8 @@ public class AnimationJob extends Job
 						System.err.println(e);
 						done = true;
 					}
+
+					monitor.done(); // worked(1);
 					
 					if ( done ) break;
 				}

@@ -50,6 +50,8 @@ import org.eclipse.ui.part.ViewPart;
 
 import org.eclipse.plugin.worldwind.views.EarthView;
 
+import worldwind.contrib.layers.PositionLayer;
+
 
 /**
  * World Wind Eclipse RCP Earth View
@@ -136,6 +138,7 @@ public class EarthView extends ViewPart
 	/*
 	 * Listen for Globe position
 	 */
+/*	
 	private static class WorldPositionListener implements PositionListener
 	{
 	    private WorldWindow eventSource;
@@ -170,12 +173,14 @@ public class EarthView extends ViewPart
 	        String position = "";
 	        if (newPos != null)
 	        {
-	            String lat = String.format("Latitude %7.3f\u00B0",
+	            String lat = String.format("Lat %7.2f\u00B0",
 	                newPos.getLatitude().getDegrees());
-	            String lon = String.format("Longitude %7.3f\u00B0",
+	            String lon = String.format("Lon %7.2f\u00B0",
 	                newPos.getLongitude().getDegrees());
-	            String elv = String.format("Elevation %7d meters", (int) newPos.getElevation());
-	            position = lat + " " + lon + "   " + elv;
+	            
+	            String elv = String.format("Elev %5d m", (int) newPos.getElevation());
+	            
+	            position = lat + " " + lon + "  " + elv;
 	        }
 	        
 	        final String message = position;
@@ -189,7 +194,7 @@ public class EarthView extends ViewPart
 	        });
 	    }
 	}
-	
+*/	
 	/**
 	 * Globe Selection listener
 	 * @author Owner
@@ -320,10 +325,10 @@ public class EarthView extends ViewPart
 		// initialize status line
 		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
         
-        WorldPositionListener listener = new WorldPositionListener();
-        listener.setEventSource(world);
-        listener.setDisplay(display);
-        listener.setStatusLine(statusLine);
+//        WorldPositionListener listener = new WorldPositionListener();
+//        listener.setEventSource(world);
+//        listener.setDisplay(display);
+//        listener.setStatusLine(statusLine);
         
         GlobeSelectionListener listener1 = new GlobeSelectionListener(world);
         world.addSelectListener(listener1);
@@ -339,6 +344,9 @@ public class EarthView extends ViewPart
 	static void initWorldWindLayerModel () 
 	{
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
+
+		// Add Position Layer
+		m.getLayers().add(new PositionLayer(world));
 
         m.setShowWireframeExterior(false);
         m.setShowWireframeInterior(false);
