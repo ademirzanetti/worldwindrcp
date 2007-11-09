@@ -177,12 +177,15 @@ public class PlacesView extends ViewPart
 			Document doc 	= ParserUtils.parse(new ByteArrayInputStream(xml.getBytes()));
 			NodeList nl 	= doc.getElementsByTagName("kml");
 
+			logger.debug("Loading local layers from " + url);
+			
 			// loop thru layers
 			for (int i = 0; i < nl.getLength(); i++) 
 			{
 				// convert kml to a WW layer list
 				KMLSource kml 	= new KMLSource("doc.kml", (Element) nl.item(i));
-				
+			
+				logger.debug("Got KML source " + kml.toKML());
 				addKMLSource(kml, false);
 			}
 		} 
@@ -201,6 +204,9 @@ public class PlacesView extends ViewPart
 		String displayName 	= kml.getDocument().getName();
 		LayerList list 		= kml.toLayerList();
 
+		logger.debug("KML display name " + displayName + " enabled=" + enabled 
+				+ " # of elements=" + list.size());
+		
 		// If the doc has more than 1 ground overlay, the layer will be
 		// displayed as a TimeLoop overlay. 
 		// There should be a better way of doing this...
@@ -210,6 +216,13 @@ public class PlacesView extends ViewPart
 							KMLSource.toTimeLoopGroundOverlay(kml.getDocument()) 
 							} 
 					);
+		}
+		else if ( list.size() == 1) {
+			final Layer child = list.iterator().next();
+			treeViewer.addTreeObject(new TreeParent(child, LayersView.guessIcon(child.getName()))
+					, null
+					, true
+					, enabled);
 		}
 		else {
 			// Otherwise other elements: Screen Ovs & placemarks will be composed
