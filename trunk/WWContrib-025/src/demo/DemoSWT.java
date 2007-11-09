@@ -59,11 +59,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import demo.todo.mesh.Mesh;
-import demo.todo.mesh.MeshDATReader;
-import demo.todo.mesh.MeshReader;
-
-
 
 import worldwind.contrib.Messages;
 import worldwind.contrib.LayerUtils;
