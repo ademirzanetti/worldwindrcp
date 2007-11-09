@@ -87,7 +87,7 @@ public class SimpleKMLParser
 		String name;
 		String color;
 		URL icon;
-//		String iconPath;
+		String description;
 		
 		public GroundOverlay(String name , LatLonBox bbox , URL icon
 				, TimeSpan time,  String color) {
@@ -98,18 +98,11 @@ public class SimpleKMLParser
 			this.time = time;
 		}
 
-//		public GroundOverlay(String name , LatLonBox bbox , String iconPath
-//				, TimeSpan time,  String color) {
-//			this.name = name;
-//			this.color = color;
-//			this.iconPath = iconPath;
-//			this.bbox = bbox;
-//			this.time = time;
-//		}
 		
 		public String toString() {
-			return name + "," + bbox + ", icon=" 
-				+ icon //( icon != null  ? icon : iconPath ) 
+			return name + "," + bbox
+				+ ( description != null  ? ", desc=" + description : "" )
+				+ ", icon="	+ icon  
 				+ "," + time + ", color=" + color;
 		}
 /*
@@ -224,9 +217,10 @@ public class SimpleKMLParser
 		for (int i = 0; i < nl.getLength(); i++) {
 			final Element e = (Element)nl.item(i);
 			
-			final String name = ParserUtils.getNodeValue(e, "name");
-			final String color = ParserUtils.getNodeValue(e, "color");
-			final String icon = ParserUtils.getNodeValue(e, "href");
+			final String name	 = ParserUtils.getNodeValue(e, "name");
+			final String color 	= ParserUtils.getNodeValue(e, "color");
+			final String icon 			= ParserUtils.getNodeValue(e, "href");
+			final String description 	= ParserUtils.getNodeValue(e, "description");
 
 			if ( icon == null)
 				throw new IOException("Invalid icon for Ground Overlay " + name);
@@ -251,6 +245,8 @@ public class SimpleKMLParser
 			
 			try {
 				overlays[i] = new GroundOverlay(name, bbox, new URL(icon), time, color);
+				
+				overlays[i].description = description;
 			} 
 			catch (MalformedURLException ex) 
 			{

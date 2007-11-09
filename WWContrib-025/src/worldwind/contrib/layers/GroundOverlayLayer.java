@@ -50,7 +50,7 @@ public class GroundOverlayLayer extends AbstractLayer
 {
 	private static final Logger logger = Logger.getLogger(GroundOverlayLayer.class);
 
-	private String title;
+	private String description;
 	private TextureTile tile = null;
 	
 	private String baseCachePath;
@@ -76,21 +76,23 @@ public class GroundOverlayLayer extends AbstractLayer
 	
 	/**
 	 * Build a {@link GroundOverlayLayer}
-	 * @param title Name of this ground overlay
+	 * @param description Name of this ground overlay
 	 * @param sector Lat/lon box for the overlay
 	 * @param textureURL URL of the overlay image
 	 * @param fileSuffix Image extension used to download and possible scale texture (e.g .png, .gif, etc)
 	 */
-	public GroundOverlayLayer (String title, Sector sector, URL textureURL, String fileSuffix) 
+	public GroundOverlayLayer (String name, Sector sector, URL textureURL, String fileSuffix) 
 	{
-		if ( title == null || sector == null)
+		if ( name == null || sector == null)
 			throw new IllegalArgumentException("Invalid layer name or sector");
 		
         this.tile 		= new TextureTile(sector);
 		this.textureURL = textureURL;
-		this.title 		= title;
+//		this.description 		= title;
 		this.fileSuffix = fileSuffix;
 		this.baseCachePath = "Earth/";
+	
+		setName(name);
 		
         tileKey	= buildTileKey(); 
 		
@@ -101,7 +103,7 @@ public class GroundOverlayLayer extends AbstractLayer
 		
 		initCache();
 		
-		logger.debug("title=" + title + ", s=" + sector 
+		logger.debug("Name=" + name + ", s=" + sector 
 				+ " url=" + textureURL + " fs=" + fileSuffix 
 				+ " fmt=" + formatName + " tile key=" + tileKey);
 	}
@@ -118,7 +120,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	
 	private String buildTileKey ()
 	{
-		return baseCachePath + title.replaceAll("[:]", "") + fileSuffix;
+		return baseCachePath + getName().replaceAll("[:]", "") + fileSuffix;
 	}
 
 	/**
@@ -135,7 +137,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
     protected final void doRender(DrawContext dc)
     {
-		logger.debug("----> START doRender:" + title);
+		logger.debug("----> START doRender:" + description);
 		
         if (dc.getSurfaceGeometry() == null || dc.getSurfaceGeometry().size() < 1)
             return; 
@@ -185,7 +187,7 @@ public class GroundOverlayLayer extends AbstractLayer
         logger.debug("Redering tile=" + tile);
         
         new GeographicSurfaceTileRenderer().renderTile(dc, tile);
-        logger.debug("----> END doRender:" + title);
+        logger.debug("----> END doRender:" + description);
     }
 
 	/*
@@ -369,21 +371,21 @@ public class GroundOverlayLayer extends AbstractLayer
     @Override
     public String toString()
     {
-    	return getTitle();
+    	return getName();
     }
 
 	/**
-	 * @param title the title to set
+	 * @param description the description to set
 	 */
-	public void setTitle(String title) {
-		this.title = title;
+	public void setDescription(String title) {
+		this.description = title;
 	}
 
 	/**
-	 * @return the title
+	 * @return the description
 	 */
-	public String getTitle() {
-		return title;
+	public String getDescription() {
+		return description;
 	}
 
 	public void setTextureURL(URL textureURL) {
@@ -642,7 +644,7 @@ public class GroundOverlayLayer extends AbstractLayer
 		}
 		
 		return "<GroundOverlay><name>" + getName() + "</name>" + Messages.NL
-			+ "<description>" + getTitle() 
+			+ "<description><![CDATA[" + getDescription() + "]]>" 
 			+ "</description>" + Messages.NL
 			
 			// Use the frame name as time span

@@ -32,6 +32,14 @@ import worldwind.contrib.parsers.SimpleKMLParser.ScreenOverlay;
 
 /**
  * A class to convert KML/KMZ documents into World Wind layers
+ * Sample Usage:
+ * 		String file 	= "/path/somefile.xml";
+ * 		KMLSource kml 	= new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
+ * 		LayerList list 	= kml.toLayerList();
+ * 
+ * 		for (Layer layer : list) {
+ * 			System.out.println(layer));
+ * 		}
  * @author Owner
  *
  */
@@ -43,8 +51,8 @@ public class KMLSource
 	private KMLDocument doc;
 	
 	/**
-	 * 
-	 * @param url
+	 * Constructor 
+	 * @param url URL of the KML file
 	 */
 	public KMLSource(URL url) throws Exception {
 		download(url);
@@ -99,7 +107,7 @@ public class KMLSource
 	}
 	
 	/**
-	 * 
+	 * Process the KML/KMZ. Parse the document into an object of type {@link KMLDocument}
 	 * @throws Exception
 	 */
 	private void process(File file, String contentType) throws Exception
@@ -126,9 +134,9 @@ public class KMLSource
 	}
 
 	/**
-	 * 
-	 * @param docName
-	 * @param kml
+	 * Parse the document into an object of type {@link KMLDocument}
+	 * @param docName Document name
+	 * @param kml KML string
 	 * @throws Exception
 	 */
 	private void process ( String docName, String kml) throws Exception 
@@ -137,8 +145,8 @@ public class KMLSource
 		this.doc = p.parse(docName, new java.io.ByteArrayInputStream(kml.getBytes()));
 	}
 	
-	/*
-	 * Unzip a file into WW cache 
+	/**
+	 * Unzip a file into WW cache
 	 */
 	private String unZip (File zipFile) throws Exception
 	{
@@ -171,7 +179,7 @@ public class KMLSource
 	}
 
 	/**
-	 * get kml document object
+	 * Get the {@link KMLDocument} object
 	 * @return
 	 */
 	public KMLDocument getDocument () {
@@ -261,7 +269,10 @@ public class KMLSource
 				, go.icon
 				, ParserUtils.getIconSuffix(go.icon.toString())
 				);
-
+		
+		if ( go.description != null )
+			layer.setDescription(go.description);
+		
 		return layer;
 	}
 	
@@ -336,9 +347,13 @@ public class KMLSource
 		
 		// Add ground Overlays
 		if ( doc.groundOverlays != null ) {
-			if ( doc.groundOverlays.length == 1) {
+			if ( doc.groundOverlays.length == 1) 
+			{
 				// Ground overlay
-				list.add(toGroundOverlayLayer(doc.groundOverlays[0]));
+				GroundOverlayLayer layer= toGroundOverlayLayer(doc.groundOverlays[0]);
+				layer.setDescription(doc.description);
+				
+				list.add(layer);
 				
 			}
 			else {
@@ -416,7 +431,6 @@ public class KMLSource
 			throw new IOException("Invalid layer type:" + layer.getClass().getName());
 		
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(kmzFile));
-//		ZipEntry ze;
 		
 		// KML doc within zip
 		String kmlDoc;
@@ -482,39 +496,34 @@ public class KMLSource
 		out.close();
 	}
 	
-/*	
-	static void writetoStream (InputStream in, OutputStream out)
-		throws IOException
-	{
-	    InputStream buffer  	= in; //new BufferedInputStream(in);   
-	    OutputStream buffer2  	= out; //new BufferedOutputStream(out);
-	    int c;
-	    
-	    while ((c = buffer.read()) != -1) 
-	    {
-	      buffer2.write(c);
-	    } 
-	    //buffer2.close();
-	}
-*/
-/*	
+/*	*/
 	// test only
 	public static void main(String[] args) {
 		try {
 			//String url = "http://services.google.com/earth/kmz/cumbria_waymarking_n.kmz";
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String file = "src/demo/xml/KML_Samples.kml";
-			String file = "src/demo/xml/rsig2dviz-1.kmz";
+			//String file = "src/demo/xml/rsig2dviz-1.kmz";
+			String file = "c:/temp/25_87.xml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
 			//KMLSource kml = new KMLSource(new URL(url));
 			
-			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KMZ);
+			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
 			
-			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			//TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			LayerList list = kml.toLayerList();
+			
+			System.out.println("List size=" + list.size());
+			
+			for (Layer layer : list) {
+				GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
+				System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
+			}
+			//System.out.println("kml=" + kml + " ov=" + overlay.getDescription());
 			
 			
-	        buildKMZ(new File("c:/tmp/junk/moo.kmz"), overlay);
+	        //buildKMZ(new File("c:/tmp/junk/moo.kmz"), overlay);
 	        
 			//System.out.println(kml.toKML());
 //			LayerList list = kml.toLayerList();
@@ -534,5 +543,5 @@ public class KMLSource
 			e.printStackTrace();
 		}
 	}
-*/	
+
 }
