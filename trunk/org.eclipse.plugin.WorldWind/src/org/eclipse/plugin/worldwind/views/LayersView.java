@@ -24,6 +24,7 @@ import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.*;
+import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.ToolTip;
@@ -472,7 +473,8 @@ public class LayersView extends ViewPart
 				, treeViewer
 				, statusLine );
 		
-		job.setUser(true);
+		job.setProperty(IProgressConstants.ICON_PROPERTY, Activator.ICON_NOAA);
+		job.setUser(false);
 		job.schedule();
 	}
 

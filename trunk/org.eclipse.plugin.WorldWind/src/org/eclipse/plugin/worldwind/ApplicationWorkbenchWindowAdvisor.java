@@ -26,7 +26,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
-		//configurer.setShowPerspectiveBar(true);
+		configurer.setShowProgressIndicator(false);
+		
 		PlatformUI.getPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true); 
+		PlatformUI.getPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_PROGRESS_ON_STARTUP, false);
 	}
 }
