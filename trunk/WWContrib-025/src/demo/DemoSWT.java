@@ -69,6 +69,7 @@ import worldwind.contrib.Messages;
 import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.NASAWMSLayerList;
+import worldwind.contrib.layers.PositionLayer;
 import worldwind.contrib.layers.ScreenOverlayLayer;
 import worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
@@ -785,6 +786,9 @@ public class DemoSWT
 
         // Add layers to WW
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
+        
+		// Add Position Layer
+		m.getLayers().add(new PositionLayer(world));
         
         // get built-n layers
         LayerList layerList = m.getLayers();
