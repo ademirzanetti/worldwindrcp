@@ -233,7 +233,7 @@
 	            </menu>
 	            
 	            <action label="&amp;Manage Configuration..."
-	                   icon="icons/full/elcl16/configs.gif"
+	                   icon="icons/16-sconfig.gif"
 	                   helpContextId="org.eclipse.update.ui.newUpdates"
 	                   class="org.eclipse.plugin.worldwind.actions.ConfigurationManagerAction"
 	                   menubarPath="help/org.eclipse.plugin.worldwind.updateMenu/group0"
@@ -241,7 +241,7 @@
 	            </action>
 	            
 	            <action label="&amp;Find and Install..."
-	                    icon="icons/full/elcl16/usearch_obj.gif"
+	                    icon="icons/16-usearch.gif"
 	                    helpContextId="org.eclipse.plugin.worldwind.newUpdates"
 	                    class="org.eclipse.plugin.worldwind.actions.FindInstallAction"
 	                    menubarPath="help/org.eclipse.plugin.worldwind.updateMenu/group0"
