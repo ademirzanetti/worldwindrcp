@@ -246,11 +246,16 @@ public class LayersView extends ViewPart
 		@Override
 		public String getToolTipText(Object element) 
 		{
-			final Layer layer = ((TreeObject)element).getLayer();
-			final String description = (layer instanceof TimeLoopGroundOverlay)
-				? ((TimeLoopGroundOverlay)layer).getDescription()
-				: ((TreeObject)element).toString(); //layer.toString();
+			final Layer layer 	= ((TreeObject)element).getLayer();
+			String description 	= ((TreeObject)element).toString();
 			
+			// Get layer description: only in GroundOverlay & TimeLoop Ovs
+			if ( layer instanceof TimeLoopGroundOverlay )
+				description = ((TimeLoopGroundOverlay)layer).getDescription();
+
+			if ( layer instanceof GroundOverlayLayer )
+				description = ((GroundOverlayLayer)layer).getDescription();
+				
 				
 			final String toolTip = "<html>" 
 				+ "<style>body, table {font-family:Arial;font-size=12px;background-color='#FFFFCC'}"

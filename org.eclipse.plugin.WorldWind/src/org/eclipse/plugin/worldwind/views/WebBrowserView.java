@@ -199,7 +199,7 @@ public class WebBrowserView extends ViewPart
 			}
 		} 
 		catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			statusLine.setErrorMessage(e.getMessage());
 		}
 		finally {
