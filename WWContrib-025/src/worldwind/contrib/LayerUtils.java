@@ -1,7 +1,5 @@
 package worldwind.contrib;
 
-
-
 import org.apache.log4j.Logger;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
@@ -15,6 +13,7 @@ import gov.nasa.worldwind.view.View;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 
 /**
@@ -34,20 +33,25 @@ public class LayerUtils
 	 */
 	static public void moveViewTo (final View view, final Globe globe, Layer layer) 
 	{ 
-		Vec4 point = null;
-
-		if ( layer instanceof TimeLoopGroundOverlay)
+		Vec4 point 		= null;
+		Sector sector 	= null;
+		
+		if ( layer instanceof TimeLoopGroundOverlay) {
 			point = ((TimeLoopGroundOverlay)layer).getCentroid(globe);
-		else if ( layer instanceof GroundOverlayLayer)
+			sector  = ((TimeLoopGroundOverlay)layer).getSector();
+		}
+		else if ( layer instanceof GroundOverlayLayer) {
 			point = ((GroundOverlayLayer)layer).getCentroid(globe);
+			sector = ((GroundOverlayLayer)layer).getSector();
+		}
 		
 		if ( point == null ) return;
 		
 		Position position = globe.computePositionFromPoint(point);
 		Position eyePoint = globe.computePositionFromPoint(view.getEyePoint());
-		
-		
-		logger.debug("Move to=" + position + " Eye point=" +  eyePoint);
+
+		logger.debug("Move to=" + position + " Eye point=" +  eyePoint
+				+ " Sector" + sector);
 		
         view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
         		(OrbitView)view
