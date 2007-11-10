@@ -27,6 +27,7 @@ import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.SimpleKMLParser;
 import worldwind.contrib.parsers.SimpleKMLParser.KMLDocument;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.Layer;
@@ -481,9 +482,14 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	
 	@Override
 	public void dispose() {
+		logger.debug("Disposing loop " + getName());
 		super.dispose();
 		stop();
 		removeFromModel();
+		
+		for (GroundOverlayLayer layer : overlays) {
+			layer.deleteFromCache();
+		}
 	}
 
 	/**
@@ -507,6 +513,11 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		return (overlays.size() > 0) ? overlays.get(0).getCentroid(globe) : null;
 	}
 
+	public Sector getSector() {
+		// should be the same for all ground overlays
+		return (overlays.size() > 0) ? overlays.get(0).getSector() : null;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -33,7 +33,6 @@ import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.TextureTile;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.render.GeographicSurfaceTileRenderer;
 import gov.nasa.worldwind.retrieve.HTTPRetriever;
 import gov.nasa.worldwind.retrieve.RetrievalPostProcessor;
 import gov.nasa.worldwind.retrieve.Retriever;
@@ -61,6 +60,10 @@ public class GroundOverlayLayer extends AbstractLayer
 	// Texture can be a URL or a file path
 	private URL textureURL;
 	
+	private Sector sector;
+	
+	// Web Download read timeout
+	private static final int WEB_DOWNLOAD_READ_TIMEOUT = 9000;
 	
 	private String formatName;
 	private String fileSuffix;
@@ -88,7 +91,7 @@ public class GroundOverlayLayer extends AbstractLayer
 		
         this.tile 		= new TextureTile(sector);
 		this.textureURL = textureURL;
-//		this.description 		= title;
+		this.sector 	= sector;
 		this.fileSuffix = fileSuffix;
 		this.baseCachePath = "Earth/";
 	
@@ -137,7 +140,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
     protected final void doRender(DrawContext dc)
     {
-		logger.debug("----> START doRender:" + description);
+		logger.debug("----> START doRender:" + getName());
 		
         if (dc.getSurfaceGeometry() == null || dc.getSurfaceGeometry().size() < 1)
             return; 
@@ -186,8 +189,9 @@ public class GroundOverlayLayer extends AbstractLayer
         
         logger.debug("Redering tile=" + tile);
         
-        new GeographicSurfaceTileRenderer().renderTile(dc, tile);
-        logger.debug("----> END doRender:" + description);
+        //new GeographicSurfaceTileRenderer().renderTile(dc, tile);
+        dc.getGeographicSurfaceTileRenderer().renderTile(dc, tile);
+        logger.debug("----> END doRender:" + getName() );
     }
 
 	/*
@@ -284,12 +288,18 @@ public class GroundOverlayLayer extends AbstractLayer
                 {
                     public ByteBuffer run(Retriever retriever)
                     {
-                        if (!retriever.getState().equals(Retriever.RETRIEVER_STATE_SUCCESSFUL))
-                            return null;
-
                         HTTPRetriever htr = (HTTPRetriever) retriever;
+
+                        if (!retriever.getState().equals(Retriever.RETRIEVER_STATE_SUCCESSFUL)) {
+                        	logger.debug("Web download failed state:" + retriever.getState() 
+                        			+ " read timeout=" + retriever.getReadTimeout()
+                        			+ " response code= " + htr.getResponseCode() );
+                            return null;
+                        }
+                        
                         if (htr.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT)
                         {
+                        	logger.debug("Web download failed state:" + htr.getState());
                             return null;
                         }
 
@@ -315,7 +325,12 @@ public class GroundOverlayLayer extends AbstractLayer
                         }
                     }
                 });
+            
+            retriever.setReadTimeout(WEB_DOWNLOAD_READ_TIMEOUT);
 
+            logger.debug("Web download for " + resourceURL 
+            		+ " timeout=" + retriever.getReadTimeout());
+            
             retriever.call();
         }
         catch (Exception e)
@@ -328,9 +343,9 @@ public class GroundOverlayLayer extends AbstractLayer
     }
     
     
-    private void addTileToMemoryCache() //Object key, TextureTile tile)  
+    private void addTileToMemoryCache()   
     {
-        if (this.getTileFromMemoryCache() == null ) { //key) == null) {
+        if (this.getTileFromMemoryCache() == null ) { 
         	logger.debug("Adding tile " + tile + " key=" + tileKey + " to memory cache.");
             WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).add(tileKey, tile);
         }
@@ -457,25 +472,6 @@ public class GroundOverlayLayer extends AbstractLayer
 //        return out;
 //    }
 
-	/**
-	 * 
-	 * @param src
-	 * @param color
-	 * @throws IOException
-	 */
-//	static void makeColorTransparent(File src, Color color)
-//		throws IOException
-//	{
-//		logger.debug("File=" + src + " Color=" + color);
-//		
-//		String formatName = "PNG";
-//		BufferedImage source = ImageIO.read(src);
-//	
-//		BufferedImage target = eraseColor(source, color);
-//		ImageIO.write(target, formatName , src);
-//	}
-	
-	
 
 	/**
 	 * Set WW base path where image will be cached 
@@ -604,6 +600,10 @@ public class GroundOverlayLayer extends AbstractLayer
 		return tile.getCentroidPoint(globe);
 	}
 
+	public Sector getSector() {
+		return sector;
+	}
+	
 	public String toKML() {
 		return toKML(true, false);
 	}
@@ -662,7 +662,10 @@ public class GroundOverlayLayer extends AbstractLayer
 			+ "</GroundOverlay>" + Messages.NL;
 	}
 	
-	private void deleteFromCache() 
+	/**
+	 * Delete overlat from WW cache
+	 */
+	public void deleteFromCache() 
 	{
 		logger.debug("Deleting tile " + tileKey + " from WW cache.");
 		
@@ -686,6 +689,6 @@ public class GroundOverlayLayer extends AbstractLayer
 	@Override
 	public void dispose() {
 		super.dispose();
-		deleteFromCache();
+//		deleteFromCache();
 	}
 }
