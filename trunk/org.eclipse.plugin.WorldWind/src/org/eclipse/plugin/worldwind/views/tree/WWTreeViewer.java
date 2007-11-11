@@ -8,23 +8,22 @@
  * Contributors:
  *     Vladimir Silva - initial API and implementation
  *******************************************************************************/
-package org.eclipse.plugin.worldwind.views;
+package org.eclipse.plugin.worldwind.views.tree;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.media.opengl.GLException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.plugin.worldwind.views.EarthView;
+import org.eclipse.plugin.worldwind.views.LayersView;
 import org.eclipse.swt.widgets.Composite;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
@@ -37,137 +36,22 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
  * @author Owner
  *
  */
-public class LayersTree extends CheckboxTreeViewer
+public class WWTreeViewer extends CheckboxTreeViewer
 {
-	private static final Logger logger = Logger.getLogger(LayersTree.class);
+	private static final Logger logger = Logger.getLogger(WWTreeViewer.class);
 	
 	// Nodes checked by default
 	private Vector<TreeObject> checkedTreeNodes = new Vector<TreeObject>();
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	public static class TreeObject implements IAdaptable {
-		private Layer  layer;
-		private TreeParent parent;
-		private boolean checked;
-		private Image image;
-		
-		// Unique node ID
-		private String id;
-		
-		// All layers are removable by default from the tree
-		// built-in layers cannot be removed.
-		private boolean removable = true;
-		
-		public TreeObject( Layer layer) { 
-			this.layer 	= layer;
-			checked 	= layer.isEnabled();
-			id 			= layer.getName() + "-" + System.currentTimeMillis();
-		}
-		
-		public TreeObject( Layer layer, Image image) 
-		{ 
-			this.layer 	= layer;
-			this.checked =layer.isEnabled(); 
-			this.image 	= image;
-			id 			= layer.getName() + "-" + System.currentTimeMillis();
-		}
-		
-		public String getName() {
-			return layer.getName();
-		}
-		public void setParent(TreeParent parent) {
-			this.parent = parent;
-		}
-		public TreeParent getParent() {
-			return parent;
-		}
-		public String toString() {
-			return getName();
-		}
-		public Object getAdapter(Class key) {
-			return null;
-		}
-		public void setEnabled(boolean enabled) {
-			layer.setEnabled(enabled);
-		}
-		public Image getImage () {
-			return image;
-		}
-		public void setImage (Image image) {
-			this.image = image;
-		}
-		public boolean getChecked () {
-			return checked;
-		}
-		public Layer getLayer() {
-			return layer;
-		}
-		public void setRemovable(boolean removable) {
-			this.removable = removable;
-		}
-		public boolean isRemovable() {
-			return removable;
-		}
-		public String getID () {
-			return id;
-		}
-	}
 	
-	public static class TreeParent extends TreeObject 
-	{
-		private ArrayList<TreeObject> children;
-		
-		public TreeParent(Layer layer) { 
-			super(layer);
-			children = new ArrayList<TreeObject>();
-		}
-		public TreeParent(Layer layer, Image image) { 
-			super(layer, image);
-			children = new ArrayList<TreeObject>();
-		}
-		
-		public void addChild(TreeObject child) {
-			children.add(child);
-			child.setParent(this);
-		}
-		public void removeChild(TreeObject child) {
-			children.remove(child);
-			child.setParent(null);
-		}
-		public void clearChildren() {
-			children.clear();
-		}
-		public TreeObject [] getChildren() {
-			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
-		}
-		public boolean hasChildren() {
-			return children.size()>0;
-		}
-		
-		public void setRemovable(boolean removable) {
-			super.setRemovable(removable);
-			for (TreeObject to : children) {
-				to.setRemovable(removable);
-			}
-		}
-	}
-	
-	public LayersTree(Composite parent, int style) {
+	public WWTreeViewer(Composite parent, int style) {
 		super(parent, style);
 	}
 
 	/**
 	 * Initialize tree contents
 	 */
-	void initialize() {
+	public void initialize() {
 		setInput(getInitialInput());
 	}
 	
@@ -194,7 +78,7 @@ public class LayersTree extends CheckboxTreeViewer
 	 * @param to
 	 * @param checked
 	 */
-	void trackCheckState (TreeObject to, boolean checked)
+	public void trackCheckState (TreeObject to, boolean checked)
 	{
 		if ( checked ) 
 			checkedTreeNodes.add(to);
@@ -224,7 +108,7 @@ public class LayersTree extends CheckboxTreeViewer
 		return checkedTreeNodes.toArray(new TreeObject[checkedTreeNodes.size()]); 
 	}
 	
-	void updateCheckState () {
+	public void updateCheckState () {
 		setCheckedElements(checkedNodesToArray());
 	}
 
@@ -412,7 +296,7 @@ public class LayersTree extends CheckboxTreeViewer
 	/**
 	 * Add a rime loop overlay to the tree
 	 */
-	void addTimeLoopGroundOverlays(TimeLoopGroundOverlay[] ovs) 
+	public void addTimeLoopGroundOverlays(TimeLoopGroundOverlay[] ovs) 
 	{
 		for (TimeLoopGroundOverlay aov : ovs) 
 		{

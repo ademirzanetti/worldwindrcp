@@ -38,10 +38,11 @@ import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
-import org.eclipse.plugin.worldwind.views.LayersTree.TreeObject;
-import org.eclipse.plugin.worldwind.views.LayersTree.TreeParent;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersContentProvider;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersLabelProvider;
+import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
+import org.eclipse.plugin.worldwind.views.tree.TreeObject;
+import org.eclipse.plugin.worldwind.views.tree.TreeParent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -77,7 +78,7 @@ public class PlacesView extends ViewPart
 	private static final Logger logger	= Logger.getLogger(PlacesView.class);
 	static public String ID 			= PlacesView.class.getName();
 	
-	private LayersTree treeViewer;
+	private WWTreeViewer nodeViewer;
 	private LayersToolTipSupport tipSupport;
 
 	// Status line
@@ -116,26 +117,26 @@ public class PlacesView extends ViewPart
 			}
 		});
 		
-		treeViewer = new LayersTree(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		nodeViewer = new WWTreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 
 		// Tooltip support
 		LayersLabelProvider labelProvider = new LayersLabelProvider();
 		
 		// Tooltip support
-		tipSupport = LayersToolTipSupport.enablefor(treeViewer
+		tipSupport = LayersToolTipSupport.enablefor(nodeViewer
 				, ToolTip.NO_RECREATE
 				, getViewSite().getWorkbenchWindow());
 
 		labelProvider.setTipSupport(tipSupport);
 		
-		treeViewer.setContentProvider(new LayersContentProvider());
-		treeViewer.setLabelProvider(labelProvider);
+		nodeViewer.setContentProvider(new LayersContentProvider());
+		nodeViewer.setLabelProvider(labelProvider);
 
 		// init tree data
-		treeViewer.setInput(getInitialInput());
+		nodeViewer.setInput(getInitialInput());
 		
 		// When user checks a checkbox in the tree, check all its children
-	    treeViewer.addCheckStateListener(new ICheckStateListener() {
+	    nodeViewer.addCheckStateListener(new ICheckStateListener() {
 	      public void checkStateChanged(CheckStateChangedEvent event) 
 	      {
 	    	  boolean checked = event.getChecked(); 
@@ -185,7 +186,7 @@ public class PlacesView extends ViewPart
 				// convert kml to a WW layer list
 				KMLSource kml 	= new KMLSource("doc.kml", (Element) nl.item(i));
 			
-				logger.debug("Got KML source of size=" + kml.toKML().length());
+				logger.debug("Got KML of size=" + kml.toKML()); //.length());
 				addKMLSource(kml, false);
 			}
 		} 
@@ -211,17 +212,17 @@ public class PlacesView extends ViewPart
 		// displayed as a TimeLoop overlay. 
 		// There should be a better way of doing this...
 		if ( kml.groundOverlaysSize() > 1) {
-			treeViewer.addTimeLoopGroundOverlays( 
+			nodeViewer.addTimeLoopGroundOverlays( 
 					new TimeLoopGroundOverlay[] { 
 							KMLSource.toTimeLoopGroundOverlay(kml.getDocument()) 
 							} 
 					);
 		}
-		// Add single element 
+		// Doc has a single element 
 		else if ( list.size() == 1) 
 		{
 			final Layer child = list.iterator().next();
-			treeViewer.addTreeObject(new TreeParent(child, LayersView.guessIcon(child.getName()))
+			nodeViewer.addTreeObject(new TreeParent(child, LayersView.guessIcon(child.getName()))
 					, null
 					, true
 					, enabled);
@@ -256,7 +257,7 @@ public class PlacesView extends ViewPart
 						 );
 				 
 			}
-			treeViewer.addTreeObject(top, children, true, enabled);
+			nodeViewer.addTreeObject(top, children, true, enabled);
 		}
 	}
 	
@@ -283,7 +284,7 @@ public class PlacesView extends ViewPart
 	 */
 	public void addLayer (Layer layer, Image icon, boolean enabled) {
 		layer.setEnabled(enabled);
-		treeViewer.addTreeObject(new TreeParent(layer, icon	)
+		nodeViewer.addTreeObject(new TreeParent(layer, icon	)
 				, null
 				, true		// Make lare renderable
 				, enabled); // checked
@@ -315,7 +316,7 @@ public class PlacesView extends ViewPart
 		}
 		
 		// Add to view
-		treeViewer.addTreeObject(parent, children, true, enabled);
+		nodeViewer.addTreeObject(parent, children, true, enabled);
 	}
 	
 	/**
@@ -329,7 +330,7 @@ public class PlacesView extends ViewPart
 		
 		// Time Loop layer
 		if ( first instanceof TimeLoopGroundOverlay) {
-			treeViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
+			nodeViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
 			return;
 		}
 		// Ground overlays
@@ -355,7 +356,7 @@ public class PlacesView extends ViewPart
 					, LayersView.guessIcon(overlay.getName())
 		            );
 		
-		treeViewer.addTreeObject(parent, null, true, enabled);
+		nodeViewer.addTreeObject(parent, null, true, enabled);
 	}
 	
 	/**
@@ -370,36 +371,40 @@ public class PlacesView extends ViewPart
 		{
 			final Layer layer = treeObject.getLayer();
 	
-			// Layers generated from KML URL store the XML internally
+			// Layers generated from a KML URL store the XML internally
 			final String kml = (String)layer.getValue("KMLSOURCE");
 			
+			String buffer = null;
 			
 			// This is a layer created from a remote KML doc
 			if ( kml != null ) {
-				buf.append("<kml>" + Messages.NL
+				buffer = "<kml>" + Messages.NL
 						+ kml
-						+ "</kml>" + Messages.NL);
+						+ "</kml>" + Messages.NL;
 			}
 			else if ( layer instanceof TimeLoopGroundOverlay) {
-				buf.append("<kml>" + Messages.NL 
+				buffer = "<kml>" + Messages.NL 
 						+ ((TimeLoopGroundOverlay)layer).toKML() + Messages.NL
-						+ "</kml>" + Messages.NL);
+						+ "</kml>" + Messages.NL;
 			}
 			else if (layer instanceof GroundOverlayLayer 
 					&& ! (treeObject.getParent().getLayer() instanceof TimeLoopGroundOverlay) ) 
 			{
-				buf.append("<kml>" + Messages.NL
+				buffer = "<kml>" + Messages.NL
 						+ ((GroundOverlayLayer)layer).toKML() + Messages.NL
-						+ "</kml>" + Messages.NL);
+						+ "</kml>" + Messages.NL;
 			}
 			
+			logger.debug("Layer " + layer + " to kml " + buffer + " Internal kml=" + kml);
+			buf.append(buffer);
+			
 			// if parent w/ children and not built in
-			if ( treeObject instanceof TreeParent 
-					&& ((TreeParent)treeObject).hasChildren()
-					&&  treeObject.isRemovable() ) // ! LayersTree.isBuiltinLayer(layer.getName())) 
-			{
-				getKML(((TreeParent)treeObject).getChildren(), buf);
-			}
+//			if ( treeObject instanceof TreeParent 
+//					&& ((TreeParent)treeObject).hasChildren()
+//					&&  treeObject.isRemovable() )  
+//			{
+//				getKML(((TreeParent)treeObject).getChildren(), buf);
+//			}
 		}
 	}
 	
@@ -410,7 +415,7 @@ public class PlacesView extends ViewPart
 	 */
 	private void saveLayers() 
 	{
-		TreeObject[] topLayers = ((TreeParent)treeViewer.getInput()).getChildren();
+		TreeObject[] topLayers = ((TreeParent)nodeViewer.getInput()).getChildren();
 		try {
 			StringBuffer buf = new StringBuffer("<xml>" + Messages.NL);
 			
@@ -441,7 +446,7 @@ public class PlacesView extends ViewPart
 		logger.debug("Layer " + layer.getName() + " type=" + layer.getClass().getName() );
 
 		// check all node children
-		treeViewer.setSubtreeChecked(to, checked);
+		nodeViewer.setSubtreeChecked(to, checked);
 	  
 		// Animated Overlay, play it
 		if ( layer instanceof TimeLoopGroundOverlay ) 
@@ -535,12 +540,12 @@ public class PlacesView extends ViewPart
 		EarthView.world.repaint();
 		
 		// check state not preserved when adding/removing nodes
-		treeViewer.trackCheckState(to, checked);
+		nodeViewer.trackCheckState(to, checked);
 	}
 	
 	@Override
 	public void setFocus() {
-		treeViewer.getControl().setFocus();
+		nodeViewer.getControl().setFocus();
 	}
 
 	public void setStatusErrorMessage (String message) {
@@ -613,7 +618,7 @@ public class PlacesView extends ViewPart
 		// Play an animated overlay
 		actionPlay = new Action() {
 			public void run() {
-				IStructuredSelection selection = (IStructuredSelection )treeViewer.getSelection();
+				IStructuredSelection selection = (IStructuredSelection )nodeViewer.getSelection();
 				TreeObject to = (TreeObject) selection.getFirstElement();
 				
 				// only TimeLoopGroundOverlay support animation
@@ -648,7 +653,7 @@ public class PlacesView extends ViewPart
 		actionStop = new Action() {
 			public void run() 
 			{
-				TreeObject to = (TreeObject)((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+				TreeObject to = (TreeObject)((IStructuredSelection)nodeViewer.getSelection()).getFirstElement();
 				
 				if ( ! (to.getLayer() instanceof TimeLoopGroundOverlay) ) {
 					Messages.showErrorMessage(getViewSite().getShell()
@@ -666,7 +671,7 @@ public class PlacesView extends ViewPart
 		// Remove layer from tree node: All layers in this view can be removed
 		actionRemoveNode = new Action() {
 			public void run() {
-				IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
+				IStructuredSelection selection = (IStructuredSelection)nodeViewer.getSelection();
 				
 				TreeObject to = (TreeObject) selection.getFirstElement();
 
@@ -675,7 +680,7 @@ public class PlacesView extends ViewPart
 					handleCheckState(false, to);
 
 					// remove node from tree & dispose resources
-					treeViewer.removeTreeObject(selection.toArray());
+					nodeViewer.removeTreeObject(selection.toArray());
 					
 				} catch (Exception e) {
 					logger.error(e);
@@ -691,7 +696,7 @@ public class PlacesView extends ViewPart
 		doubleClickAction = new Action() {
 			public void run() 
 			{
-				ISelection selection = treeViewer.getSelection();
+				ISelection selection = nodeViewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
 				
 				View view 	= EarthView.world.getView();
@@ -711,7 +716,7 @@ public class PlacesView extends ViewPart
 		actionSaveLayer = new Action() {
 			public void run() 
 			{
-				ISelection selection 	= treeViewer.getSelection();
+				ISelection selection 	= nodeViewer.getSelection();
 				Object obj 				= ((IStructuredSelection)selection).getFirstElement();
 				
 				if ( obj == null ) return;
@@ -755,7 +760,7 @@ public class PlacesView extends ViewPart
 	 * On click move globe to the centroid of the BBOX dataset
 	 */
 	private void hookClickAction () {
-		treeViewer.getTree().addSelectionListener(new SelectionListener() 
+		nodeViewer.getTree().addSelectionListener(new SelectionListener() 
 		{
 			public void widgetDefaultSelected(SelectionEvent e) {
 				doubleClickAction.run();
