@@ -105,7 +105,9 @@ public class WMSWizard extends Wizard
 			logger.debug("WMS Capabilities=" + capabilities.getVersion());
 			logger.debug("# of selected layers=" + indices.length + " fmt:" + format);
 			
-			/* Caps ver 1.3.0 map to AnimatedGrounOverlay. Caps < 1.3.0 map to TiledWMSLayes */
+			/**
+			 * WMS Caps > 1.1.0 < 1.3.0 map to TiledWMSLayes
+			 */
 			if ( capabilities.getVersion().mid < 3) 
 			{
 				// Convert WMS Caps layers to TiledWMSLayer
@@ -120,6 +122,7 @@ public class WMSWizard extends Wizard
 				// All layers are disabled by default
 				view.addTiledWMSLayers(nodeName, wwLayers, false);
 			}
+			/* WMS Caps ver 1.3.0 map to AnimatedGrounOverlays.  */
 			else {
 				// Use GroundOverlay or AnimatedGroundOverlay
 				logger.debug("WMS version=" + capabilities.getVersion() 
@@ -201,6 +204,7 @@ public class WMSWizard extends Wizard
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
+			page2.setErrorMessage(e.getMessage());
 			return false;
 		}
 	}

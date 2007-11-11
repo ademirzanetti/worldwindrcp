@@ -83,25 +83,25 @@ public class DimSelectionPage extends WizardPage implements Listener
 		l3 = new Label(container, SWT.NONE);
 		l3.setText(Messages.getText("wiz.dim.page.east"));
 		
-		east = new Text(container, SWT.SINGLE | SWT.BORDER);
+		east = new Text(container, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
 		east.addListener(SWT.Selection, this);
 		
 		l4 = new Label(container, SWT.NONE);
 		l4.setText(Messages.getText("wiz.dim.page.west"));
 		
-		west = new Text(container, SWT.BORDER | SWT.SINGLE);
+		west = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		west.addListener(SWT.Selection, this);
 		
 		l5 = new Label(container, SWT.NONE);
 		l5.setText(Messages.getText("wiz.dim.page.north"));
 		
-		north = new Text(container, SWT.BORDER | SWT.SINGLE);
+		north = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		north.addListener(SWT.Selection, this);
 		
 		l6 = new Label(container, SWT.NONE);
 		l6.setText(Messages.getText("wiz.dim.page.south"));
 		
-		south = new Text(container, SWT.BORDER | SWT.SINGLE);
+		south = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		south.addListener(SWT.Selection, this);
 		
 		
