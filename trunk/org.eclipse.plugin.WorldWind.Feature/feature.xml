@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.plugin.WorldWind.Feature"
+      label="World Wind Geo"
+      version="1.0.0"
+      provider-name="World Wind Geo Inc"
+      os="linux,macosx,win32">
+
+   <description url="http://code.google.com/p/worldwindrcp/">
+      This feature provides updates to the World Wind Geo product available
+for 
+download from http://code.google.com/p/worldwindrcp/ .
+The World Wind Geo is an experimental browser for the Geospatial
+Web.
+   </description>
+
+   <copyright>
+      Copyright (c) 2006 Vladimir Silva and others.
+
+All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+
+Contributors:
+
+Vladimir Silva - initial API and implementation
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <plugin
+         id="org.eclipse.plugin.WorldWind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.plugin.WorldWind.Help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>
