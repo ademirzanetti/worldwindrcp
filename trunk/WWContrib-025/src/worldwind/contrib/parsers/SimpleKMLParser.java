@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package worldwind.contrib.parsers;
 
 import gov.nasa.worldwind.WorldWind;
@@ -415,27 +425,6 @@ public class SimpleKMLParser
 		throws MalformedURLException, IOException, SAXException, ParserConfigurationException
 	{
 		Document doc = ParserUtils.parse(is);
-/*		
-		// KML Doc 
-		NodeList nl = doc.getElementsByTagName("Document");
-		
-		if ( nl.getLength() > 0) {
-			docName = ParserUtils.getNodeValue((Element)nl.item(0), "name");
-		}
-			
-		KMLDocument kmlDoc = new KMLDocument(docName);
-		
-		kmlDoc.description	  = ( nl.getLength() > 0) 
-				? ParserUtils.getNodeValue((Element)nl.item(0), "description").trim() 
-				: null;
-		kmlDoc.groundOverlays = parseGroundOverlays(doc.getElementsByTagName("GroundOverlay"));
-		kmlDoc.screenOverlays = parseScreenOverlays(doc.getElementsByTagName("ScreenOverlay"));
-		kmlDoc.placemarks	  = parsePlaceMarks(doc.getElementsByTagName("Placemark"));
-		
-		validate(kmlDoc);
-		
-		return kmlDoc;
-*/
 		return parse(docName, doc.getDocumentElement());
 	}
 	

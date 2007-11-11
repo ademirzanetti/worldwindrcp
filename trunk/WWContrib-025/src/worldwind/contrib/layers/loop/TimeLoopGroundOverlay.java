@@ -549,10 +549,13 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	{
 		StringBuffer buf = new StringBuffer("<Folder><name>" + getName() + "</name>" + Messages.NL);
 		
-		if ( description != null )
-			buf.append("<description><![CDATA["	
-					+ getDescription() 
-					+ "]]></description>" + Messages.NL);
+		// if no description use the name
+		final String desc = ( description != null ) ? description : getName();
+		
+		//if ( description != null )
+		buf.append("<description><![CDATA["	
+				+ desc  
+				+ "]]></description>" + Messages.NL);
 		
 		// append legend (screen overlay)
 		if ( legend != null ) {

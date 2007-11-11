@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package worldwind.contrib.parsers;
 
 import java.io.CharArrayWriter;
@@ -166,12 +176,20 @@ public class SimpleWMSParser extends DefaultHandler
 			} catch (MalformedURLException e) {}
 	    }
 		
-	    /* bbox */
-	    if (name.equals("BoundingBox") || name.equals("LatLonBoundingBox") ) {
-	    	layer.bbox.north = attributes.getValue("maxy");
-	    	layer.bbox.south = attributes.getValue("miny");
-	    	layer.bbox.east = attributes.getValue("maxx");
-	    	layer.bbox.west = attributes.getValue("minx");
+	    /* bbox: BoundingBox or LatLonBoundingBox */
+	    if (name.equals("BoundingBox") || name.equals("LatLonBoundingBox") ) 
+	    {
+	    	if ( layer.bbox.north == null  )
+	    		layer.bbox.north =  attributes.getValue("maxy");
+	    	
+	    	if ( layer.bbox.south == null )
+	    		layer.bbox.south = attributes.getValue("miny");
+	    	
+	    	if ( layer.bbox.east == null)
+	    		layer.bbox.east 	= attributes.getValue("maxx");
+	    	
+	    	if ( layer.bbox.west == null)
+	    		layer.bbox.west = attributes.getValue("minx");
 	    }
 
 	}
@@ -399,16 +417,16 @@ public class SimpleWMSParser extends DefaultHandler
 	}
 	
 	/* test only */
-	/* */
+	/* 
 	public static void main(String[] args) {
 		try {
 			SimpleWMSParser parser = new SimpleWMSParser();
 			
 			//String file = "src/demo/xml/svs.gsfc.nasa.gov_cgi-bin_wms.xml";
 			//String file = "src/demo/xml/worldwind21.arc.nasa.gov_geoserver_wms.xml";
-			//URL url = new URL("http://gisdata.usgs.net/servlet/com.esri.wms.Esrimap?REQUEST=GetCapabilities&SERVICE=wms");
+			URL url = new URL("http://gisdata.usgs.net/servlet/com.esri.wms.Esrimap?REQUEST=GetCapabilities&SERVICE=wms");
 			//URL url = new URL("http://gds.rtpnc.epa.gov/wms/rsig.xml");
-			URL url = new URL("http://neowms.sci.gsfc.nasa.gov/wms/wms?service=WMS&request=GetCapabilities");
+			//URL url = new URL("http://neowms.sci.gsfc.nasa.gov/wms/wms?service=WMS&request=GetCapabilities");
 			
 			//parser.parse("NASA Viz Studio", new java.io.FileInputStream(file));
 			parser.parse("NASA Viz Studio", url);
@@ -449,5 +467,5 @@ public class SimpleWMSParser extends DefaultHandler
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 }

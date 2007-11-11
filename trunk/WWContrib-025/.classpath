@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="/WWJavaSDK-025/lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="/WWJavaSDK-025/lib/jogl.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/javaproj-1.0.4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
