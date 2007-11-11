@@ -609,8 +609,10 @@ public class GroundOverlayLayer extends AbstractLayer
 	}
 
 	/**
-	 * Build KML for this {@link GroundOverlayLayer}
-	 * @param useAbsolutePaths if true will use absolute paths for URLs
+	 * Build KML fragment for this {@link GroundOverlayLayer}
+	 * @param 	useAbsolutePaths if true will use absolute paths for URLs
+	 * @param 	nameIsTimeSpan if true use the frame name as a time span
+	 * 		  	(is this overlay is part of a loop)
 	 * @return
 	 */
 	public String toKML(boolean useAbsolutePaths, boolean nameIsTimeSpan) 
@@ -644,7 +646,9 @@ public class GroundOverlayLayer extends AbstractLayer
 		}
 		
 		return "<GroundOverlay><name>" + getName() + "</name>" + Messages.NL
-			+ "<description><![CDATA[" + getDescription() + "]]>" 
+			+ "<description><![CDATA[" + 
+				 ( description != null ? description : getName() ) 
+				+ "]]>" 
 			+ "</description>" + Messages.NL
 			
 			// Use the frame name as time span
