@@ -40,8 +40,9 @@ import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.EarthView;
-import org.eclipse.plugin.worldwind.views.LayersTree.TreeObject;
-import org.eclipse.plugin.worldwind.views.LayersTree.TreeParent;
+import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
+import org.eclipse.plugin.worldwind.views.tree.TreeObject;
+import org.eclipse.plugin.worldwind.views.tree.TreeParent;
 
 
 /**
@@ -56,7 +57,7 @@ public class LayersView extends ViewPart
 	
 	static public String ID = LayersView.class.getName();
 	
-	private LayersTree treeViewer;
+	private WWTreeViewer treeViewer;
 
 	// click action: navigate to layer centroid
 	private Action clickAction;
@@ -428,7 +429,7 @@ public class LayersView extends ViewPart
 		// Tooltip support
 		LayersLabelProvider labelProvider = new LayersLabelProvider();
 		
-		treeViewer = new LayersTree(composite, SWT.H_SCROLL | SWT.V_SCROLL);
+		treeViewer = new WWTreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL);
 		
 		treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		treeViewer.setContentProvider(new LayersContentProvider());
