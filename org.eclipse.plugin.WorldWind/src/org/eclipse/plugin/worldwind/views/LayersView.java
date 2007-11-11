@@ -12,11 +12,7 @@ package org.eclipse.plugin.worldwind.views;
 
 
 import gov.nasa.worldwind.layers.Layer;
-
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-
-
 import org.apache.log4j.Logger;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
@@ -35,7 +31,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.ui.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.core.runtime.IAdaptable;
 
 import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
@@ -45,6 +40,8 @@ import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.EarthView;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeObject;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeParent;
 
 
 /**
@@ -74,121 +71,121 @@ public class LayersView extends ViewPart
 	private ConcurrentHashMap<String, AnimationJob> animatedJobs 
 		= new ConcurrentHashMap<String, AnimationJob>();
 	
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	public static class TreeObject implements IAdaptable {
-		private Layer  layer;
-		private TreeParent parent;
-		private boolean checked;
-		private Image image;
-		
-		// Unique node ID
-		private String id;
-		
-		// All layers are removable by default from the tree
-		// built-in layers cannot be removed.
-		private boolean removable = true;
-		
-		public TreeObject( Layer layer) { 
-			this.layer 	= layer;
-			checked 	= layer.isEnabled();
-			id 			= layer.getName() + "-" + System.currentTimeMillis();
-		}
-		
-		public TreeObject( Layer layer, Image image) 
-		{ 
-			this.layer 	= layer;
-			this.checked =layer.isEnabled(); 
-			this.image 	= image;
-			id 			= layer.getName() + "-" + System.currentTimeMillis();
-		}
-		
-		public String getName() {
-			return layer.getName();
-		}
-		public void setParent(TreeParent parent) {
-			this.parent = parent;
-		}
-		public TreeParent getParent() {
-			return parent;
-		}
-		public String toString() {
-			return getName();
-		}
-		public Object getAdapter(Class key) {
-			return null;
-		}
-		public void setEnabled(boolean enabled) {
-			layer.setEnabled(enabled);
-		}
-		public Image getImage () {
-			return image;
-		}
-		public void setImage (Image image) {
-			this.image = image;
-		}
-		public boolean getChecked () {
-			return checked;
-		}
-		public Layer getLayer() {
-			return layer;
-		}
-		public void setRemovable(boolean removable) {
-			this.removable = removable;
-		}
-		public boolean isRemovable() {
-			return removable;
-		}
-		public String getID () {
-			return id;
-		}
-	}
-	
-	public static class TreeParent extends TreeObject 
-	{
-		private ArrayList<TreeObject> children;
-		
-		public TreeParent(Layer layer) { 
-			super(layer);
-			children = new ArrayList<TreeObject>();
-		}
-		public TreeParent(Layer layer, Image image) { 
-			super(layer, image);
-			children = new ArrayList<TreeObject>();
-		}
-		
-		public void addChild(TreeObject child) {
-			children.add(child);
-			child.setParent(this);
-		}
-		public void removeChild(TreeObject child) {
-			children.remove(child);
-			child.setParent(null);
-		}
-		public void clearChildren() {
-			children.clear();
-		}
-		public TreeObject [] getChildren() {
-			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
-		}
-		public boolean hasChildren() {
-			return children.size()>0;
-		}
-		
-		public void setRemovable(boolean removable) {
-			super.setRemovable(removable);
-			for (TreeObject to : children) {
-				to.setRemovable(removable);
-			}
-		}
-	}
+//	/*
+//	 * The content provider class is responsible for
+//	 * providing objects to the view. It can wrap
+//	 * existing objects in adapters or simply return
+//	 * objects as-is. These objects may be sensitive
+//	 * to the current input of the view, or ignore
+//	 * it and always show the same content 
+//	 * (like Task List, for example).
+//	 */
+//	public static class TreeObject implements IAdaptable {
+//		private Layer  layer;
+//		private TreeParent parent;
+//		private boolean checked;
+//		private Image image;
+//		
+//		// Unique node ID
+//		private String id;
+//		
+//		// All layers are removable by default from the tree
+//		// built-in layers cannot be removed.
+//		private boolean removable = true;
+//		
+//		public TreeObject( Layer layer) { 
+//			this.layer 	= layer;
+//			checked 	= layer.isEnabled();
+//			id 			= layer.getName() + "-" + System.currentTimeMillis();
+//		}
+//		
+//		public TreeObject( Layer layer, Image image) 
+//		{ 
+//			this.layer 	= layer;
+//			this.checked =layer.isEnabled(); 
+//			this.image 	= image;
+//			id 			= layer.getName() + "-" + System.currentTimeMillis();
+//		}
+//		
+//		public String getName() {
+//			return layer.getName();
+//		}
+//		public void setParent(TreeParent parent) {
+//			this.parent = parent;
+//		}
+//		public TreeParent getParent() {
+//			return parent;
+//		}
+//		public String toString() {
+//			return getName();
+//		}
+//		public Object getAdapter(Class key) {
+//			return null;
+//		}
+//		public void setEnabled(boolean enabled) {
+//			layer.setEnabled(enabled);
+//		}
+//		public Image getImage () {
+//			return image;
+//		}
+//		public void setImage (Image image) {
+//			this.image = image;
+//		}
+//		public boolean getChecked () {
+//			return checked;
+//		}
+//		public Layer getLayer() {
+//			return layer;
+//		}
+//		public void setRemovable(boolean removable) {
+//			this.removable = removable;
+//		}
+//		public boolean isRemovable() {
+//			return removable;
+//		}
+//		public String getID () {
+//			return id;
+//		}
+//	}
+//	
+//	public static class TreeParent extends TreeObject 
+//	{
+//		private ArrayList<TreeObject> children;
+//		
+//		public TreeParent(Layer layer) { 
+//			super(layer);
+//			children = new ArrayList<TreeObject>();
+//		}
+//		public TreeParent(Layer layer, Image image) { 
+//			super(layer, image);
+//			children = new ArrayList<TreeObject>();
+//		}
+//		
+//		public void addChild(TreeObject child) {
+//			children.add(child);
+//			child.setParent(this);
+//		}
+//		public void removeChild(TreeObject child) {
+//			children.remove(child);
+//			child.setParent(null);
+//		}
+//		public void clearChildren() {
+//			children.clear();
+//		}
+//		public TreeObject [] getChildren() {
+//			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
+//		}
+//		public boolean hasChildren() {
+//			return children.size()>0;
+//		}
+//		
+//		public void setRemovable(boolean removable) {
+//			super.setRemovable(removable);
+//			for (TreeObject to : children) {
+//				to.setRemovable(removable);
+//			}
+//		}
+//	}
 
 	/*
 	 * Provides content to the layers tree
@@ -589,11 +586,11 @@ public class LayersView extends ViewPart
 			return;
 		}
 		// Ground overlays
-		else if ( first instanceof GroundOverlayLayer) {
-			for (Layer layer : layers) {
-				addGroundOverlay((GroundOverlayLayer)layer, enabled);
-			}
-		}
+//		else if ( first instanceof GroundOverlayLayer) {
+//			for (Layer layer : layers) {
+//				addGroundOverlay((GroundOverlayLayer)layer, enabled);
+//			}
+//		}
 		// regular layer
 		else {
 			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
@@ -620,15 +617,15 @@ public class LayersView extends ViewPart
 	 * Add a {@link GroundOverlayLayer} to the View tree
 	 * @param overlay {@link GroundOverlayLayer}
 	 */
-	private void addGroundOverlay (GroundOverlayLayer overlay, boolean enabled) 
-	{
-		TreeParent parent = 
-			new TreeParent(overlay
-					, guessIcon(overlay.getName())
-		            );
-		
-		treeViewer.addTreeObject(parent, null, true, enabled);
-	}
+//	private void addGroundOverlay (GroundOverlayLayer overlay, boolean enabled) 
+//	{
+//		TreeParent parent = 
+//			new TreeParent(overlay
+//					, guessIcon(overlay.getName())
+//		            );
+//		
+//		treeViewer.addTreeObject(parent, null, true, enabled);
+//	}
 	
 
 	

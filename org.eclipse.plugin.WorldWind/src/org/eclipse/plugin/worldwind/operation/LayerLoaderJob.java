@@ -23,8 +23,8 @@ import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.views.LayersTree;
 import org.eclipse.plugin.worldwind.views.StatusLine;
-import org.eclipse.plugin.worldwind.views.LayersView.TreeParent;
-import org.eclipse.plugin.worldwind.views.LayersView.TreeObject;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeObject;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeParent;
 import org.eclipse.swt.widgets.Display;
 
 import worldwind.contrib.layers.GroundOverlayLayer;

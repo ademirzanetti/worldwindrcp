@@ -38,10 +38,10 @@ import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeObject;
+import org.eclipse.plugin.worldwind.views.LayersTree.TreeParent;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersContentProvider;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersLabelProvider;
-import org.eclipse.plugin.worldwind.views.LayersView.TreeObject;
-import org.eclipse.plugin.worldwind.views.LayersView.TreeParent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -185,7 +185,7 @@ public class PlacesView extends ViewPart
 				// convert kml to a WW layer list
 				KMLSource kml 	= new KMLSource("doc.kml", (Element) nl.item(i));
 			
-				logger.debug("Got KML source " + kml.toKML());
+				logger.debug("Got KML source of size=" + kml.toKML().length());
 				addKMLSource(kml, false);
 			}
 		} 
@@ -217,7 +217,9 @@ public class PlacesView extends ViewPart
 							} 
 					);
 		}
-		else if ( list.size() == 1) {
+		// Add single element 
+		else if ( list.size() == 1) 
+		{
 			final Layer child = list.iterator().next();
 			treeViewer.addTreeObject(new TreeParent(child, LayersView.guessIcon(child.getName()))
 					, null

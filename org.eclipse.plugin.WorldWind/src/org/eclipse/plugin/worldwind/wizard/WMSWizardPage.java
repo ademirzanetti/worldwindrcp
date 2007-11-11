@@ -226,7 +226,7 @@ public class WMSWizardPage  extends WizardPage
 			setMessage(name + "Select a layer to continue.", IMessageProvider.INFORMATION);
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			setErrorMessage(e.getClass().getName() + ": " +  e.getMessage());
 		}
 	}
