@@ -506,7 +506,7 @@ public class KMLSource
 		out.close();
 	}
 	
-/*	
+/* 	
 	// test only
 	public static void main(String[] args) {
 		try {
@@ -514,22 +514,23 @@ public class KMLSource
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-			String file = "c:/temp/25_87.xml";
+			String file = "c:/tmp/25_90.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
 			//KMLSource kml = new KMLSource(new URL(url));
+	
 			
-			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
+//			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
 			
 			//TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
-			LayerList list = kml.toLayerList();
-			
-			System.out.println("List size=" + list.size());
-			
-			for (Layer layer : list) {
-				GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
-				System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
-			}
+//			LayerList list = kml.toLayerList();
+//			
+//			System.out.println("List size=" + list.size());
+//			
+//			for (Layer layer : list) {
+//				GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
+//				System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
+//			}
 			//System.out.println("kml=" + kml + " ov=" + overlay.getDescription());
 			
 			
@@ -553,5 +554,5 @@ public class KMLSource
 			e.printStackTrace();
 		}
 	}
-*/
+	*/
 }
