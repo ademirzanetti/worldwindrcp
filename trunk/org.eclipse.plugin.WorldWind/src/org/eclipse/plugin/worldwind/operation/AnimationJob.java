@@ -53,6 +53,7 @@ public class AnimationJob extends Job
 		this.statusLine	= statusLine;
 		this.display 	= display;
 		legend 			= layer.getLegend();
+
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class AnimationJob extends Job
 	
 					final boolean frameInCache = layer.isFrameinCache(i);
 					
-//					monitor.beginTask(message, IProgressMonitor.UNKNOWN );
+					monitor.beginTask(message, IProgressMonitor.UNKNOWN );
 					
 					if ( display != null && !display.isDisposed() ) {
 						display.syncExec(new Runnable() {
@@ -126,7 +127,11 @@ public class AnimationJob extends Job
 						done = true;
 					}
 
-					monitor.done(); // worked(1);
+					monitor.done(); 
+					
+					// cancel job?
+//					if (monitor.isCanceled()) 
+//						return Status.CANCEL_STATUS;
 					
 					if ( done ) break;
 				}
@@ -141,9 +146,9 @@ public class AnimationJob extends Job
 			e.printStackTrace();
 			return Status.CANCEL_STATUS;
 		}
-
-		monitor.done();
-
+		finally {  
+			monitor.done();
+		}
 		return Status.OK_STATUS;
 	}
 
