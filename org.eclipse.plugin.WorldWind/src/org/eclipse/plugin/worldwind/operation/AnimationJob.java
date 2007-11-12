@@ -63,7 +63,6 @@ public class AnimationJob extends Job
 		// # of frames
 		int size = overlays.size();
 
-//		monitor.beginTask(layer.getName(), size );
 		
 		try 
 		{
@@ -81,7 +80,6 @@ public class AnimationJob extends Job
 						+ overlays.get(i).getName() 
 						+ " ("  + (i+1) + "/" + size + ")" ;
 	
-					
 					final boolean frameInCache = layer.isFrameinCache(i);
 					
 //					monitor.beginTask(message, IProgressMonitor.UNKNOWN );
