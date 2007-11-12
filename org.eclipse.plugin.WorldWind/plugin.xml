@@ -47,6 +47,13 @@
             id="org.eclipse.plugin.worldwind.views.PlacesView"
             name="Places">
       </view>
+		<view
+            name="Animation Progress View"
+            icon="icons/16x16-nasa.png"
+            category="org.eclipse.ui"
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            id="org.eclipse.ui.views.ProgressView">
+         </view>
       <view
             allowMultiple="true"
             category="WWPlugin"
@@ -62,12 +69,6 @@
             id="org.eclipse.plugin.worldwind.views.GeoSearchView"
             name="GeoSearch View">
       </view>
-      <view
-            name="VisAD SpreadSheet for Numerical Analysis"
-            class="org.eclipse.plugin.analytics.views.VisADSpreadSheetView"
-            id="org.eclipse.plugin.analytics.views.VisADSpreadSheetView">
-      </view>
-      
    </extension>
    <extension
          id="product"
@@ -111,15 +112,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ui.resourcePerspective">
-         <view
-               id="wwplugin.views.LayersView"
-               ratio="0.5"
-               relationship="right"
-               relative="org.eclipse.ui.views.TaskList">
-         </view>
-      </perspectiveExtension>
+
       <perspectiveExtension
             targetID="org.eclipse.ui.resourcePerspective">
          <view

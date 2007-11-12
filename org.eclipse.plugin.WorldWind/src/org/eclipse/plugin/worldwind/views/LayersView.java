@@ -290,7 +290,7 @@ public class LayersView extends ViewPart
 	/*
 	 * Process a check state event
 	 */
-	private void handleCheckState (boolean checked, TreeObject to)
+	private void handleCheckState (boolean checked, final TreeObject to)
 	{
 		to.setEnabled(checked);
 
@@ -338,6 +338,15 @@ public class LayersView extends ViewPart
 				
 				logger.debug("Starting animated job " + job + " id=" + to.getID());
 				job.play();
+				
+//				job.addJobChangeListener(new JobChangeAdapter() {
+//			        public void done(IJobChangeEvent event) {
+//			        	if (! event.getResult().isOK()) {           
+//			        		handleCheckState(false, to);
+//			        	}
+//			        }
+//			     });
+				
 			}
 			else { 
 				//overlay.stop();

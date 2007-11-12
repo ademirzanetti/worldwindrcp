@@ -28,7 +28,9 @@ public class Perspective implements IPerspectiveFactory
     
     /** main folder: contains the earth web browser and analytics views */
     public static final String MAIN_FOLDER = "org.eclipse.plugin.Earth";
-    
+
+    /** progress view id */
+    private static final String ID_PROGRESSVIEW = "org.eclipse.ui.views.ProgressView";
     
 	/**
 	 * Default perspective layout
@@ -50,7 +52,8 @@ public class Perspective implements IPerspectiveFactory
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f,
 		 	   "topLeft");
 		bottomLeft.addView(LayersView.ID);
-
+		bottomLeft.addView(ID_PROGRESSVIEW);
+				
 		// TopRight: Earth & web browser
 		IFolderLayout topRight = layout.createFolder(MAIN_FOLDER, IPageLayout.RIGHT, 1.0f, editorArea);
 		topRight.addView(EarthView.ID);
