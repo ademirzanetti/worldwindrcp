@@ -12,6 +12,7 @@ package org.eclipse.plugin.worldwind.actions;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.swt.SWT;
@@ -29,6 +30,8 @@ import worldwind.contrib.parsers.SimpleHTTPClient;
 
 public class OpenFileAction extends Action 
 {
+	private static final Logger logger = Logger.getLogger(OpenFileAction.class);
+	
     private final IWorkbenchWindow window;
 	
 	public OpenFileAction(String text, IWorkbenchWindow window) {
@@ -76,7 +79,9 @@ public class OpenFileAction extends Action
 				KMLSource kml = (fileName.indexOf(".kml") != -1)
 					? new KMLSource(file, SimpleHTTPClient.CT_KML)
 					: new KMLSource(file, SimpleHTTPClient.CT_KMZ);
-					
+	
+				logger.debug("Open kml file " + file + " as " + kml);
+				
 				WebBrowserView.handleKmlKmz(kml, view);
 			}
 			else {
