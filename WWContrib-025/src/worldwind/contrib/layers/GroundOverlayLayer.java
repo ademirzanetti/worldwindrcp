@@ -4,17 +4,17 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import worldwind.contrib.Messages;
+import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.WMS_Capabilities;
 
 import com.sun.opengl.util.texture.Texture;
@@ -33,12 +33,7 @@ import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.TextureTile;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.retrieve.HTTPRetriever;
-import gov.nasa.worldwind.retrieve.RetrievalPostProcessor;
-import gov.nasa.worldwind.retrieve.Retriever;
-import gov.nasa.worldwind.retrieve.URLRetriever;
 import gov.nasa.worldwind.util.Logging;
-import gov.nasa.worldwind.util.WWIO;
 
 /**
  * A ground overlay layer. Renders a URL on a given latlon box (a.k.a Sector) 
@@ -63,7 +58,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	private Sector sector;
 	
 	// Web Download read timeout
-	private static final int WEB_DOWNLOAD_READ_TIMEOUT = 9000;
+//	private static final int WEB_DOWNLOAD_READ_TIMEOUT = 9000;
 	
 	private String formatName;
 	private String fileSuffix;
@@ -123,7 +118,8 @@ public class GroundOverlayLayer extends AbstractLayer
 	
 	private String buildTileKey ()
 	{
-		return baseCachePath + getName().replaceAll("[:]", "") + fileSuffix;
+		//return baseCachePath +  getName().replaceAll("[:]", "") + fileSuffix;
+		return baseCachePath +  Messages.forCachePath(getName()) + fileSuffix;
 	}
 
 	/**
@@ -132,6 +128,10 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
 	public void addOverlayListener( GroundOverlayListener listener){
 		listeners.add(listener);
+	}
+
+	public void removeOverlayListener( GroundOverlayListener listener){
+		listeners.remove(listener);
 	}
 	
 	@Override
@@ -168,7 +168,7 @@ public class GroundOverlayLayer extends AbstractLayer
         		//downloadResource(getTextureURL(), WorldWind.dataFileCache().newFile(tileKey));
         		if ( ! synchFetch() ) {
         			logger.error("Synch fetch for " + textureURL + " FAILED");
-        			onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
+        			//onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
         			return;
         		}
         		
@@ -177,9 +177,8 @@ public class GroundOverlayLayer extends AbstractLayer
         			tile.setTexture(dc.getTextureCache(), getLoadingTexture());
 					
 				} catch (Exception e) {
-					System.err.println(e);
+					logger.error(e);
 				}
-				
         	}
         }
         else {
@@ -269,7 +268,7 @@ public class GroundOverlayLayer extends AbstractLayer
         
         tile.setTexture(tc, texture);
         
-        this.addTileToMemoryCache(); //tileKey, tile);
+        this.addTileToMemoryCache();
 
         return true;
     }
@@ -279,6 +278,59 @@ public class GroundOverlayLayer extends AbstractLayer
      * @param resourceURL remote url
      * @param outFile file to save the resource to
      */
+    void downloadResource(URL resourceURL, final File outFile) throws Exception 
+    {
+    	try {
+			SimpleHTTPClient client = new SimpleHTTPClient(resourceURL);
+			client.doGet(new FileOutputStream(outFile));
+			
+        	final String contentType 	= client.getContentType();
+        	final int respCode			= client.getStatus();
+        	String errorMessage 		= null;
+
+            logger.debug("Web download for " + resourceURL 
+            		+ " status=" + respCode 
+            		+ " ct=" + client.getContentType());
+        	
+        	// check response content type (http status 200)
+        	if ( contentType != null && contentType.indexOf("image") == -1 ) 
+        	{
+        		// Invalid CT (not an image)
+        		final String buf =  new String(Messages.readFile(outFile));
+        		
+        		logger.debug("Invalid resp content type " + contentType + " buffer " + buf);
+        		
+        		// XML error response 
+        		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")) {
+        			// WMS XML response?...extract message from: 
+        			// <ServiceException>MESSAGE</ServiceException>
+        			final String xml 	= buf;
+        			errorMessage			= ( xml != null && xml.indexOf("<ServiceException>") != -1) 
+        				? xml.substring(xml.indexOf("<ServiceException>") + 18, xml.indexOf("</ServiceException>"))
+        				: xml;
+        		}
+        		else {
+        			// just set the err msg to whatever is on the byte buffer
+        			errorMessage = buf;
+        		}
+        	}
+        	
+        	if ( errorMessage != null ) 
+                throw new IOException("Download failed: " + errorMessage );
+        	
+		} 
+    	catch ( Exception e) 
+    	{
+    		// remove file from disk
+            if ( outFile != null && outFile.exists()) {
+            	logger.error("Deleting cache file " + outFile);
+            	outFile.delete();
+            }
+            throw new Exception(e);
+    	}
+    }
+    
+/*
     void downloadResource(URL resourceURL, final File outFile)
     {
         try
@@ -308,6 +360,40 @@ public class GroundOverlayLayer extends AbstractLayer
 
                         try
                         {
+                        	logger.debug("Got web download resp code=" + htr.getResponseCode() 
+                        			+ " ct=" + htr.getContentType() + " to " + outFile);
+                        	
+                        	// Check the response content type: Only images are allowed
+                        	// Anything else indicates an error
+                        	final String contentType 	= htr.getContentType();
+                        	String erroMessage 			= null;
+                        	
+                        	// check for image content type
+                        	if ( contentType != null && contentType.indexOf("image") == -1 ) 
+                        	{
+                        		// FIXME: this is wrong!
+                        		final String buf =  new String(buffer.array());
+                        		
+                        		logger.debug("Invalid resp content type " + contentType + " buffer " + buf);
+                        		
+                        		// Invalid CT (not an image)
+                        		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")) {
+                        			// WMS XML response?...extract message from: 
+                        			// <ServiceException>MESSAGE</ServiceException>
+                        			final String xml 	= buf;
+                        			erroMessage			= ( xml != null && xml.indexOf("<ServiceException>") != -1) 
+                        				? xml.substring(xml.indexOf("<ServiceException>") + 18, xml.indexOf("</ServiceException>"))
+                        				: xml;
+                        		}
+                        		else {
+                        			// just set the err msg to whatever is on the byte buffer
+                        			erroMessage = buf;
+                        		}
+                        	}
+                        	
+                        	if ( erroMessage != null )
+                        		throw new IOException("Download failed: " + erroMessage );
+                        	
                             WWIO.saveBuffer(buffer, outFile);
                             return buffer;
                         }
@@ -315,6 +401,8 @@ public class GroundOverlayLayer extends AbstractLayer
                         {
                             logger.error("Unable to download " + r.getUrl()
                             		+ ": " + e.getMessage());
+                            
+                            retriever.setValue("ERROR_MESSAGE", e.getMessage());
                             
                             if ( outFile != null && outFile.exists()) {
                             	logger.error("Deleting cache file " + outFile);
@@ -328,20 +416,24 @@ public class GroundOverlayLayer extends AbstractLayer
             
             retriever.setReadTimeout(WEB_DOWNLOAD_READ_TIMEOUT);
 
+            Retriever r = retriever.call();
+
             logger.debug("Web download for " + resourceURL 
-            		+ " timeout=" + retriever.getReadTimeout());
+            		+ " timeout=" + retriever.getReadTimeout() 
+            		+  " buf=" + r.getBuffer());
             
-            retriever.call();
+            if ( r.getBuffer() == null )
+            	throw new IOException(r.getValue("ERROR_MESSAGE").toString());
         }
         catch (Exception e)
         {
         	// Notify listeners of the error
         	onError(this, new Exception("Unable to download resource: " + resourceURL
         			, e));
-            //e.printStackTrace(); 
+            e.printStackTrace(); 
         }
     }
-    
+*/    
     
     private void addTileToMemoryCache()   
     {
@@ -584,7 +676,10 @@ public class GroundOverlayLayer extends AbstractLayer
 	/*
 	 * Notify listeners of a Layer error
 	 */
-	private void onError (GroundOverlayLayer layer, Exception ex) {
+	private void onError (GroundOverlayLayer layer, Exception ex) 
+	{
+		logger.debug("# of overlay listeners:" + listeners.size());
+		
 		for (GroundOverlayListener listener : listeners) {
 			listener.onError(layer, ex);
 		}
