@@ -13,6 +13,7 @@ package org.eclipse.plugin.worldwind.operation;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.ScreenOverlayLayer;
+import worldwind.contrib.layers.GroundOverlayLayer.GroundOverlayListener;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 /**
@@ -32,8 +34,11 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
  * @author Vladimir Silva
  *
  */
-public class AnimationJob extends Job 
+public class AnimationJob extends Job
+	implements GroundOverlayListener
 {
+	private static final Logger logger	= Logger.getLogger(AnimationJob.class);
+	
 	private TimeLoopGroundOverlay layer;
 	private boolean done 	= false;
 	private long interval 	= 80000; 	// base sleep interval
@@ -53,9 +58,31 @@ public class AnimationJob extends Job
 		this.statusLine	= statusLine;
 		this.display 	= display;
 		legend 			= layer.getLegend();
-
+		
+		addOverLayListeners();
+		logger.debug("layer=" + layer);
 	}
 
+	/* listen for layer events */
+	private void addOverLayListeners() 
+	{
+		ArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
+		
+		for (GroundOverlayLayer gol : overlays) {
+			gol.addOverlayListener(this);
+		}
+	}
+
+	/* remove listeners */
+	private void removeOverLayListeners() 
+	{
+		ArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
+		
+		for (GroundOverlayLayer gol : overlays) {
+			gol.removeOverlayListener(this);
+		}
+	}
+	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) 
 	{
@@ -158,6 +185,7 @@ public class AnimationJob extends Job
 	
 	public void stop () {
 		done = true;
+		removeOverLayListeners();
 	}
 	
 	
@@ -165,4 +193,29 @@ public class AnimationJob extends Job
 	public String toString() {
 		return "job=" + layer;
 	}
+	
+	/******************************************************
+	 * Ground Overlay listeners
+	 ******************************************************/
+	
+	/**
+	 * Fires on ground overlay error
+	 */
+	public void onError(GroundOverlayLayer layer, Exception ex) 
+	{
+		final String message = layer.getName() + ": " 
+			+ ex.getClass() + " " + ex.getMessage();
+		
+		logger.debug(message);
+		
+		display.syncExec(new Runnable() {
+			public void run() {
+				statusLine.setErrorMessage(message);
+			}
+		});
+
+		// stop rendering layer
+		//layer.setEnabled(false);
+	}
+	
 }

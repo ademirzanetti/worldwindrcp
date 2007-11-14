@@ -647,20 +647,20 @@ public class LayersView extends ViewPart
 	/**
 	 * Fires on ground overlay error
 	 */
-	public void onError(GroundOverlayLayer layer, Exception ex) 
-	{
-		final String message = layer.getName() + ": " 
-			+ ex.getClass() + " " + ex.getMessage();
-		
-		Display display = getViewSite().getShell().getDisplay();
-		
-		display.syncExec(new Runnable() {
-			public void run() {
-				statusLine.setErrorMessage(message);
-			}
-		});
-		
-	}
+//	public void onError(GroundOverlayLayer layer, Exception ex) 
+//	{
+//		final String message = layer.getName() + ": " 
+//			+ ex.getClass() + " " + ex.getMessage();
+//		
+//		Display display = getViewSite().getShell().getDisplay();
+//		
+//		display.syncExec(new Runnable() {
+//			public void run() {
+//				statusLine.setErrorMessage(message);
+//			}
+//		});
+//		
+//	}
 
 	/**
 	 * fires when an animated ground overlay loops thru

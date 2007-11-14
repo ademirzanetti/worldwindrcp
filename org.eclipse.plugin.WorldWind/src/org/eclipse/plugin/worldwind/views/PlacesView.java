@@ -63,6 +63,7 @@ import org.w3c.dom.NodeList;
 import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.TiledWMSLayer;
+import worldwind.contrib.layers.GroundOverlayLayer.GroundOverlayListener;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
@@ -74,6 +75,7 @@ import worldwind.contrib.parsers.ParserUtils;
  */
 public class PlacesView extends ViewPart
 //	implements GroundOverlayLoopListener
+	implements GroundOverlayListener
 {
 	private static final Logger logger	= Logger.getLogger(PlacesView.class);
 	static public String ID 			= PlacesView.class.getName();
@@ -467,7 +469,7 @@ public class PlacesView extends ViewPart
 				// Use an eclipse animation job for smoothness
 				// It won't hang the UI
 				AnimationJob job = new AnimationJob(display, overlay, statusLine);
-				
+
 				// Save the job, so it can be stopped
 				animatedJobs.put(to.getID(), job);
 				
@@ -529,8 +531,8 @@ public class PlacesView extends ViewPart
 		{
 			logger.debug("Leaf layer "+ layer.getName());
 			
-//			if ( layer instanceof GroundOverlayLayer)
-//				((GroundOverlayLayer)layer).addOverlayListener(this);
+			if ( layer instanceof GroundOverlayLayer)
+				((GroundOverlayLayer)layer).addOverlayListener(this);
 			
 			// set tree check state
 			to.setEnabled(checked);
@@ -571,7 +573,9 @@ public class PlacesView extends ViewPart
 				statusLine.setErrorMessage(message);
 			}
 		});
-		
+
+		// stop rendering layer
+		layer.setEnabled(false);
 	}
 
 	/**
