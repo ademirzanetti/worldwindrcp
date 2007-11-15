@@ -186,10 +186,9 @@ public class GroundOverlayLayer extends AbstractLayer
         	logger.debug("Loading tile from memory " + tileKey + " tile=" + tile);
         }
         
-        logger.debug("Redering tile=" + tile);
+        logger.debug("Redering tile=" + tile + " opacity=" + getOpacity());
         
-        //new GeographicSurfaceTileRenderer().renderTile(dc, tile);
-        dc.getGeographicSurfaceTileRenderer().renderTile(dc, tile);
+        dc.getGeographicSurfaceTileRenderer().renderTile(dc, tile, getOpacity());
         logger.debug("----> END doRender:" + getName() );
     }
 
