@@ -23,6 +23,29 @@ import worldwind.contrib.Messages;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.parsers.ParserUtils;
 
+/**
+ * A WW layer to fetch images from a HTTP image server such as Navy Labs Monterey
+ * http://www.nrlmry.navy.mil/ or NOAA GOES Sat images - http://www.ssd.noaa.gov/goes/
+ * 
+ * <p>The loops are created by parsing XML catalogs using WW .NET NRL XML format.
+ * For example:</p>
+ * <pre>
+ * 	&lt;NRL_DataSet Name="Cloud Top Heights">
+ * 		&lt;Directory_Url>http://www.nrlmry.navy.mil/archdat/global/stitched/cloudtop/&lt;/Directory_Url>
+ * 		&lt;Description>Global Cloud Top Heights&lt;/Description>
+ * 		&lt;GeographicBoundingBox>
+ * 			&lt;North>&lt;Value>75&lt;/Value>&lt;/North>
+ * 			&lt;South>&lt;Value>-75&lt;/Value>&lt;/South>
+ * 			&lt;West>&lt;Value>-180&lt;/Value>&lt;/West>
+ * 			&lt;East>&lt;Value>180&lt;/Value>&lt;/East>
+ * 		&lt;/GeographicBoundingBox>
+ * 	&lt;/NRL_DataSet>
+ * 	</pre>
+ * <p>The catalog are located in the config folder: MRL_Monterey.xml, goes.noaa.xml
+ * , and sat.loops.xml
+ * @author Owner
+ *
+ */
 public class HTTPLoopFileLayer extends TimeLoopGroundOverlay 
 {
 	private static final Logger logger = Logger.getLogger(HTTPLoopFileLayer.class);

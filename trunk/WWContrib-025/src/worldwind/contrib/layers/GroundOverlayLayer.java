@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package worldwind.contrib.layers;
 
 import java.awt.Graphics2D;
@@ -36,7 +46,9 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
 /**
- * A ground overlay layer. Renders a URL on a given latlon box (a.k.a Sector) 
+ * A ground overlay layer, based on the GroundOverlay concept from KML. 
+ * Renders a URL representing an surface image on a given lat/lon box (Sector).
+ * This layer is used to convert KML's GroundOverlays into WW layers
  * @author Vladimir Silva
  *
  */
