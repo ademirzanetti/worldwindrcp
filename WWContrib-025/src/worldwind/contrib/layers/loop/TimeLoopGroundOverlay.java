@@ -34,11 +34,11 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.util.Logging;
 
 /**
- * Animated ground overlay layer.
- * It is a {@link RenderableLayer} with a layer list of {@link GroundOverlayLayer}.
- * Used to build simple animations from KML or WMS.
- * Animation works by switching child layer visibility using background thread based
- * on a timeout affected by a speed value (0..100)
+ * Animated ground overlay layer. It is a {@link RenderableLayer} with 
+ * a layer list of {@link GroundOverlayLayer}. Used to build simple 
+ * animations from KML or WMS. Animation works by switching child layer 
+ * visibility using background thread based on a timeout affected 
+ * by a speed value (0..100)
  * 
  * @author V Silva
  *

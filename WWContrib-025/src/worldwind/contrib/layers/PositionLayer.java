@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package worldwind.contrib.layers;
 
 import java.awt.Color;
@@ -17,7 +27,9 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * Position Layer based on the ScalebarLayer 
+ * Position Layer based on the ScalebarLayer.
+ * By default, it displays the message: Pointer LAT LON Elev ELEVATION
+ * on the south west side of the view port. 
  * @author Owner
  *
  */
