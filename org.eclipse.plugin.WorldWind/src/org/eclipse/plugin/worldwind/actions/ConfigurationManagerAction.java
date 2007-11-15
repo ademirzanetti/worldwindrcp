@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.update.ui.UpdateManagerUI;
 
 /**
- * Fire Eclipse Update Manage Cnfiguration
+ * Fire Eclipse Update Manage Configuration
  * @see IWorkbenchWindowActionDelegate
  */
 public class ConfigurationManagerAction implements IWorkbenchWindowActionDelegate {

@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -37,6 +38,7 @@ import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
+import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersContentProvider;
 import org.eclipse.plugin.worldwind.views.LayersView.LayersLabelProvider;
@@ -101,7 +103,10 @@ public class PlacesView extends ViewPart
 	
 	// Save layer: KMZ only
 	private Action actionSaveLayer;
-	
+
+	// Layer controls
+	private Action actionLayerControls;
+
 	// node double click
 	private Action doubleClickAction;
 	
@@ -482,6 +487,7 @@ public class PlacesView extends ViewPart
 				
 				// Get job from pool
 				AnimationJob job = animatedJobs.get(to.getID());
+				
 				if ( job != null) {
 					logger.debug("Stopping animated job " + job + " id=" + to.getID());
 					
@@ -599,11 +605,13 @@ public class PlacesView extends ViewPart
 	 * End Ground Overlay listeners
 	 ******************************************************/
 
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(IToolBarManager manager) 
+	{
 		manager.add(actionPlay);
 		// manager.add(actionPause);
 		manager.add(actionStop);
 		manager.add(new Separator());
+		manager.add(actionLayerControls);
 		manager.add(actionSaveLayer);
 		manager.add(new Separator());
 		manager.add(actionRemoveNode);
@@ -754,12 +762,54 @@ public class PlacesView extends ViewPart
 				}
 			}
 		};
+		
 		actionSaveLayer.setToolTipText(Messages.getText("layer.action.save"));
 		actionSaveLayer.setImageDescriptor(ICON_SAVE);
-		
+
+		actionLayerControls = new Action() {
+			public void run() 
+			{
+				try {
+					showLayerControls();
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		};
+		actionLayerControls.setToolTipText(Messages.getText("layer.action.controls"));
+		actionLayerControls.setImageDescriptor(Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+				
 	}
 	
+	/*
+	 * Show selected layer controls
+	 */
+	private void showLayerControls() {
+		ISelection selection 	= nodeViewer.getSelection();
+		Object obj 				= ((IStructuredSelection)selection).getFirstElement();
+		TreeObject to 			= (TreeObject)obj;
+		
+		if ( obj == null ) return;
 
+		Shell shell = getViewSite().getShell();
+		Layer layer = to.getLayer();
+		
+		if ( layer instanceof TiledWMSLayer) {
+			MessageDialog.openInformation(shell
+					, Messages.getText("info.dialog.title")
+					, "WMS layers don't support controls.");
+			return;
+		}
+		
+		
+		LayerControlsDialog dialog = new LayerControlsDialog(shell, layer);
+		
+		if ( layer instanceof TimeLoopGroundOverlay)
+			dialog.setAnimationJob(animatedJobs.get(to.getID()));
+		
+		dialog.open();
+	}
+	
 	/**
 	 * On click move globe to the centroid of the BBOX dataset
 	 */

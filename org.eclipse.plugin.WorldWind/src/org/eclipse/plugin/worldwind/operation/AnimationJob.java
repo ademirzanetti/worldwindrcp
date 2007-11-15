@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.plugin.worldwind.operation;
 
-
-import java.util.ArrayList;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -41,7 +39,7 @@ public class AnimationJob extends Job
 	
 	private TimeLoopGroundOverlay layer;
 	private boolean done 	= false;
-	private long interval 	= 80000; 	// base sleep interval
+	private long interval 	= 30000; 	// base sleep interval
 	private int speed 		= 50;		// animation speed: 0..100
 	private Display display;
 	private StatusLine statusLine;
@@ -66,7 +64,7 @@ public class AnimationJob extends Job
 	/* listen for layer events */
 	private void addOverLayListeners() 
 	{
-		ArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
+		CopyOnWriteArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
 		
 		for (GroundOverlayLayer gol : overlays) {
 			gol.addOverlayListener(this);
@@ -76,7 +74,7 @@ public class AnimationJob extends Job
 	/* remove listeners */
 	private void removeOverLayListeners() 
 	{
-		ArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
+		CopyOnWriteArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
 		
 		for (GroundOverlayLayer gol : overlays) {
 			gol.removeOverlayListener(this);
@@ -86,7 +84,7 @@ public class AnimationJob extends Job
 	@Override
 	protected IStatus run(IProgressMonitor monitor) 
 	{
-		ArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
+		CopyOnWriteArrayList<GroundOverlayLayer> overlays = layer.getOverlays();
 		
 		// # of frames
 		int size = overlays.size();
@@ -218,4 +216,13 @@ public class AnimationJob extends Job
 		//layer.setEnabled(false);
 	}
 	
+	public void setSpeed (int speed) {
+		if ( speed > 100 ) speed = 100;
+		if ( speed < 1 ) speed = 1;
+		this.speed = speed;
+	}
+	
+	public int getSpeed () {
+		return speed;
+	}
 }
