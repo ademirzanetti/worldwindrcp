@@ -12,7 +12,6 @@ package worldwind.contrib.layers.loop;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -37,19 +36,22 @@ import gov.nasa.worldwind.util.Logging;
 /**
  * Animated ground overlay layer.
  * It is a {@link RenderableLayer} with a layer list of {@link GroundOverlayLayer}.
- * Used to build animations from KML or WMS
- * @author Owner
+ * Used to build simple animations from KML or WMS.
+ * Animation works by switching child layer visibility using background thread based
+ * on a timeout affected by a speed value (0..100)
+ * 
+ * @author V Silva
  *
  */
 public class TimeLoopGroundOverlay extends RenderableLayer 
 	implements GroundOverlayListener
 {
-	private static final Logger logger = Logger.getLogger(TimeLoopGroundOverlay.class);
-	private ArrayList<GroundOverlayLayer> overlays = new ArrayList<GroundOverlayLayer>();    
+	private static final Logger logger 				= Logger.getLogger(TimeLoopGroundOverlay.class);
+	private CopyOnWriteArrayList<GroundOverlayLayer> overlays 	= new CopyOnWriteArrayList<GroundOverlayLayer>();    
 
-    
-    private Worker animator = null;
-    private WorldWindowGLCanvas canvas = null;
+    /** A thread used to flip layer visibility */
+    private Worker animator 			= null;
+    private WorldWindowGLCanvas canvas 	= null;
     
 	// Animation loop status listeners
     private CopyOnWriteArrayList<GroundOverlayLoopListener> listeners = new CopyOnWriteArrayList<GroundOverlayLoopListener>(); 
@@ -81,8 +83,8 @@ public class TimeLoopGroundOverlay extends RenderableLayer
     {
     	private static final Logger logger = Logger.getLogger(Worker.class);
     	
-    	ArrayList<GroundOverlayLayer> overlays;
-    	ArrayList<GroundOverlayLayer> hiddenOverlays = new ArrayList<GroundOverlayLayer>();
+    	CopyOnWriteArrayList<GroundOverlayLayer> overlays;
+    	CopyOnWriteArrayList<GroundOverlayLayer> hiddenOverlays = new CopyOnWriteArrayList<GroundOverlayLayer>();
 
     	// used to add layers & repaint canvas
         private WorldWindowGLCanvas canvas;
@@ -99,7 +101,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
     	//private Vector<GroundOverlayLoopListener> listeners;
     	private CopyOnWriteArrayList<GroundOverlayLoopListener> listeners;
     	
-    	public Worker(ArrayList<GroundOverlayLayer> overlays, WorldWindowGLCanvas canvas) {
+    	public Worker(CopyOnWriteArrayList<GroundOverlayLayer> overlays, WorldWindowGLCanvas canvas) {
     		this.overlays = overlays;
     		this.canvas = canvas;
 		}
@@ -230,7 +232,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		this.canvas = canvas;
 		
 		super.setName(name);
-		animator = new Worker((ArrayList<GroundOverlayLayer>)overlays, canvas);
+		animator = new Worker((CopyOnWriteArrayList<GroundOverlayLayer>)overlays, canvas);
 	}
 
 	/**
@@ -344,11 +346,11 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	 * Set child ground overlays that compose this animated overlay
 	 * @param overlays
 	 */
-	public void setOverlays(ArrayList<GroundOverlayLayer> overlays) {
+	public void setOverlays(CopyOnWriteArrayList<GroundOverlayLayer> overlays) {
 		this.overlays = overlays;
 	}
 
-	public ArrayList<GroundOverlayLayer> getOverlays() {
+	public CopyOnWriteArrayList<GroundOverlayLayer> getOverlays() {
 		return overlays;
 	}
 	
@@ -630,5 +632,16 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	 */
 	public ScreenOverlayLayer getLegend() {
 		return legend;
+	}
+	
+	/**
+	 * Set opacity for this time loop
+	 * @param opacity a double range between 0..1
+	 */
+	public void setOpacity(double opacity) {
+		super.setOpacity(opacity);
+		for (GroundOverlayLayer layer : overlays) {
+			layer.setOpacity(opacity);
+		}
 	}
 }
