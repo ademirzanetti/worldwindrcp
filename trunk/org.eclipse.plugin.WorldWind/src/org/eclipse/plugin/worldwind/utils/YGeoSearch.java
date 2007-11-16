@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.utils;
 
 import java.io.ByteArrayInputStream;
@@ -54,7 +64,7 @@ public class YGeoSearch
 	private String location;
 	
 	/**
-	 * Yahoo Result
+	 * Yahoo search result object
 	 * @author Owner
 	 *
 	 */
@@ -79,7 +89,7 @@ public class YGeoSearch
 	}
 
 	/**
-	 * 
+	 * Search for a place using Yahoo
 	 * @param location
 	 */
 	public YGeoSearch(String location) 
@@ -91,8 +101,8 @@ public class YGeoSearch
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Get search locations 
+	 * @return array of {@link YResult} objects
 	 * @throws Exception
 	 */
 	public YResult[] getLocations() throws Exception

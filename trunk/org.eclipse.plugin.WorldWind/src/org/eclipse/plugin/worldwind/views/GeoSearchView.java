@@ -108,15 +108,17 @@ public class GeoSearchView extends ViewPart implements Listener
 		Widget w = event.widget;
 
 		try {
+			// Text has been entered in the combo box
 			if ( w instanceof Combo ) {
 				String location = ((Combo)w).getText();
 				
-				
+				// Search for text using Yahoo
 				YGeoSearch yahoo 	= new YGeoSearch(location);
 				results 			=  yahoo.getLocations();
 				
 				viewer.getTable().removeAll();
 				
+				// Add results to the table
 				for (YResult result : results) {
 					viewer.add(result);
 				}
@@ -125,6 +127,7 @@ public class GeoSearchView extends ViewPart implements Listener
 					((Combo)w).add(location);
 			}
 			else {
+				// A search result has been clicked within the table
 				int idx = ((Table)w).getSelectionIndex();
 
 				// grab earth view
@@ -136,6 +139,7 @@ public class GeoSearchView extends ViewPart implements Listener
 				double lat = Double.parseDouble(results[idx].latitude);
 				double lon = Double.parseDouble(results[idx].longitude);
 				
+				// Fly to the lat lon of the yahoo result
 				LatLon latlon = new LatLon(Angle.fromDegrees(lat)
 						, Angle.fromDegrees(lon));
 				
@@ -144,7 +148,6 @@ public class GeoSearchView extends ViewPart implements Listener
 			
 		} catch (Exception e) {
 			// show error in status line
-			// e.printStackTrace();
 			statusLine.setErrorMessage(e.getMessage());
 		}
 	}
