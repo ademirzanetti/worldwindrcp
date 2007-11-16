@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.utils;
 
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -16,6 +26,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 
+/**
+ * A fancy tool tip class with a web browser to display tooltips from HTML.
+ * @author vsilva
+ *
+ */
 public class LayersToolTipSupport extends ColumnViewerToolTipSupport 
 {
 	IWorkbenchWindow window;
@@ -62,6 +77,11 @@ public class LayersToolTipSupport extends ColumnViewerToolTipSupport
 		return composite;
 	}
 
+	/*
+	 * When a link is clicked in the tool tip the page is displayed on the 
+	 * web browser view
+	 * @param event
+	 */
 	private void processLocation (LocationEvent event) 
 	{
 		// invalid wb window?
@@ -72,7 +92,7 @@ public class LayersToolTipSupport extends ColumnViewerToolTipSupport
 		String location = event.location;
 		
 		// Display location on WB view
-		// Grab layers view
+		// Grab web browser view
 		WebBrowserView view = (WebBrowserView)Activator.getView(window
 				, WebBrowserView.ID);
 		
