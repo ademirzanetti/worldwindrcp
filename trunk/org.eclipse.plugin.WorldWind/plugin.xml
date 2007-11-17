@@ -45,7 +45,7 @@
             class="org.eclipse.plugin.worldwind.views.PlacesView"
             icon="icons/16x16-nasa.png"
             id="org.eclipse.plugin.worldwind.views.PlacesView"
-            name="Places">
+            name="My Places">
       </view>
 		<view
             name="Animation Progress View"
