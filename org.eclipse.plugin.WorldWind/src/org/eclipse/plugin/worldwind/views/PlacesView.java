@@ -440,7 +440,7 @@ public class PlacesView extends ViewPart
 	}
 	
 	/*
-	 * Process a check state event
+	 * Process a tree node check state event
 	 */
 	private void handleCheckState (boolean checked, TreeObject to)
 	{
@@ -607,7 +607,6 @@ public class PlacesView extends ViewPart
 	private void fillLocalToolBar(IToolBarManager manager) 
 	{
 		manager.add(actionPlay);
-		// manager.add(actionPause);
 		manager.add(actionStop);
 		manager.add(new Separator());
 		manager.add(actionLayerControls);
@@ -796,7 +795,8 @@ public class PlacesView extends ViewPart
 		if ( layer instanceof TiledWMSLayer) {
 			MessageDialog.openInformation(shell
 					, Messages.getText("info.dialog.title")
-					, "WMS layers don't support controls.");
+					, Messages.getText("ctl.dlg.invalid.layer"
+							, new Object[] {layer.getName()} ));
 			return;
 		}
 		

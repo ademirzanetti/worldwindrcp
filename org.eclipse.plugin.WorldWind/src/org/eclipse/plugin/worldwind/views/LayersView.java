@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.plugin.worldwind.views;
 
-
 import gov.nasa.worldwind.layers.Layer;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
@@ -19,9 +18,12 @@ import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.*;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,6 +41,7 @@ import worldwind.contrib.layers.GroundOverlayLayer;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.operation.Check4UpdatesJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
+import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.EarthView;
 import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
@@ -61,6 +64,9 @@ public class LayersView extends ViewPart
 
 	// click action: navigate to layer centroid
 	private Action clickAction;
+
+	// Layer controls
+	private Action actionLayerControls;
 	
 	// Status line
 	private StatusLine statusLine;
@@ -328,7 +334,6 @@ public class LayersView extends ViewPart
 		labelProvider.setTipSupport(tipSupport);
 		treeViewer.setLabelProvider(labelProvider);
 
-		//treeViewer.setSorter(new NameSorter());
 		treeViewer.initialize();
 
 		
@@ -348,7 +353,7 @@ public class LayersView extends ViewPart
 		
 		makeActions();
 		hookClickAction();
-		
+		contributeToActionBars();
 
 		// Set initially checked layers
 		treeViewer.updateCheckState();
@@ -433,9 +438,61 @@ public class LayersView extends ViewPart
 						, ((TreeObject)obj).getLayer());
 			}
 		};
+
+		actionLayerControls = new Action() {
+			public void run() 
+			{
+				try {
+					showLayerControls();
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+		};
+		actionLayerControls.setToolTipText(Messages.getText("layer.action.controls"));
+		actionLayerControls.setImageDescriptor(Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 		
 	}
 	
+	/*
+	 * Show controls for the selected layer 
+	 */
+	private void showLayerControls() 
+	{
+		ISelection selection 	= treeViewer.getSelection();
+		Object obj 				= ((IStructuredSelection)selection).getFirstElement();
+		TreeObject to 			= (TreeObject)obj;
+		
+		if ( obj == null ) return;
+
+		Shell shell = getViewSite().getShell();
+		Layer layer = to.getLayer();
+
+		if ( ! (layer instanceof TimeLoopGroundOverlay) ) {
+			MessageDialog.openInformation(shell
+					, Messages.getText("info.dialog.title")
+					, Messages.getText("ctl.dlg.invalid.layer"
+							, new Object[] {layer.getName()} ));
+			return;
+		}
+		
+		LayerControlsDialog dialog = new LayerControlsDialog(shell, layer);
+		
+		if ( layer instanceof TimeLoopGroundOverlay)
+			dialog.setAnimationJob(animatedJobs.get(to.getID()));
+		
+		dialog.open();
+	}
+	
+	private void contributeToActionBars() {
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalToolBar(bars.getToolBarManager());
+	}
+	
+	private void fillLocalToolBar(IToolBarManager manager) 
+	{
+		manager.add(actionLayerControls);
+	}
 
 	/**
 	 * On click move globe to the centroid of the BBOX dataset
@@ -464,7 +521,7 @@ public class LayersView extends ViewPart
 
 	
 	/**
-	 * Add a World Wind Layer to the view 
+	 * Add a World Wind Layer to the view. This view accepts {@link TimeLoopGroundOverlay} only 
 	 */
 	public void addOverlays (Layer[] layers, boolean enabled) 
 	{
@@ -477,15 +534,9 @@ public class LayersView extends ViewPart
 			treeViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
 			return;
 		}
-		// Ground overlays
-//		else if ( first instanceof GroundOverlayLayer) {
-//			for (Layer layer : layers) {
-//				addGroundOverlay((GroundOverlayLayer)layer, enabled);
-//			}
-//		}
 		// regular layer
 		else {
-			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
+			statusLine.setErrorMessage(Messages.getText("layers.view.1") + first.getClass().getName());
 		}
 	}
 
@@ -499,7 +550,7 @@ public class LayersView extends ViewPart
 		layer.setEnabled(enabled);
 		treeViewer.addTreeObject(new TreeParent(layer, icon	)
 				, null
-				, true		// Make lare renderable
+				, true		// Make layer renderable
 				, enabled); // checked
 		
 	}
