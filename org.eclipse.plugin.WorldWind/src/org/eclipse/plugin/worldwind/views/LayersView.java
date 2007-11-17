@@ -37,6 +37,7 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.layers.GroundOverlayLayer;
 
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
+import org.eclipse.plugin.worldwind.operation.Check4UpdatesJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.EarthView;
@@ -51,7 +52,6 @@ import org.eclipse.plugin.worldwind.views.tree.TreeParent;
  *
  */
 public class LayersView extends ViewPart
-//	implements GroundOverlayLoopListener
 {
 	private static final Logger logger = Logger.getLogger(LayersView.class);
 	
@@ -72,121 +72,6 @@ public class LayersView extends ViewPart
 	private ConcurrentHashMap<String, AnimationJob> animatedJobs 
 		= new ConcurrentHashMap<String, AnimationJob>();
 	
-//	/*
-//	 * The content provider class is responsible for
-//	 * providing objects to the view. It can wrap
-//	 * existing objects in adapters or simply return
-//	 * objects as-is. These objects may be sensitive
-//	 * to the current input of the view, or ignore
-//	 * it and always show the same content 
-//	 * (like Task List, for example).
-//	 */
-//	public static class TreeObject implements IAdaptable {
-//		private Layer  layer;
-//		private TreeParent parent;
-//		private boolean checked;
-//		private Image image;
-//		
-//		// Unique node ID
-//		private String id;
-//		
-//		// All layers are removable by default from the tree
-//		// built-in layers cannot be removed.
-//		private boolean removable = true;
-//		
-//		public TreeObject( Layer layer) { 
-//			this.layer 	= layer;
-//			checked 	= layer.isEnabled();
-//			id 			= layer.getName() + "-" + System.currentTimeMillis();
-//		}
-//		
-//		public TreeObject( Layer layer, Image image) 
-//		{ 
-//			this.layer 	= layer;
-//			this.checked =layer.isEnabled(); 
-//			this.image 	= image;
-//			id 			= layer.getName() + "-" + System.currentTimeMillis();
-//		}
-//		
-//		public String getName() {
-//			return layer.getName();
-//		}
-//		public void setParent(TreeParent parent) {
-//			this.parent = parent;
-//		}
-//		public TreeParent getParent() {
-//			return parent;
-//		}
-//		public String toString() {
-//			return getName();
-//		}
-//		public Object getAdapter(Class key) {
-//			return null;
-//		}
-//		public void setEnabled(boolean enabled) {
-//			layer.setEnabled(enabled);
-//		}
-//		public Image getImage () {
-//			return image;
-//		}
-//		public void setImage (Image image) {
-//			this.image = image;
-//		}
-//		public boolean getChecked () {
-//			return checked;
-//		}
-//		public Layer getLayer() {
-//			return layer;
-//		}
-//		public void setRemovable(boolean removable) {
-//			this.removable = removable;
-//		}
-//		public boolean isRemovable() {
-//			return removable;
-//		}
-//		public String getID () {
-//			return id;
-//		}
-//	}
-//	
-//	public static class TreeParent extends TreeObject 
-//	{
-//		private ArrayList<TreeObject> children;
-//		
-//		public TreeParent(Layer layer) { 
-//			super(layer);
-//			children = new ArrayList<TreeObject>();
-//		}
-//		public TreeParent(Layer layer, Image image) { 
-//			super(layer, image);
-//			children = new ArrayList<TreeObject>();
-//		}
-//		
-//		public void addChild(TreeObject child) {
-//			children.add(child);
-//			child.setParent(this);
-//		}
-//		public void removeChild(TreeObject child) {
-//			children.remove(child);
-//			child.setParent(null);
-//		}
-//		public void clearChildren() {
-//			children.clear();
-//		}
-//		public TreeObject [] getChildren() {
-//			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
-//		}
-//		public boolean hasChildren() {
-//			return children.size()>0;
-//		}
-//		
-//		public void setRemovable(boolean removable) {
-//			super.setRemovable(removable);
-//			for (TreeObject to : children) {
-//				to.setRemovable(removable);
-//			}
-//		}
-//	}
 
 	/*
 	 * Provides content to the layers tree
@@ -339,13 +224,6 @@ public class LayersView extends ViewPart
 				logger.debug("Starting animated job " + job + " id=" + to.getID());
 				job.play();
 				
-//				job.addJobChangeListener(new JobChangeAdapter() {
-//			        public void done(IJobChangeEvent event) {
-//			        	if (! event.getResult().isOK()) {           
-//			        		handleCheckState(false, to);
-//			        	}
-//			        }
-//			     });
 				
 			}
 			else { 
@@ -488,6 +366,10 @@ public class LayersView extends ViewPart
 		job.setProperty(IProgressConstants.ICON_PROPERTY, Activator.ICON_NOAA);
 		job.setUser(false);
 		job.schedule();
+		
+		// Fire update check job in 5 mins.
+		new Check4UpdatesJob(getViewSite().getShell().getDisplay()).schedule(350000);
+		
 	}
 
 /*
@@ -622,66 +504,6 @@ public class LayersView extends ViewPart
 		
 	}
 	
-
-	/**
-	 * Add a {@link GroundOverlayLayer} to the View tree
-	 * @param overlay {@link GroundOverlayLayer}
-	 */
-//	private void addGroundOverlay (GroundOverlayLayer overlay, boolean enabled) 
-//	{
-//		TreeParent parent = 
-//			new TreeParent(overlay
-//					, guessIcon(overlay.getName())
-//		            );
-//		
-//		treeViewer.addTreeObject(parent, null, true, enabled);
-//	}
-	
-
-	
-	
-	/******************************************************
-	 * Ground Overlay listeners
-	 ******************************************************/
-	
-	/**
-	 * Fires on ground overlay error
-	 */
-//	public void onError(GroundOverlayLayer layer, Exception ex) 
-//	{
-//		final String message = layer.getName() + ": " 
-//			+ ex.getClass() + " " + ex.getMessage();
-//		
-//		Display display = getViewSite().getShell().getDisplay();
-//		
-//		display.syncExec(new Runnable() {
-//			public void run() {
-//				statusLine.setErrorMessage(message);
-//			}
-//		});
-//		
-//	}
-
-	/**
-	 * fires when an animated ground overlay loops thru
-	 */
-/*	
-	public synchronized void statusChanged(final int current, final int total, final GroundOverlayLayer layer) 
-	{
-		logger.debug("statusChanged" + layer + " ("  + current + "/" + total + ")");
-		
-		if ( getViewSite() == null || getViewSite().getShell() == null ) return;
-		
-		Display display = getViewSite().getShell().getDisplay();
-		
-        display.syncExec(new Runnable() {
-        	public void run() {
-        		String message = layer + " ("  + current + "/" + total + ")" ;
-        		statusLine.setLoopStatusMessage(message);
-        	}
-        });
-	}
-*/
 	
 	public void setStausMessage(String message){
 		statusLine.setMessage(message);

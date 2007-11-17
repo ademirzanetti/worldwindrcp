@@ -76,7 +76,6 @@ import worldwind.contrib.parsers.ParserUtils;
  *
  */
 public class PlacesView extends ViewPart
-//	implements GroundOverlayLoopListener
 	implements GroundOverlayListener
 {
 	private static final Logger logger	= Logger.getLogger(PlacesView.class);
@@ -772,7 +771,7 @@ public class PlacesView extends ViewPart
 				try {
 					showLayerControls();
 				} catch (Exception e) {
-					// TODO: handle exception
+					logger.error(e);
 				}
 			}
 		};
