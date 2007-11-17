@@ -685,6 +685,8 @@ public class PlacesView extends ViewPart
 				
 				TreeObject to = (TreeObject) selection.getFirstElement();
 
+				if ( to == null ) return ;
+				
 				try {
 					// Stop/Hide
 					handleCheckState(false, to);
