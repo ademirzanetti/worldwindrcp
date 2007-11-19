@@ -1,6 +1,6 @@
 #summary Eclipse based automatic updates.
 
-The new version of WW Geo supoports aomatic uodates using Eclipse's uodate manager API. 
+The new version of WW Geo supports automatic updates using Eclipse's update manager API. 
 
 
 = Using the Update Mananger =
