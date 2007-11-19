@@ -12,7 +12,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.plugin.worldwind.Messages;
+import org.eclipse.plugin.worldwind.Perspective;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.core.IFeatureReference;
@@ -23,12 +26,12 @@ import org.eclipse.update.operations.IInstallFeatureOperation;
 import org.eclipse.update.operations.OperationsManager;
 
 /**
- * A Job to check for software updates or new features.
+ * A Job to automate checks for software updates or new features.
  * For security reasons, features will not be installed without
  * the user's permission.
  *  
  * The update manager can be used to do the same thing. However the user
- *  needs to know the update site.
+ * needs to know the update site.
  *  
  * @author Owner
  *
@@ -38,10 +41,12 @@ public class Check4UpdatesJob extends Job
 	private static final Logger logger	= Logger.getLogger(Check4UpdatesJob.class);
 	
 	private Display display;
+	private IWorkbenchWindow window;
 	
-	public Check4UpdatesJob(Display display) { 
+	public Check4UpdatesJob(IWorkbenchWindow window) { 
 		super("Check for updates");
-		this.display = display;
+		this.window 	= window;
+		this.display	= window.getShell().getDisplay();
 	}
 
 	@Override
@@ -70,13 +75,17 @@ public class Check4UpdatesJob extends Job
 			logger.debug("Remote features refs len=" + remoteFeatures.length 
 					+ " Configured(Local) features len=" + localFeatures.length);
 			
-			// if remote features == 0 nothing to install
+			/*
+			 * remote features == 0 nothing to install
+			 */
 			if ( remoteFeatures.length == 0 ) {
 				logger.debug("No remote featues found in " + remoteSite);
 				return Status.OK_STATUS;
 			}
 
-			// if remote features size > 0 && local feats == 0 then there are new features to be installed
+			/*
+			 * if remote features size > 0 && local feats == 0 then there are new features to be installed 
+			 */
 			if ( remoteFeatures.length > 0 && localFeatures.length == 0) 
 			{
 				logger.debug("New features to install=" + remoteFeatures.length);
@@ -103,14 +112,16 @@ public class Check4UpdatesJob extends Job
 						
 						// install new features
 						if ( install ) 
-							installFeatures(installOps, monitor);
+							fireUpdateJob(installOps); //installFeatures(installOps, monitor);  
 						
 					}
 				});
 				return Status.OK_STATUS;
 			}
 			
-			// There are updates for installed features
+			/*
+			 * There are updates for installed features
+			 */
 			for (int i = 0; i < remoteFeatures.length; i++) 
 			{
 				logger.debug("Looking 4 update of remote feature=" +  remoteFeatures[i].getName() + " in local site.");
@@ -135,7 +146,6 @@ public class Check4UpdatesJob extends Job
 			}
 			
 			// Ask if the user wants to update
-			//if ( features.length() >  0)
 			if ( installOps.size() > 0 )
 			{
 				final String message = Messages.getText("upd.job.2")
@@ -149,9 +159,9 @@ public class Check4UpdatesJob extends Job
 								, message);
 						
 						// Update features
-						if ( update ) 
-							installFeatures(installOps, monitor);
-						
+						if ( update ) {
+							fireUpdateJob(installOps);//installFeatures(installOps, monitor); 
+						}
 					}
 				});	
 			}
@@ -163,7 +173,43 @@ public class Check4UpdatesJob extends Job
 		return Status.OK_STATUS;
 	}
 
+	/**
+	 * Use a job within the job to fire the install operations. This is to 
+	 * prevent the UI from freezing
+	 * @param installOps
+	 */
+	void fireUpdateJob (final List<IInstallFeatureOperation> installOps) 
+	{
+		// show progress view
+		try {
+			window.getActivePage().showView(Perspective.ID_PROGRESSVIEW);
+		}
+		catch (PartInitException e) {}
+		
+		Job job = new Job("Feature Installation") {
+	        protected IStatus run(IProgressMonitor monitor) {
+	        	installFeatures(installOps, monitor);
+	        	
+//	        	setProperty(IProgressConstants.ACTION_PROPERTY, 
+//	                    getCompletedAction());
+	        	
+	        	return Status.OK_STATUS;
+	        }
+		};
+		job.setUser(false);
+	    job.schedule();
+	}
 
+//	protected Action getCompletedAction() {
+//		return new Action("Installation complete") {
+//			public void run() {
+//				MessageDialog.openInformation(display.getActiveShell()
+//						, Messages.getText("info.dialog.title")
+//						, "Installation complete. Restart the workbench for changes to take effect.");
+//			}
+//		};
+//	}	
+	
 	/**
 	 * Install features
 	 * @param installOps
