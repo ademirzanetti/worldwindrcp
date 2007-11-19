@@ -1,0 +1,12 @@
+#summary Eclipse based automatic updates.
+
+= The new version of WW Geo supoports aomatic uodates using Eclipse's uodate manager API. =
+
+
+= Using the Update Mananger =
+
+If you are an experienced Eclipse user, you shoudn't have any problems updating the plugins that compose World Wind Geo. Otherwise follow this instructions:
+
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
