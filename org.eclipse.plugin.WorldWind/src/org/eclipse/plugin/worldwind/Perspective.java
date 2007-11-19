@@ -30,7 +30,7 @@ public class Perspective implements IPerspectiveFactory
     public static final String MAIN_FOLDER = "org.eclipse.plugin.Earth";
 
     /** progress view id */
-    private static final String ID_PROGRESSVIEW = "org.eclipse.ui.views.ProgressView";
+    public static final String ID_PROGRESSVIEW = "org.eclipse.ui.views.ProgressView";
     
 	/**
 	 * Default perspective layout

@@ -373,8 +373,7 @@ public class LayersView extends ViewPart
 		job.schedule();
 		
 		// Fire update check job in 5 mins.
-		new Check4UpdatesJob(getViewSite().getShell().getDisplay()).schedule(350000);
-		
+		new Check4UpdatesJob(getViewSite().getWorkbenchWindow()).schedule(350000);
 	}
 
 /*
