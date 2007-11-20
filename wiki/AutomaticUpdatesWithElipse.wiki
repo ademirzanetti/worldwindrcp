@@ -11,7 +11,7 @@ If you are an experienced Eclipse user, you shoudn't have any problems updating 
 
   * Under "Help", select "Software Updates/Find and Install"
   * Click "Search for new features to install", then click next
-  * Click the "Nnew Remote Site" button on the right and enter WW Geo update information
+  * Click the "New Remote Site" button on the right and enter WW Geo update information
     # Name: World Wind Geo Update Site
     # Url : http://playerx.sf.net/wwgeo/
   * Click Finish, and follow the wizard installation instructions.
