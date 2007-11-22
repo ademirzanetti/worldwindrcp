@@ -428,12 +428,12 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 //		}
 //	}
 
-	public void asynchFetchSome() {
-		int size = ( overlays.size() < 5) ? overlays.size() : 5;
-		for (int i = 0; i < size; i++) {
-			((GroundOverlayLayer)overlays.get(i)).asynchFetch();
-		}
-	}
+//	public void asynchFetchSome() {
+//		int size = ( overlays.size() < 5) ? overlays.size() : 5;
+//		for (int i = 0; i < size; i++) {
+//			((GroundOverlayLayer)overlays.get(i)).asynchFetch();
+//		}
+//	}
 	
 	/**
 	 * Overlay names

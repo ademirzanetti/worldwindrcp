@@ -211,7 +211,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	{
 		return TextureIO.newTexture(
 				Messages.getInputStream(GroundOverlayLayer.class, "loading.png")
-				, false, TextureIO.PNG);		
+				, true, TextureIO.PNG);		
 	}
 	
 	
@@ -225,7 +225,7 @@ public class GroundOverlayLayer extends AbstractLayer
         try {
         	// load from URL
         	logger.debug("Fetching texture from URL " + textureURL);
-        	textureData = TextureIO.newTextureData(textureURL, false, null);
+        	textureData = TextureIO.newTextureData(textureURL, true, null);
         }
         catch (Exception e) {
         	// notify listeners of error
@@ -270,7 +270,7 @@ public class GroundOverlayLayer extends AbstractLayer
             	scaleImage(file, formatName, 1024, 1024);
             	
             	// reload texture
-            	texture = TextureIO.newTexture(file, false);
+            	texture = TextureIO.newTexture(file, true);
         	} 
         	catch (Exception e) {
 				e.printStackTrace();

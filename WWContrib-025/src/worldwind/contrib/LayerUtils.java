@@ -55,9 +55,10 @@ public class LayerUtils
 		double altitude	= 1.91e7; // Full view alt (default) //eyePoint.getElevation();
 		
 		// New altitude (zoom) based on the sector delta
-		if ( delta > 50  && delta < 100  ) altitude /= 2;
-		if ( delta > 10  && delta < 50  ) altitude /= 3;
-		if ( delta < 10 ) altitude /= 4;
+		if ( delta > 50 && delta < 100  ) altitude /= 2;
+		if ( delta > 10 && delta < 50  ) altitude /= 4;
+		if ( delta >  5 && delta < 10 ) altitude /= 6;
+		if ( delta < 5 ) altitude = 100000;
 		
 		logger.debug("Move to=" + position + " Eye point=" +  eyePoint
 				+ " Sector" + sector + " Sector delta=" + delta + " alt=" + altitude);
