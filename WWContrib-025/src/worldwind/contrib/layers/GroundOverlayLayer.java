@@ -70,7 +70,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	private Sector sector;
 	
 	// Web Download read timeout
-//	private static final int WEB_DOWNLOAD_READ_TIMEOUT = 9000;
+	private boolean loading = false;
 	
 	private String formatName;
 	private String fileSuffix;
@@ -121,8 +121,8 @@ public class GroundOverlayLayer extends AbstractLayer
 	private void initCache () {
         if (!WorldWind.getMemoryCacheSet().containsCache(GroundOverlayLayer.class.getName()))
         {
-            long size = Configuration.getLongValue(AVKey.TEXTURE_IMAGE_CACHE_SIZE, 3000000L);
-            MemoryCache cache = new BasicMemoryCache((long) (0.85 * size), size);
+            long size = Configuration.getLongValue(AVKey.TEXTURE_IMAGE_CACHE_SIZE, 4000000L);
+            MemoryCache cache = new BasicMemoryCache((long) (0.95 * size), size);
             cache.setName("Texture Tiles");
             WorldWind.getMemoryCacheSet().addCache(GroundOverlayLayer.class.getName(), cache);
         }
@@ -130,7 +130,6 @@ public class GroundOverlayLayer extends AbstractLayer
 	
 	private String buildTileKey ()
 	{
-		//return baseCachePath +  getName().replaceAll("[:]", "") + fileSuffix;
 		return baseCachePath +  Messages.forCachePath(getName()) + fileSuffix;
 	}
 
@@ -152,13 +151,20 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
     protected final void doRender(DrawContext dc)
     {
-		logger.debug("----> START doRender:" + getName());
+		logger.debug("----> START doRender:" + getName() + " loading tx=" + loading);
 		
         if (dc.getSurfaceGeometry() == null || dc.getSurfaceGeometry().size() < 1)
             return; 
 
-        dc.getGeographicSurfaceTileRenderer().setShowImageTileOutlines(true);
+        /*
+         * If the texture is being loaded show a "load" PMG and return
+         */
+        if ( loading ) {
+        	showLoadingTexture(dc);
+			return ;
+        }
         
+        // If not in memory
         if ( ! isTileInMemory())  
         {
         	logger.debug("Texture " + tileKey + " not in memory. loading from disk");
@@ -178,19 +184,11 @@ public class GroundOverlayLayer extends AbstractLayer
         				+ " key=" + tileKey); 
         
         		//downloadResource(getTextureURL(), WorldWind.dataFileCache().newFile(tileKey));
-        		if ( ! synchFetch() ) {
+        		if ( ! fetchOverlay() ) {
         			logger.error("Synch fetch for " + textureURL + " FAILED");
         			//onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
         			return;
         		}
-        		
-        		// return the "loading.png" texture
-        		try {
-        			tile.setTexture(dc.getTextureCache(), getLoadingTexture());
-					
-				} catch (Exception e) {
-					logger.error(e);
-				}
         	}
         }
         else {
@@ -198,20 +196,34 @@ public class GroundOverlayLayer extends AbstractLayer
         	logger.debug("Loading tile from memory " + tileKey + " tile=" + tile);
         }
         
-        logger.debug("Redering tile=" + tile + " opacity=" + getOpacity());
+        if ( ! loading) {
+        	logger.debug("Redering tile=" + tile + " opacity=" + getOpacity());
+        	dc.getGeographicSurfaceTileRenderer().renderTile(dc, tile, getOpacity());
+        }
+        else
+        	showLoadingTexture(dc);
         
-        dc.getGeographicSurfaceTileRenderer().renderTile(dc, tile, getOpacity());
         logger.debug("----> END doRender:" + getName() );
     }
 
 	/*
 	 * Return a "loading.png" texture when
 	 */
-	private Texture getLoadingTexture() throws IOException
+	private void showLoadingTexture(DrawContext dc)  
 	{
-		return TextureIO.newTexture(
-				Messages.getInputStream(GroundOverlayLayer.class, "loading.png")
-				, true, TextureIO.PNG);		
+		try {
+			TextureTile tile = new TextureTile(getSector());
+			tile.setTextureData(TextureIO.newTextureData(
+						Messages.getInputStream(GroundOverlayLayer.class, "loading.png")
+						, false
+						, TextureIO.PNG));
+			
+			dc.getGeographicSurfaceTileRenderer().renderTile(dc
+					, tile 
+					, getOpacity());
+			
+		} catch (Exception e) {
+		}
 	}
 	
 	
@@ -229,7 +241,7 @@ public class GroundOverlayLayer extends AbstractLayer
         }
         catch (Exception e) {
         	// notify listeners of error
-        	onError(this, e);
+        	//onError(this, e);
         	return false;
         }
         
@@ -273,7 +285,7 @@ public class GroundOverlayLayer extends AbstractLayer
             	texture = TextureIO.newTexture(file, true);
         	} 
         	catch (Exception e) {
-				e.printStackTrace();
+        		logger.error(e);
 			}
         }
         
@@ -289,9 +301,11 @@ public class GroundOverlayLayer extends AbstractLayer
      * @param resourceURL remote url
      * @param outFile file to save the resource to
      */
-    void downloadResource(URL resourceURL, final File outFile) throws Exception 
+    private void downloadResource(URL resourceURL, final File outFile) throws Exception 
     {
     	try {
+    		loading = true;
+    		
 			SimpleHTTPClient client = new SimpleHTTPClient(resourceURL);
 			client.doGet(new FileOutputStream(outFile));
 			
@@ -329,122 +343,26 @@ public class GroundOverlayLayer extends AbstractLayer
         	if ( errorMessage != null ) 
                 throw new IOException("Download failed: " + errorMessage );
         	
+        	client.close();
 		} 
     	catch ( Exception e) 
     	{
     		// remove file from disk
-            if ( outFile != null && outFile.exists()) {
-            	logger.error("Deleting cache file " + outFile);
+            if ( outFile != null && outFile.exists()) 
+            {
+            	logger.error("Download failed" 
+            			+ e.getMessage() 
+            			+ ". Deleting cache file " + outFile);
+            	
             	outFile.delete();
             }
             throw new Exception(e);
     	}
+    	finally {
+    		loading = false;
+    	}
     }
     
-/*
-    void downloadResource(URL resourceURL, final File outFile)
-    {
-        try
-        {
-            URLRetriever retriever = new HTTPRetriever(resourceURL,
-                new RetrievalPostProcessor() 
-                {
-                    public ByteBuffer run(Retriever retriever)
-                    {
-                        HTTPRetriever htr = (HTTPRetriever) retriever;
-
-                        if (!retriever.getState().equals(Retriever.RETRIEVER_STATE_SUCCESSFUL)) {
-                        	logger.debug("Web download failed state:" + retriever.getState() 
-                        			+ " read timeout=" + retriever.getReadTimeout()
-                        			+ " response code= " + htr.getResponseCode() );
-                            return null;
-                        }
-                        
-                        if (htr.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT)
-                        {
-                        	logger.debug("Web download failed state:" + htr.getState());
-                            return null;
-                        }
-
-                        URLRetriever r = (URLRetriever) retriever;
-                        ByteBuffer buffer = r.getBuffer();
-
-                        try
-                        {
-                        	logger.debug("Got web download resp code=" + htr.getResponseCode() 
-                        			+ " ct=" + htr.getContentType() + " to " + outFile);
-                        	
-                        	// Check the response content type: Only images are allowed
-                        	// Anything else indicates an error
-                        	final String contentType 	= htr.getContentType();
-                        	String erroMessage 			= null;
-                        	
-                        	// check for image content type
-                        	if ( contentType != null && contentType.indexOf("image") == -1 ) 
-                        	{
-                        		// FIXME: this is wrong!
-                        		final String buf =  new String(buffer.array());
-                        		
-                        		logger.debug("Invalid resp content type " + contentType + " buffer " + buf);
-                        		
-                        		// Invalid CT (not an image)
-                        		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")) {
-                        			// WMS XML response?...extract message from: 
-                        			// <ServiceException>MESSAGE</ServiceException>
-                        			final String xml 	= buf;
-                        			erroMessage			= ( xml != null && xml.indexOf("<ServiceException>") != -1) 
-                        				? xml.substring(xml.indexOf("<ServiceException>") + 18, xml.indexOf("</ServiceException>"))
-                        				: xml;
-                        		}
-                        		else {
-                        			// just set the err msg to whatever is on the byte buffer
-                        			erroMessage = buf;
-                        		}
-                        	}
-                        	
-                        	if ( erroMessage != null )
-                        		throw new IOException("Download failed: " + erroMessage );
-                        	
-                            WWIO.saveBuffer(buffer, outFile);
-                            return buffer;
-                        }
-                        catch (IOException e)
-                        {
-                            logger.error("Unable to download " + r.getUrl()
-                            		+ ": " + e.getMessage());
-                            
-                            retriever.setValue("ERROR_MESSAGE", e.getMessage());
-                            
-                            if ( outFile != null && outFile.exists()) {
-                            	logger.error("Deleting cache file " + outFile);
-                            	outFile.delete();
-                            }
-                            
-                            return null;
-                        }
-                    }
-                });
-            
-            retriever.setReadTimeout(WEB_DOWNLOAD_READ_TIMEOUT);
-
-            Retriever r = retriever.call();
-
-            logger.debug("Web download for " + resourceURL 
-            		+ " timeout=" + retriever.getReadTimeout() 
-            		+  " buf=" + r.getBuffer());
-            
-            if ( r.getBuffer() == null )
-            	throw new IOException(r.getValue("ERROR_MESSAGE").toString());
-        }
-        catch (Exception e)
-        {
-        	// Notify listeners of the error
-        	onError(this, new Exception("Unable to download resource: " + resourceURL
-        			, e));
-            e.printStackTrace(); 
-        }
-    }
-*/    
     
     private void addTileToMemoryCache()   
     {
@@ -543,7 +461,8 @@ public class GroundOverlayLayer extends AbstractLayer
 			
 		} 
 		catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -597,9 +516,10 @@ public class GroundOverlayLayer extends AbstractLayer
 	}
 	
 	/**
-	 * Fetch overlay URL into WW file cache to improve GUI response
+	 * Fetch overlay URL into WW cache using the asynch task service
+	 * to improve GUI response & prevent the globe from freezing
 	 */
-	public boolean synchFetch() 
+	public boolean fetchOverlay() 
 	{
 		try 
 		{
@@ -612,13 +532,33 @@ public class GroundOverlayLayer extends AbstractLayer
 			if ( WorldWind.getDataFileCache().findFile(tileKey, false) == null ) 
 			{ 
 				// Tile not in cache
-				File file = WorldWind.getDataFileCache().newFile(tileKey);
+				final File file = WorldWind.getDataFileCache().newFile(tileKey);
 				
-				if  ( textureURL.toString().startsWith("http")) {
-					logger.debug("Synchronously fetching "+ textureURL+ " into " + file);
-					downloadResource(textureURL, file);
+				// if remote url http://
+				if  ( textureURL.toString().startsWith("http")) 
+				{
+					//logger.debug("Synchronously fetching "+ textureURL+ " into " + file);
+					
+					//downloadResource(textureURL, file);
+					
+					logger.debug("Sending load request for " + textureURL);
+					
+					// Use the WW task service to load the URL asynchronously
+					WorldWind.getTaskService().addTask(new Runnable() 
+					{
+						public void run() {
+							try {
+								downloadResource(textureURL, file);
+							} 
+							catch (Exception e) {
+								onError(GroundOverlayLayer.this, e);
+							}
+						}
+					});					
 				}
-				else {
+				// Local path or file:/ URL
+				else 
+				{
 					if ( ! file.exists() ) {
 						File src = new File(textureURL.toURI());
 						
@@ -650,40 +590,6 @@ public class GroundOverlayLayer extends AbstractLayer
 		}
 	}
 
-	/**
-	 * Fetch asynchronously using a separate thread
-	 */
-	public void asynchFetch() 
-	{
-		if ( WorldWind.getDataFileCache().findFile(tileKey, false) == null ) 
-		{
-			final File file = WorldWind.getDataFileCache().newFile(tileKey);
-			
-			new Thread(new Runnable() {
-				public void run() 
-				{
-					logger.debug("Asynchronously fetching " 
-							+ textureURL //( textureURL != null ? textureURL : textureFile) 
-							+ " into " + file);
-					try {
-						if  ( textureURL.toString().startsWith("http") ) {//  != null) {
-							downloadResource(textureURL, file);
-						}
-						else {
-							//Messages.copyResource(textureFile, file);
-							Messages.copyResource(new File(textureURL.toURI()), file);
-						}
-					}
-					catch ( Exception ex) {
-						ex.printStackTrace();
-					}
-					
-					notifyAll();
-				}
-			});
-		}
-	}
-	
 	/*
 	 * Notify listeners of a Layer error
 	 */
