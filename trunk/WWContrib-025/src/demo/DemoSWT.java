@@ -406,7 +406,7 @@ public class DemoSWT
     		, new String[] {"2005-08-23T05Z", "2005-08-23T23Z", "2005-08-24T06Z", "2005-08-24T22Z"
     			, "2005-08-25T05Z", "2005-08-25T23Z", "2005-08-26T04Z", "2005-08-26T22Z"
     			, "2005-08-27T04Z", "2005-08-27T21Z", "2005-08-28T04Z", "2005-08-28T22Z"}
-    		, 0.1
+    		, 0.5
     	);
     }
     
@@ -422,7 +422,7 @@ public class DemoSWT
     			+ "service=WMS&request=GetMap&layers=3169_21478&bbox=-65,-18.75,125,28.75"
     			+ "&width=1024&height=256&srs=EPSG:4326&format=image/png&version=1.1.1&styles=opaque"
     		, new String[] {"1991-06-16", "1991-06-17", "1991-06-18", "1991-06-19", "1991-06-20", "1991-06-21"}
-    		, 0.1
+    		, 0.5
     	);
     }
     
@@ -700,7 +700,7 @@ public class DemoSWT
 	    		  
 	    		  if ( checked ) {
 		    		  // Add frames to WW model
-	    			  aov.asynchFetchSome();
+	    			  //aov.asynchFetchSome();
 	    			  aov.addToModel(world);
 
 		    		  logger.debug("Playing...");
@@ -811,7 +811,7 @@ public class DemoSWT
 		shell = new Shell(display);
 		
 		
-		shell.setBounds(display.getClientArea());
+		shell.setBounds(0,0 , 800, 600); // display.getClientArea());
 		
 		shell.setText("World Wind SWT Example");
 		shell.setLayout(new GridLayout(1, true));
@@ -1012,9 +1012,8 @@ public class DemoSWT
 	{
 		try {
 			new DemoSWT().run();
-			
-			
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
 		}
