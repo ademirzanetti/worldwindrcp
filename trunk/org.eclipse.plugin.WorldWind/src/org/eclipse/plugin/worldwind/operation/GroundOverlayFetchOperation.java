@@ -41,7 +41,7 @@ public class GroundOverlayFetchOperation implements IRunnableWithProgress
 			monitor.beginTask(layer.getName() +  " (" +i + "/" + overlays.length + ")"
 					, IProgressMonitor.UNKNOWN);
 			
-			layer.synchFetch();
+			layer.fetchOverlay(); // synchFetch();
 			monitor.done();
 		}
 
