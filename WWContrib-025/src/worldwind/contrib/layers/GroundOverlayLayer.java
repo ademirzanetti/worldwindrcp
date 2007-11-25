@@ -28,7 +28,6 @@ import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.WMS_Capabilities;
 
 import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
 import gov.nasa.worldwind.Configuration;
@@ -183,7 +182,6 @@ public class GroundOverlayLayer extends AbstractLayer
         				+ textureURL  
         				+ " key=" + tileKey); 
         
-        		//downloadResource(getTextureURL(), WorldWind.dataFileCache().newFile(tileKey));
         		if ( ! fetchOverlay() ) {
         			logger.error("Synch fetch for " + textureURL + " FAILED");
         			//onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
@@ -232,62 +230,64 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
     private synchronized boolean loadTexture(TextureCache tc, URL textureURL) 
     {
-        TextureData textureData = null;
-
+//        TextureData textureData = null;
+    	Texture texture = null;
+    	
         try {
         	// load from URL
         	logger.debug("Fetching texture from URL " + textureURL);
-        	textureData = TextureIO.newTextureData(textureURL, true, null);
+        	//textureData = TextureIO.newTextureData(textureURL, true, null);
+        	texture = TextureIO.newTexture(textureURL, true, null);
         }
         catch (Exception e) {
         	// notify listeners of error
         	//onError(this, e);
         	return false;
         }
-        
-        Texture texture = TextureIO.newTexture(textureData);
-
-        logger.debug("Got texture: " 
-        		+ tileKey 
-        		+ " TexData (w,h)=" + textureData.getWidth() + "," + textureData.getHeight()
-        		+ " Texture w=" + texture.getWidth() + " h=" + texture.getHeight() 
-        		+ " from " + textureURL //( textureURL != null ? textureURL : textureFile ) 
-        		+ " Est mem size:" + textureData.getEstimatedMemorySize());
+       
+//        Texture texture = TextureIO.newTexture(textureData);
+//
+//        logger.debug("Got texture: " 
+//        		+ tileKey 
+//        		+ " TexData (w,h)=" + textureData.getWidth() + "," + textureData.getHeight()
+//        		+ " Texture w=" + texture.getWidth() + " h=" + texture.getHeight() 
+//        		+ " from " + textureURL //( textureURL != null ? textureURL : textureFile ) 
+//        		+ " Est mem size:" + textureData.getEstimatedMemorySize());
         
         /*
          * Texture/TextureData w/h mismatch bug: sometimes W/H don't match
          * between Texture & TextureData. This causes a messed up img to display.
          * A solution? ... resize img to 1024x1024
          */
-        if ( textureData.getWidth() != texture.getWidth() 
-        		|| textureData.getHeight() != texture.getHeight() )
-        {
-        	try 
-        	{
-            	final URL url = WorldWind.getDataFileCache().findFile(tileKey, false);
-            	
-            	// texture exists?
-            	File file = ( url == null ) 
-            		? WorldWind.getDataFileCache().newFile(tileKey)
-            		: new File(url.toURI())	;
-            	
-            	logger.error("Texture/TextureData w/h don't match. Saving to disk & resizing " 
-            			+ file + " file exists " + file.exists());
-        		
-        		// Fetch manually & store on disk
-            	if ( !file.exists())
-            		downloadResource(textureURL, file);
-        		
-            	// scale file from disk to 1024x1024 (preserving alpha)
-            	scaleImage(file, formatName, 1024, 1024);
-            	
-            	// reload texture
-            	texture = TextureIO.newTexture(file, true);
-        	} 
-        	catch (Exception e) {
-        		logger.error(e);
-			}
-        }
+//        if ( textureData.getWidth() != texture.getWidth() 
+//        		|| textureData.getHeight() != texture.getHeight() )
+//        {
+//        	try 
+//        	{
+//            	final URL url = WorldWind.getDataFileCache().findFile(tileKey, false);
+//            	
+//            	// texture exists?
+//            	File file = ( url == null ) 
+//            		? WorldWind.getDataFileCache().newFile(tileKey)
+//            		: new File(url.toURI())	;
+//            	
+//            	logger.error("Texture/TextureData w/h don't match. Saving to disk & resizing " 
+//            			+ file + " file exists " + file.exists());
+//        		
+//        		// Fetch manually & store on disk
+//            	if ( !file.exists())
+//            		downloadResource(textureURL, file);
+//        		
+//            	// scale file from disk to 1024x1024 (preserving alpha)
+//            	scaleImage(file, formatName, 1024, 1024);
+//            	
+//            	// reload texture
+//            	texture = TextureIO.newTexture(file, true);
+//        	} 
+//        	catch (Exception e) {
+//        		logger.error(e);
+//			}
+//        }
         
         tile.setTexture(tc, texture);
         
@@ -538,7 +538,6 @@ public class GroundOverlayLayer extends AbstractLayer
 				if  ( textureURL.toString().startsWith("http")) 
 				{
 					//logger.debug("Synchronously fetching "+ textureURL+ " into " + file);
-					
 					//downloadResource(textureURL, file);
 					
 					logger.debug("Sending load request for " + textureURL);
@@ -694,7 +693,10 @@ public class GroundOverlayLayer extends AbstractLayer
 			
 			if ( ! f.exists()) return;
 			
-			logger.debug("Removing file from WW cache " + f);
+			// remove from memory
+			WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).remove(tileKey);
+			
+			logger.debug("Removing file from disk/memory cache " + f);
 			f.delete();
 		} 
 		catch (URISyntaxException e) {

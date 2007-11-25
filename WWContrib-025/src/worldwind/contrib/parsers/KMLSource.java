@@ -29,7 +29,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
-
 import worldwind.contrib.Messages;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.PlacemarkLayer;
@@ -202,7 +201,11 @@ public class KMLSource
 	 */
 	static public TimeLoopGroundOverlay toTimeLoopGroundOverlay(KMLDocument doc) 
 	{
-		GroundOverlay[] govs =  doc.groundOverlays;
+		// frames
+		GroundOverlay[] govs 		=  doc.groundOverlays;
+		
+		// legend (optional)
+		ScreenOverlayLayer legend 	= null;
 		
 		if ( govs == null || govs.length == 0) return null;
 		
@@ -213,12 +216,13 @@ public class KMLSource
 		
 		aov.setDescription(doc.description);
 		
-		// the 1st screen overlay is assumed to be a legend
-		if ( doc.screenOverlays != null && doc.screenOverlays.length == 1) 
+		// TimeLoops can only have 1 legend.
+		if ( doc.screenOverlays != null ) // && doc.screenOverlays.length == 1) 
 		{
-			final ScreenOverlay so = doc.screenOverlays[0];
+			// Get KML screen overlay representing the legend
+			final ScreenOverlay so = getLegend(doc.screenOverlays); //  doc.screenOverlays[0];
 			
-			ScreenOverlayLayer legend = ( so.icon != null)
+			legend = ( so.icon != null)
 				? new ScreenOverlayLayer(so.name, so.icon, so.position)
 				: new ScreenOverlayLayer(so.name, so.iconPath, so.position);
 
@@ -233,7 +237,9 @@ public class KMLSource
 		}
 			
 		
-		logger.debug("Loop overlay " + doc.name + " " + govs.length + " frames");
+		logger.debug("Loop overlay " + doc.name + " " 
+				+ govs.length + " frames "
+				+ " Legend=" + legend);
 		
 		for (GroundOverlay go : govs) {
 			final Sector sector = new Sector(
@@ -258,6 +264,28 @@ public class KMLSource
 		return aov;
 	}
 
+	/**
+	 * {@link TimeLoopGroundOverlay} can only have 1 legend {@link ScreenOverlayLayer}.
+	 * Thus scan the array of screen overlay for the strings: legend, color, or bar
+	 * @param overlays array of {@link ScreenOverlayLayer}
+	 * @return
+	 */
+	static private ScreenOverlay getLegend ( ScreenOverlay[] overlays) 
+	{
+		for (ScreenOverlay overlay : overlays) 
+		{
+			if ( overlay.name == null) continue;
+
+			final String name = overlay.name.toLowerCase();
+			
+			if ( name.indexOf("legend") != -1 
+					|| name.indexOf("color") != -1 
+					|| name.indexOf("bar") != -1)
+				return overlay;
+		}
+		return null;
+	}
+	
 	/**
 	 * Convert a KML {@link GroundOverlay} object to World Wind {@link GroundOverlayLayer}
 	 * @return {@link GroundOverlayLayer}
@@ -506,7 +534,7 @@ public class KMLSource
 		out.close();
 	}
 	
-/* 	
+/* 
 	// test only
 	public static void main(String[] args) {
 		try {
@@ -514,19 +542,19 @@ public class KMLSource
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-			String file = "c:/tmp/25_90.kml";
+//			String file = "c:/tmp/25_90.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
-			//KMLSource kml = new KMLSource(new URL(url));
+			String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
+//			KMLSource kml = new KMLSource(new URL(url));
 	
 			
-//			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
+			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
 			
-			//TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
-//			LayerList list = kml.toLayerList();
-//			
-//			System.out.println("List size=" + list.size());
-//			
+//			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			LayerList list = kml.toLayerList();
+			
+			System.out.println("List size=" + list.size());
+			
 //			for (Layer layer : list) {
 //				GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
 //				System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
