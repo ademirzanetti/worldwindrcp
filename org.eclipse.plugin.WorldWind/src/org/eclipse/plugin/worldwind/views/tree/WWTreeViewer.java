@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.NASAWMSLayerList;
+import worldwind.contrib.layers.ScreenOverlayLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 /**
@@ -259,7 +260,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 	}
 	
 	/*
-	 * Add layers from the WW model to the tree. T
+	 * Add layers from the WW model to the tree. 
 	 * These are built-in (cannot be removed) and enabled by default
 	 */
 	private TreeParent buildDefaultWorldWindLayers()
@@ -302,20 +303,33 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		{
 			TreeParent parent = new TreeParent(aov, LayersView.guessIcon(aov.getName()));
 			
-			// View children
-			TreeObject[] children = new TreeObject[aov.getOverlays().size()];
+			// # of frames in loop
+			int overlaySize 			= aov.getOverlays().size();
+			ScreenOverlayLayer legend 	= aov.getLegend();
 			
-			// Children as ground overlays
-			GroundOverlayLayer[] childOvs = new GroundOverlayLayer[aov.getOverlays().size()];
+			logger.debug("Adding time loop ov " + aov.getName() 
+					+ " # of ground ovs=" + overlaySize 
+					+ " Legend=" + legend);
 			
+			// Array of children to be added to the tree
+			int childSize = (legend != null ) ? overlaySize + 1 : overlaySize;
+			TreeObject[] children = new TreeObject[childSize];
+			
+			// Convert loop overlays to an array of objects
+			GroundOverlayLayer[] childOvs = new GroundOverlayLayer[overlaySize];
 			aov.getOverlays().toArray(childOvs);
 			
-			for (int i = 0; i < children.length; i++) {
+			// Add loop frames to the tree array
+			for (int i = 0; i < childOvs.length; i++) {
 				children[i] = new TreeObject(childOvs[i]
 						, LayersView.guessIcon(childOvs[i].getName())
 						);
 			}
 			
+			// Add legend
+			if ( legend != null)
+				children[childSize - 1] = new TreeObject(legend);
+				
 			// Add to view
 			addTreeObject(parent, children, false, false);
 		}
