@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Analytics Plug-in
 Bundle-SymbolicName: org.eclipse.plugin.Analytics; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.eclipse.plugin.analytics.AnalyticsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
