@@ -52,7 +52,10 @@ import anl.verdi.gui.DatasetListModel;
 import anl.verdi.gui.FormulaListElement;
 import anl.verdi.gui.FormulaListModel;
 import anl.verdi.gui.FormulasPanel;
+import anl.verdi.loaders.CSVLoader;
 import anl.verdi.loaders.Models3Loader;
+import anl.verdi.loaders.Models3ObsLoader;
+import anl.verdi.loaders.WRFLoader;
 import anl.verdi.loaders.dap.OpenDAPLoader;
 import anl.verdi.plot.gui.DefaultPlotCreator;
 import anl.verdi.plot.gui.Plot;
@@ -188,9 +191,13 @@ public class VerdiModels3View extends ViewPart
 		static private DataManager createDataManager () {
 			List<DataLoader> dataLoaders = new ArrayList<DataLoader>();
 			
+			// Add dataset loaders: OpeNDAP, EPA-Models3, WRF
 			dataLoaders.add(new OpenDAPLoader());
 			dataLoaders.add(new Models3Loader());
-
+			dataLoaders.add(new WRFLoader());
+			dataLoaders.add(new CSVLoader());
+			dataLoaders.add(new Models3ObsLoader());
+			
 			return new DataManager(dataLoaders);
 		}
 		
