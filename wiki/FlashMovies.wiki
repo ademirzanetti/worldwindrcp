@@ -1,4 +1,4 @@
-#summary Want to see World Wind Geo in action?.
+#summary World Wind Geo user interface.
 #labels Featured
 
 =Wanna see World Wind Geo in action?=
