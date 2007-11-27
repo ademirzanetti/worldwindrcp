@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: WorldWind RCP Plug-in
+Bundle-Name: WorldWind Plug-in
 Bundle-SymbolicName: org.eclipse.plugin.WorldWind;singleton:=true
 Bundle-Version: 1.0.1
 Bundle-Activator: org.eclipse.plugin.worldwind.Activator
@@ -20,3 +20,4 @@ Bundle-ClassPath: .,
  lib/log4j-1.2.15.jar
 Export-Package: org.eclipse.plugin.worldwind.actions,
  org.eclipse.plugin.worldwind.views
+Bundle-Vendor: WorldWind Geo

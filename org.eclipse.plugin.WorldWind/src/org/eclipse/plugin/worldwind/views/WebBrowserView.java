@@ -313,7 +313,7 @@ public class WebBrowserView extends ViewPart
 
 			if ( list.size() == 0 )
 				throw new Exception("No Ground, Screen or Placemark overlays in document.");
-			
+
 			view.addKMLSource(kml, false);
 			
 			// show the earth view
