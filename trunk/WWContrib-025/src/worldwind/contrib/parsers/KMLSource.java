@@ -217,7 +217,7 @@ public class KMLSource
 		aov.setDescription(doc.description);
 		
 		// TimeLoops can only have 1 legend.
-		if ( doc.screenOverlays != null ) // && doc.screenOverlays.length == 1) 
+		if ( doc.screenOverlays != null )  
 		{
 			// Get KML screen overlay representing the legend
 			final ScreenOverlay so = getLegend(doc.screenOverlays); //  doc.screenOverlays[0];
@@ -542,23 +542,26 @@ public class KMLSource
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-//			String file = "c:/tmp/25_90.kml";
-			//String file = "src/demo/xml/rsig2dviz-1.kmz";
-			String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
+			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
+			String file = "src/demo/xml/nexrad.kmz";
 //			KMLSource kml = new KMLSource(new URL(url));
 	
 			
-			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KML);
+			KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KMZ);
 			
-//			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
 			LayerList list = kml.toLayerList();
 			
 			System.out.println("List size=" + list.size());
 			
-//			for (Layer layer : list) {
-//				GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
-//				System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
-//			}
+			for (Layer layer : list) {
+				if ( layer instanceof GroundOverlayLayer) {
+					GroundOverlayLayer gol =  (GroundOverlayLayer)layer;
+					System.out.println("name=" + gol.getName() + " desc=" + gol.getDescription());
+				}
+				else
+					System.out.println("name=" + layer );
+			}
 			//System.out.println("kml=" + kml + " ov=" + overlay.getDescription());
 			
 			

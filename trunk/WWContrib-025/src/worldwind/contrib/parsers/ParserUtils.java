@@ -227,7 +227,7 @@ public class ParserUtils
 
         try {
             return ( nl != null && nl.getLength() > 0 ) ?
-                    nl.item(0).getFirstChild().getNodeValue() : null;
+                    nl.item(0).getFirstChild().getNodeValue().trim() : null;
 			
 		} catch (NullPointerException ex) {
 			return null;

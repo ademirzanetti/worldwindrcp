@@ -62,48 +62,4 @@ public class PlacemarkLayer extends IconLayer
         return Font.decode("Arial-12").deriveFont(fontAttributes);
     }
    
-    /**
-     * TODO: Build a text bubble fro the placemark info
-     */
-    
-    /*
-    private void renderShapes(DrawContext dc)
-    {
-
-        Color interiorColor = new Color(1f, 1f, 0f, 0.3f);
-        Color borderColor = new Color(1f, 1f, 0f, 0.4f);
-
-        SurfaceQuadrilateral quad = new SurfaceQuadrilateral(new Sector(
-            Angle.fromDegrees(41.0), Angle.fromDegrees(41.6),
-            Angle.fromDegrees(-122.5), Angle.fromDegrees(-121.7)),
-            interiorColor, borderColor);
-        quad.render(dc);
-        
-
-        quad = new SurfaceQuadrilateral(new Sector(
-            Angle.fromDegrees(38.9), Angle.fromDegrees(39.3),
-            Angle.fromDegrees(-120.2), Angle.fromDegrees(-119.9)),
-            new Color(0f, 1f, 1f, 0.3f), new Color(0.5f, 1f, 1f, 0.4f));
-
-        quad.render(dc);
-        
-        double originLat = 28;
-        double originLon = -82;
-        ArrayList<LatLon> positions = new ArrayList<LatLon>();
-        positions.add(new LatLon(Angle.fromDegrees(originLat + 5.0), Angle.fromDegrees(originLon + 2.5)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat + 5.0), Angle.fromDegrees(originLon - 2.5)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat + 2.5), Angle.fromDegrees(originLon - 5.0)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat - 2.5), Angle.fromDegrees(originLon - 5.0)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat - 5.0), Angle.fromDegrees(originLon - 2.5)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat - 5.0), Angle.fromDegrees(originLon + 2.5)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat - 2.5), Angle.fromDegrees(originLon + 5.0)));
-        positions.add(new LatLon(Angle.fromDegrees(originLat + 2.5), Angle.fromDegrees(originLon + 5.0)));
-
-        SurfacePolygon polygon = new SurfacePolygon(positions,
-            new Color(1f, 0.11f, 0.2f, 0.4f), new Color(1f, 0f, 0f, 0.6f));
-        polygon.setStroke(new BasicStroke(2f));
-        polygon.render(dc);
-    }
-    */
-    
 }
