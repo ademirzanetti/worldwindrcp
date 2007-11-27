@@ -5,28 +5,31 @@ import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.event.SelectEvent;
+import gov.nasa.worldwind.event.SelectListener;
+import gov.nasa.worldwind.examples.BasicDragger;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Sector;
-import gov.nasa.worldwind.geom.Sphere;
-import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.layers.IconLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.render.Polyline;
-import gov.nasa.worldwind.render.SurfaceImage;
-import gov.nasa.worldwind.render.SurfaceQuad;
+import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
+import gov.nasa.worldwind.pick.PickedObjectList;
+import gov.nasa.worldwind.render.UserFacingIcon;
+import gov.nasa.worldwind.render.WWIcon;
+import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
+import gov.nasa.worldwind.view.OrbitView;
 
 
 import org.apache.log4j.Logger;
@@ -58,6 +61,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import demo.todo.mesh.MeshDATReader;
+import demo.todo.mesh.MeshLayer;
+import demo.todo.mesh.MeshReader;
 
 
 import worldwind.contrib.Messages;
@@ -93,6 +100,105 @@ public class DemoSWT
 	// default WW layers
 	public NavigatorLayer[] navigatorLayers; 
 
+	/**
+	 * Globe Selection listener. Listen for layer events: click, drag, etc.
+	 * @author Owner
+	 */
+	public class GlobeSelectionListener implements SelectListener 
+	{
+	    private WWIcon lastToolTipIcon = null;
+	    private BasicDragger dragger = null;
+	    private WorldWindowGLCanvas world;
+	    private WWIcon lastPickedIcon;
+		
+		public GlobeSelectionListener(WorldWindowGLCanvas canvas) {
+			dragger = new BasicDragger(canvas);
+			world = canvas;
+		}
+		
+
+	    private void highlight(Object o)
+	    {
+	        if (this.lastPickedIcon == o)
+	            return; // same thing selected
+
+	        if (this.lastPickedIcon != null)
+	        {
+	            this.lastPickedIcon.setHighlighted(false);
+	            this.lastPickedIcon = null;
+	        }
+
+	        if (o != null && o instanceof WWIcon)
+	        {
+	            this.lastPickedIcon = (WWIcon) o;
+	            this.lastPickedIcon.setHighlighted(true);
+	        }
+	    }
+
+	    /**
+	     * Select
+	     */
+	    public void selected(SelectEvent event)
+	    {
+	        if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
+	        {
+	            if (event.hasObjects())
+	            {
+	                if (event.getTopObject() instanceof WorldMapLayer)
+	                {
+	                    // Left click on World Map : iterate view to target position
+	                    Position targetPos 	= event.getTopPickedObject().getPosition();
+	                    OrbitView view 		= (OrbitView)world.getView();
+	                    Globe globe 		= world.getModel().getGlobe();
+	                    
+	                    // Use a PanToIterator
+	                    view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
+	                            view, globe, new LatLon(targetPos.getLatitude(), targetPos.getLongitude()),
+	                            Angle.ZERO, Angle.ZERO, targetPos.getElevation()));
+	                }
+	            
+	            }
+	            else
+	                logger.debug("Single clicked " + "no object");
+	        }
+	        else if (event.getEventAction().equals(SelectEvent.HOVER))
+	        {
+	            if (lastToolTipIcon != null)
+	            {
+	                lastToolTipIcon.setShowToolTip(false);
+	                this.lastToolTipIcon = null;
+	                world.repaint();
+	            }
+
+	            if (event.hasObjects() && !this.dragger.isDragging())
+	            {
+	                if (event.getTopObject() instanceof WWIcon)
+	                {
+	                    this.lastToolTipIcon = (WWIcon) event.getTopObject();
+	                    lastToolTipIcon.setShowToolTip(true);
+	                    world.repaint();
+	                }
+	            }
+	        }
+	        else if (event.getEventAction().equals(SelectEvent.ROLLOVER) && !this.dragger.isDragging())
+	        {
+	            highlight(event.getTopObject());
+	        }
+	        else if (event.getEventAction().equals(SelectEvent.DRAG_END)
+	            || event.getEventAction().equals(SelectEvent.DRAG))
+	        {
+	            // Delegate dragging computations to a dragger.
+	            this.dragger.selected(event);
+	            if (event.getEventAction().equals(SelectEvent.DRAG_END))
+	            {
+	                PickedObjectList pol = world.getObjectsAtCurrentPosition();
+	                if (pol != null)
+	                    highlight(pol.getTopObject());
+	            }
+	        }
+	    }
+	}
+	
 	/*
 	 * A thread to load remote layers. Makes the GUI irresponsive.
 	 * A better way is t use a Wiz & let the user select them
@@ -392,6 +498,37 @@ public class DemoSWT
 		}
     }
     
+    private TimeLoopGroundOverlay buildKMLSource () throws Exception
+    {
+    	String file = "src/demo/xml/nexrad.kmz";
+		
+		KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KMZ);
+		return KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+    }
+    
+    private IconLayer buildIconLayer()
+    {
+        IconLayer layer = new IconLayer();
+
+        for (double lat = 0; lat < 10; lat += 10)
+        {
+            for (double lon = -180; lon < 180; lon += 10)
+            {
+                double alt = 0;
+                if (lon % 90 == 0)
+                    alt = 2000000;
+                WWIcon icon = new UserFacingIcon("demo/images/32x32-icon-nasa.png",
+                    new Position(Angle.fromDegrees(lat), Angle.fromDegrees(lon), alt));
+                icon.setHighlightScale(1.5);
+                //icon.setToolTipFont(this.makeToolTipFont());
+                icon.setToolTipText(icon.getImageSource().toString());
+                icon.setToolTipTextColor(java.awt.Color.YELLOW);
+                layer.addIcon(icon);
+            }
+        }
+
+        return layer;
+    }
     
     /*
      * TRMM after Hur Katrina
@@ -465,15 +602,19 @@ public class DemoSWT
      * Mesh test
      */
     private Layer buildMesh() {
-    	RenderableLayer layer = new RenderableLayer();
+    	MeshLayer layer = null;
     	
     	try {
-//    		MeshReader.Sinc("c:/tmp/mysinc.dat", 10, 10);
-//        	MeshReader reader = new MeshDATReader("c:/tmp/mysinc.dat");
-//        	Mesh mesh = new Mesh(reader);
+    		String path = "c:/tmp/mysinc.dat";
+    		
+    		MeshReader.Sinc(path, 10, 10);
+        	MeshReader reader = new MeshDATReader(path);
         	
-        	layer.setName("Mesh View");
-//        	layer.addRenderable(mesh);
+        	
+        	layer = new MeshLayer(reader.read());
+        	layer.setName("Mesh Test");
+        	
+        	reader.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -640,17 +781,50 @@ public class DemoSWT
 			/*
 			 * Example of Screen Overlay: Sample Legend
 			 */
-			layer = buildScreenOverlayLayer();
-			world.getModel().getLayers().add(layer);
-			invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
+//			layer = buildScreenOverlayLayer();
+//			world.getModel().getLayers().add(layer);
+//			invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
 
 			/*
-			 * Mesh test
+			 * Add a sample KMZ from tmp
 			 */
-			layer = buildMesh();
+			try {
+				TimeLoopGroundOverlay kml = buildKMLSource();
+				
+				// add frames to the tree
+				top = new TreeParent(new NavigatorLayer(kml, null, false));
+				
+		        for (Layer kmlLayer : kml.getOverlays())
+		        {
+		        	top.addChild(new TreeObject(new NavigatorLayer(kmlLayer, null, false)));
+		        }
+
+		        // Add legend
+		        top.addChild(new TreeObject(new NavigatorLayer(kml.getLegend(), null, false)));
+		        
+		        invisibleRoot.addChild(top);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Error adding test KML source: " + e);
+			}
+
+			/*
+			 * Sample Icons layer
+			 */
+			layer = buildIconLayer();
 			world.getModel().getLayers().add(layer);
 			invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
 			
+			/*
+			 * Mesh test
+			 */
+//			layer = buildMesh();
+//			
+//			if ( layer != null ) {
+//				world.getModel().getLayers().add(layer);
+//				invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
+//			}
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -719,7 +893,11 @@ public class DemoSWT
 	    		  if ( parent instanceof TimeLoopGroundOverlay ) 
 	    		  {
 	    			  logger.debug("Setting visibility for frame:" + layer + " to " + checked);
-	    			  ((TimeLoopGroundOverlay)parent).setVisible(layer, checked);
+	    			  
+	    			  if ( layer instanceof GroundOverlayLayer)
+	    				  ((TimeLoopGroundOverlay)parent).setVisible(layer, checked);
+	    			  else
+	    				  layer.setEnabled(checked);
 	    		  }
 	    		  // enable/disable respective children layers
 	    		  else if ( to instanceof TreeParent ) 
@@ -779,6 +957,7 @@ public class DemoSWT
 		world = new WorldWindowGLCanvas();  
         world.setPreferredSize(new Dimension(800, 600));
 
+        
         // Add layers to WW
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
         
@@ -955,7 +1134,7 @@ public class DemoSWT
 						, null
 						, false);  
 			}
-			
+
 			// Add to view
 			addLayer(layer, children, false);
 		}
@@ -997,9 +1176,10 @@ public class DemoSWT
 		}
 		
 		TreeParent root = (TreeParent)treeViewer.getInput();
+
+		// Add parent node
 		root.addChild(parent);
 		
-		//treeViewer.add(treeViewer.getInput(), parent);
 		treeViewer.setInput(root);
 		treeViewer.refresh(root); 
 	}

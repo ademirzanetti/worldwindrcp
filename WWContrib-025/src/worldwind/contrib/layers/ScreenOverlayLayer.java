@@ -10,11 +10,13 @@
  *******************************************************************************/
 package worldwind.contrib.layers;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.media.opengl.GL;
 
@@ -30,6 +32,7 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.exception.WWRuntimeException;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.pick.PickSupport;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
@@ -73,16 +76,20 @@ public class ScreenOverlayLayer extends AbstractLayer
     private Vec4 locationCenter = null;
     
     private URL iconURL = null;
+
+    // Pick support
+    private PickSupport pickSupport = new PickSupport();
+
     
     public ScreenOverlayLayer(){
+    	super();
     }
     
     public ScreenOverlayLayer(String name, String iconFilePath, String position) 
     {
-    	logger.debug(name + "," + iconFilePath + "," + position);
-    	
+    	super();
     	setName(name);
-    	
+
     	// does iconFilePath exist?
     	boolean iconFound = WorldWind.getDataFileCache().findFile(iconFilePath, false) != null;
     	
@@ -99,6 +106,9 @@ public class ScreenOverlayLayer extends AbstractLayer
 		}
     	
     	setPosition(position);
+    	
+    	logger.debug("Screen ov=" + name + " Path=" + iconFilePath 
+    			+ " file=" + iconFile + " Pos=" + position + " u=" + iconURL);
     }
 
     public ScreenOverlayLayer(String name, URL iconURL, String position) 
@@ -110,10 +120,10 @@ public class ScreenOverlayLayer extends AbstractLayer
     	this.iconURL = iconURL;
 
     }
-    
-    protected void doRender(DrawContext dc)
-    {
-        this.drawIcon(dc);
+
+    @Override
+    protected void doRender(DrawContext dc) {
+      this.drawIcon(dc);    	
     }
 
     private void drawIcon(DrawContext dc)
@@ -180,11 +190,15 @@ public class ScreenOverlayLayer extends AbstractLayer
             //    gl.glRotated(70d * (dc.getView().getPitch().getDegrees() / 90.0), 1d, 0d, 0d);
 
             //gl.glRotated(dc.getView().getHeading().getDegrees(), 0d, 0d, 1d);
+            
             gl.glTranslated(-width / 2, -height / 2, 0);
 
             TextureCoords texCoords = this.iconTexture.getImageTexCoords();
             gl.glScaled(width, height, 1d);
             dc.drawUnitQuad(texCoords);
+        }
+        catch (Exception e) {
+        	logger.error(e.getMessage());
         }
         finally
         {
@@ -203,7 +217,7 @@ public class ScreenOverlayLayer extends AbstractLayer
         }
     }
 
-    private void initializeTexture(DrawContext dc)
+    private void initializeTexture(DrawContext dc) throws IOException
     {
         if (this.iconTexture != null )
             return;
@@ -238,10 +252,8 @@ public class ScreenOverlayLayer extends AbstractLayer
         }
         catch (IOException e)
         {
-            String msg = Logging.getMessage(
-                "layers.TrackLayer.IOExceptionDuringInitialization");
-            Logging.logger().log(java.util.logging.Level.FINE, msg);
-            throw new WWRuntimeException(msg, e);
+            String msg = "Error initializing texture " + iconFile + " " + e.getMessage();
+            throw new IOException(msg);
         }
 
         GL gl = dc.getGL();
@@ -451,4 +463,7 @@ public class ScreenOverlayLayer extends AbstractLayer
     			? iconFile
     			: new File( iconURL.toURI());
     }
+    
+    
+	
 }
