@@ -10,13 +10,11 @@
  *******************************************************************************/
 package worldwind.contrib.layers;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Level;
 
 import javax.media.opengl.GL;
 
@@ -29,10 +27,8 @@ import com.sun.opengl.util.texture.TextureCoords;
 import com.sun.opengl.util.texture.TextureIO;
 
 import gov.nasa.worldwind.WorldWind;
-import gov.nasa.worldwind.exception.WWRuntimeException;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.AbstractLayer;
-import gov.nasa.worldwind.pick.PickSupport;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
@@ -76,9 +72,6 @@ public class ScreenOverlayLayer extends AbstractLayer
     private Vec4 locationCenter = null;
     
     private URL iconURL = null;
-
-    // Pick support
-    private PickSupport pickSupport = new PickSupport();
 
     
     public ScreenOverlayLayer(){
