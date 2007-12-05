@@ -54,8 +54,13 @@ public class VisADSpreadSheetView extends ViewPart {
 		
 		java.awt.Frame mainFrame = SWT_AWT.new_Frame(top);
 
+		// Create a VisAD spreadsheet
 		sheet = new SpreadSheet(70, 70, 2, 2, null, null, Messages.getString("VisADSpreadSheetView.0")); //$NON-NLS-1$
-
+		
+		// Hide Swing GUI
+		sheet.setVisible(false);
+		
+		// Add SS to the view
 		mainFrame.add( sheet.getContentPane());
 		
 		makeActions();
