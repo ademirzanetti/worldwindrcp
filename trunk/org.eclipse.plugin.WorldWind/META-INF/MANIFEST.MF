@@ -12,11 +12,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.core
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
+ config/,
  lib/gluegen-rt.jar,
  lib/jogl.jar,
  lib/worldwind.jar,
  lib/wwcontrib.jar,
- config/,
  lib/log4j-1.2.15.jar
 Export-Package: org.eclipse.plugin.worldwind.actions,
  org.eclipse.plugin.worldwind.views
