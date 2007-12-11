@@ -12,6 +12,7 @@ package worldwind.contrib.layers.quadkey;
 
 
 //import org.apache.log4j.Logger;
+import worldwind.contrib.Messages;
 import worldwind.contrib.layers.ScreenOverlayLayer;
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.render.DrawContext;
@@ -53,8 +54,12 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 	 */
 	public VirtualEarthLayer() 
 	{ 
-		super("MS Virtual Earth");
-		super.cacheRoot = "VirtualEarth/";
+		// Layer name
+		super(Messages.getText("quad.ms.ve.name", "MS Virtual Earth"));
+		
+		// cache root
+		super.cacheRoot = Messages.getText("quad.ms.ve.cache.root", "VirtualEarth/");
+		
 		setOpacity(opacity);
 		
 		// Logo

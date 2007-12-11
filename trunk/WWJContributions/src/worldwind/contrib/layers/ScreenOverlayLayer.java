@@ -10,6 +10,7 @@
  *******************************************************************************/
 package worldwind.contrib.layers;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,10 +31,11 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.OrderedRenderable;
 import gov.nasa.worldwind.util.Logging;
 
 /**
- * A class used to render legends & stuff. It is exactly the same as the
+ * A class used to render legends. It is exactly the same as the
  * compass layer but the image doesn't rotate with the globe
  * @author Owner
  *
@@ -73,11 +75,40 @@ public class ScreenOverlayLayer extends AbstractLayer
     
     private URL iconURL = null;
 
+    // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
+    private OrderedIcon orderedIcon = new OrderedIcon();
+
+    private class OrderedIcon implements OrderedRenderable
+    {
+        public double getDistanceFromEye()
+        {
+            return 0;
+        }
+
+        public void pick(DrawContext dc, Point pickPoint)
+        {
+            drawIcon(dc);
+        }
+
+        public void render(DrawContext dc)
+        {
+            drawIcon(dc);
+        }
+    }
     
+    /**
+     * ScreenOverlayLayer
+     */
     public ScreenOverlayLayer(){
     	super();
     }
     
+    /**
+     * ScreenOverlayLayer
+     * @param name
+     * @param iconFilePath
+     * @param position
+     */
     public ScreenOverlayLayer(String name, String iconFilePath, String position) 
     {
     	super();
@@ -116,7 +147,7 @@ public class ScreenOverlayLayer extends AbstractLayer
 
     @Override
     protected void doRender(DrawContext dc) {
-      this.drawIcon(dc);    	
+    	dc.addOrderedRenderable(orderedIcon);
     }
 
     public void drawIcon(DrawContext dc)

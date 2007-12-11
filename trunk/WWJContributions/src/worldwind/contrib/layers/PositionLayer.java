@@ -13,6 +13,7 @@ package worldwind.contrib.layers;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 
 import javax.media.opengl.GL;
@@ -25,6 +26,7 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.OrderedRenderable;
 
 /**
  * Position Layer based on the ScalebarLayer.
@@ -55,6 +57,27 @@ public class PositionLayer extends RenderableLayer
 	private static String pointerMessage;
 	
 	WorldWindowGLCanvas canvas;
+	
+    // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
+    private OrderedLayer orderedLayer = new OrderedLayer();
+
+    private class OrderedLayer implements OrderedRenderable
+    {
+        public double getDistanceFromEye()
+        {
+            return 0;
+        }
+
+        public void pick(DrawContext dc, Point pickPoint)
+        {
+            draw(dc);
+        }
+
+        public void render(DrawContext dc)
+        {
+            draw(dc);
+        }
+    }
 	
 	public PositionLayer(WorldWindowGLCanvas canvas) {
 		canvas.addPositionListener(this);
@@ -176,7 +199,11 @@ public class PositionLayer extends RenderableLayer
 	@Override
 	protected void doRender(DrawContext dc) 
 	{
-		
+		dc.addOrderedRenderable(orderedLayer);
+	}
+	
+	private void draw(DrawContext dc)
+	{
 		if ( pointerMessage == null ) return;
 		
 		GL gl = dc.getGL();

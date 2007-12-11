@@ -17,6 +17,7 @@ import javax.swing.border.*;
 
 
 import worldwind.contrib.layers.GroundOverlayLayer;
+import worldwind.contrib.layers.PositionLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.layers.quadkey.GoogleEarthLayer;
 import worldwind.contrib.layers.quadkey.GoogleRoadsLayer;
@@ -47,11 +48,13 @@ public class DemoBasic
             new DemoBasic.LayerAction(new USGSUrbanAreaOrtho(), false, wwd),
             new DemoBasic.LayerAction(new EarthNASAPlaceNameLayer(), true, wwd),
             new DemoBasic.LayerAction(new CompassLayer(), false, wwd),
+            new DemoBasic.LayerAction(new WorldMapLayer(), false, wwd),
             new DemoBasic.LayerAction(new VirtualEarthLayer(), false, wwd),
             new DemoBasic.LayerAction(new GoogleEarthLayer(), false, wwd),
-            new DemoBasic.LayerAction(new GoogleRoadsLayer(), false, wwd)
+            new DemoBasic.LayerAction(new GoogleRoadsLayer(), false, wwd),
+            new DemoBasic.LayerAction(new PositionLayer(wwd), false, wwd),
+            null
         };
-        //new DemoBasic.LayerAction(new VirtualEarthLayer(), false)
     	
         public AppFrame() //DemoBasic.LayerAction[] layers)
         {
@@ -104,21 +107,6 @@ public class DemoBasic
                                 ((TiledImageLayer) action.layer).setDrawTileIDs(false);
                         }
                         
-                        // add VE layer
-//                        RenderableLayer veLayer = new RenderableLayer();
-//                        veLayer.setName("Virtual Earth");
-//                        
-//                        veLayer.addRenderable(new VirtualEarth());
-//                        
-//                        DemoBasic.LayerAction veAction = new DemoBasic.LayerAction(
-//                        		veLayer, false, wwd);
-//
-//                        
-//                        JCheckBox jcb = new JCheckBox(veAction);
-//                        jcb.setSelected(veAction.selected);
-//                        
-//                        layersPanel.add(jcb);
-//                        layerList.add(veAction.layer);
                         
                         westPanel.add(layersPanel);
                         westContainer.add(westPanel, BorderLayout.NORTH);

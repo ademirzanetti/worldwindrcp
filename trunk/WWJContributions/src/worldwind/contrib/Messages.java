@@ -33,6 +33,11 @@ public class Messages
 		return retrieveMessage(key, BUNDLE_NAME); 
 	}
 
+	static public String getText(String key, String defaultValue) {
+		final String val = retrieveMessage(key, BUNDLE_NAME);
+		return val != null ? val : defaultValue;
+	}
+	
 	/**
 	 * Returns a string from the resource bundle and binds it
 	 * with the given arguments. If the key is not found,

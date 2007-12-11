@@ -83,6 +83,8 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
     // Layer Logo to be rendered on lower right
     protected ScreenOverlayLayer logo = null;
     
+    protected Angle trueViewRange; 
+
 	/**
 	 * Constructor
 	 * @param name Layer name
@@ -149,7 +151,6 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		double factor 		= altitude / earthRadius;
 		double distance 	= view.getAltitude();
 	
-		Angle trueViewRange; 
 		
 		// calculate the true view range for the eye pos
 		if ( factor < 1 )
@@ -212,6 +213,7 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		// return if not at the min display zoom level
 		if ( quadKey == null ) return;
 		
+
 		// Render logo (lower left)
 		if ( logo != null)
 			logo.drawIcon(dc);
@@ -223,7 +225,9 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		renderTile(dc, quadKey + mapExtension, url, sector);
 		
 		// Render other tiles outwards in surrounding circles
-		for (int i = 1; i <= 5; i++) {
+		//int j = (int)Math.abs((double)zoomLevel/Math.cos(trueViewRange.degrees));
+		
+		for (int i = 1; i <= zoomLevel; i++) {
 			renderNeighborTiles(tileY, tileX, zoomLevel, dc, i);
 		}
 	}
