@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
-import org.eclipse.plugin.worldwind.views.PlacesView;
+import org.eclipse.plugin.worldwind.views.NavigatorView;
 import org.eclipse.ui.IWorkbenchWindow;
 
 
@@ -67,7 +67,8 @@ public class WeatherWizard extends Wizard
 				);
 		try 
 		{
-			PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
+			//PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
+			NavigatorView view = (NavigatorView)Activator.getView(window, NavigatorView.ID);
 			
 			if ( view != null ) 
 			{
@@ -81,7 +82,7 @@ public class WeatherWizard extends Wizard
 				addLayers(layer, view);
 				
 				// show places view
-				window.getActivePage().showView(PlacesView.ID);
+				window.getActivePage().showView(NavigatorView.ID);
 			}
 			
 			return true;
@@ -98,7 +99,7 @@ public class WeatherWizard extends Wizard
 	/*
 	 * Add time steps (as children) of the layer into the Layers View
 	 */
-	private void addLayers(TimeLoopGroundOverlay layer , PlacesView view) 
+	private void addLayers(TimeLoopGroundOverlay layer , NavigatorView view) 
 	{
 		view.addOverlays(new TimeLoopGroundOverlay[]{layer}, false);
 	}

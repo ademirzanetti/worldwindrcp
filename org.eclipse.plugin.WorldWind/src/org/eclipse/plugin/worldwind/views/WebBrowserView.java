@@ -292,8 +292,10 @@ public class WebBrowserView extends ViewPart
 	{
 		try {
 			// Grab layers view
-			PlacesView view = (PlacesView)Activator.getView(getViewSite().getWorkbenchWindow()
-					, PlacesView.ID);
+//			PlacesView view = (PlacesView)Activator.getView(getViewSite().getWorkbenchWindow()
+//					, PlacesView.ID);
+			NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
+					, NavigatorView.ID);
 			
 			handleKmlKmz(new KMLSource(new URL(location)), view);
 		} catch (Exception e) {
@@ -306,7 +308,7 @@ public class WebBrowserView extends ViewPart
 	 * @param kml {@link KMLSource} object
 	 * @param view {@link PlacesView} where the source will be added
 	 */
-	public static void handleKmlKmz ( KMLSource kml , PlacesView view )
+	public static void handleKmlKmz ( KMLSource kml , NavigatorView view )
 	{
 		try {
 			LayerList list = kml.toLayerList();

@@ -16,9 +16,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 import org.eclipse.plugin.worldwind.views.EarthView;
-import org.eclipse.plugin.worldwind.views.GeoSearchView;
-import org.eclipse.plugin.worldwind.views.LayersView;
-import org.eclipse.plugin.worldwind.views.PlacesView;
+import org.eclipse.plugin.worldwind.views.NavigatorView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 public class Perspective implements IPerspectiveFactory 
@@ -42,16 +40,17 @@ public class Perspective implements IPerspectiveFactory
 		layout.setEditorAreaVisible(false);
 
 		// TopLeft: Places & GeoSearch
-		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.18f, editorArea);
+		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
 		
 		//topLeft.addPlaceholder(LayersView.ID + ":*");
-		topLeft.addView(PlacesView.ID);
-		topLeft.addView(GeoSearchView.ID);
+		//topLeft.addView(PlacesView.ID);
+		//topLeft.addView(GeoSearchView.ID);
+		topLeft.addView(NavigatorView.ID);
 		
 		// Bottom left: Layers view
-		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f,
+		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.75f,
 		 	   "topLeft");
-		bottomLeft.addView(LayersView.ID);
+//		bottomLeft.addView(LayersView.ID);
 		bottomLeft.addView(ID_PROGRESSVIEW);
 				
 		// TopRight: Earth & web browser
@@ -60,9 +59,9 @@ public class Perspective implements IPerspectiveFactory
 		topRight.addView(WebBrowserView.ID);
 				
 		// These layers cannt be closed
-		layout.getViewLayout(LayersView.ID).setCloseable(false);
-		layout.getViewLayout(PlacesView.ID).setCloseable(false);
+//		layout.getViewLayout(LayersView.ID).setCloseable(false);
+//		layout.getViewLayout(PlacesView.ID).setCloseable(false);
 		layout.getViewLayout(EarthView.ID).setCloseable(false);
-		layout.getViewLayout(GeoSearchView.ID).setCloseable(false);
+//		layout.getViewLayout(GeoSearchView.ID).setCloseable(false);
 	}
 }

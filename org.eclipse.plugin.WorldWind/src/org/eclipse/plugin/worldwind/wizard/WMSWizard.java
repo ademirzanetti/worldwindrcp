@@ -13,7 +13,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.GroundOverlayFetchOperation;
-import org.eclipse.plugin.worldwind.views.PlacesView;
+import org.eclipse.plugin.worldwind.views.NavigatorView;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
@@ -89,9 +89,9 @@ public class WMSWizard extends Wizard
 	{
 		try {
 			// Grab layers view
-			//LayersView view = (LayersView)Activator.getView(window, LayersView.ID);
-			PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
-			
+			//PlacesView view = (PlacesView)Activator.getView(window, PlacesView.ID);
+			NavigatorView view = (NavigatorView)Activator.getView(window, NavigatorView.ID); 
+					
 			// selected date indices
 			int[] indices 	= page1.getSelectedIndices();
 
@@ -198,7 +198,7 @@ public class WMSWizard extends Wizard
 			}
 			
 			// show places view
-			window.getActivePage().showView(PlacesView.ID);
+			window.getActivePage().showView(NavigatorView.ID);
 			
 			return true;
 		} 
@@ -213,7 +213,7 @@ public class WMSWizard extends Wizard
 	/*
 	 * Add ground overlays to view
 	 */
-	void addGroundOverlays(GroundOverlayLayer[] ovs, PlacesView view) 
+	void addGroundOverlays(GroundOverlayLayer[] ovs, NavigatorView view) 
 	{
 		view.addOverlays(ovs, false);
 	}

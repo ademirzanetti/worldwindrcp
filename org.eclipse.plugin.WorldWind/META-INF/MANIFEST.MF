@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.ui,
  org.eclipse.plugin.WorldWind.Help,
  org.eclipse.plugin.Analytics,
- org.eclipse.update.core
+ org.eclipse.update.core,
+ org.eclipse.ui.forms
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  config/,
