@@ -13,23 +13,35 @@ package org.eclipse.plugin.worldwind.views.tree;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.layers.Earth.LandsatI3;
+import gov.nasa.worldwind.layers.Earth.USGSDigitalOrtho;
+import gov.nasa.worldwind.layers.Earth.USGSUrbanAreaOrtho;
 
 import java.util.Vector;
 
 import javax.media.opengl.GLException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
+import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.views.EarthView;
-import org.eclipse.plugin.worldwind.views.LayersView;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.ISharedImages;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.NASAWMSLayerList;
 import worldwind.contrib.layers.ScreenOverlayLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 
 /**
  * CheckedBoxTreeViewer with logic to add/remove nodes + track the
@@ -45,10 +57,105 @@ public class WWTreeViewer extends CheckboxTreeViewer
 	private Vector<TreeObject> checkedTreeNodes = new Vector<TreeObject>();
 
 	
+	/*
+	 * Provides content to the layers tree
+	 */
+	public static class LayersContentProvider 
+		implements IStructuredContentProvider, ITreeContentProvider 
+	{
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		}
+		public void dispose() {
+		}
+		public Object[] getElements(Object parent) {
+			return getChildren(parent);
+		}
+		public Object getParent(Object child) {
+			if (child instanceof TreeObject) {
+				return ((TreeObject)child).getParent();
+			}
+			return null;
+		}
+		public Object [] getChildren(Object parent) {
+			if (parent instanceof TreeParent) {
+				return ((TreeParent)parent).getChildren();
+			}
+			return new Object[0];
+		}
+		public boolean hasChildren(Object parent) {
+			if (parent instanceof TreeParent)
+				return ((TreeParent)parent).hasChildren();
+			return false;
+		}
+
+	}
+	
+	/*
+	 * Provides Labels/images to the tree
+	 */
+	public static class LayersLabelProvider extends CellLabelProvider 
+	{
+		LayersToolTipSupport tipSupport;
+
+		public void setTipSupport (LayersToolTipSupport tipSupport ) {
+			this.tipSupport = tipSupport;
+		}
+		
+		@Override
+		public Image getToolTipImage(Object object) {
+			return ((TreeObject)object).getImage();
+		}
+
+		public void update(ViewerCell cell) {
+			cell.setText(cell.getElement().toString());
+		}
+		
+		@Override
+		public String getToolTipText(Object element) 
+		{
+			final Layer layer 	= ((TreeObject)element).getLayer();
+			String description 	= ((TreeObject)element).toString();
+			
+			// Get layer description: only in GroundOverlay & TimeLoop Ovs
+			if ( layer instanceof TimeLoopGroundOverlay )
+				description = ((TimeLoopGroundOverlay)layer).getDescription();
+
+			if ( layer instanceof GroundOverlayLayer )
+				description = ((GroundOverlayLayer)layer).getDescription();
+				
+				
+			final String toolTip = "<html>" 
+				+ "<style>body, table {font-family:Arial;font-size=12px;background-color='#FFFFCC'}"
+				+ "</style>"
+				+ "<body bgcolor='#FFFFCC'>" 
+				+ description 
+				+ "</body></html>";
+
+			if ( tipSupport != null) 
+			{
+				// very crappy tip size logic
+				final int len = description.length();
+				int w = 200 , h = 100;
+				
+				if ( len > 30  && len < 100) { w = 300; h = 200;} 
+				else if ( len > 100 && len < 200 ){ w = 300; h = 300;}
+				else if ( len > 200 ){ w = 600; h = 400;}
+				
+				tipSupport.setTipSize(w, h);
+			}
+			return toolTip;
+		}
+		
+	}
+	
 	public WWTreeViewer(Composite parent, int style) {
 		super(parent, style);
 	}
 
+	public WWTreeViewer(Tree tree) {
+		super(tree);
+	}
+	
 	/**
 	 * Initialize tree contents
 	 */
@@ -70,7 +177,8 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		// Add layers
 		invisibleRoot.addChild(buildDefaultWorldWindLayers());
 		invisibleRoot.addChild(buildNASAWMSLayers());
-
+		invisibleRoot.addChild(buildOtherLayers());
+		
 		return invisibleRoot;
 	}
 	
@@ -79,7 +187,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 	 * @param to
 	 * @param checked
 	 */
-	public void trackCheckState (TreeObject to, boolean checked)
+	public void checkNode (TreeObject to, boolean checked)
 	{
 		if ( checked ) 
 			checkedTreeNodes.add(to);
@@ -129,7 +237,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		parent.setEnabled(checked);
 		
 		// track parent check state on the tree
-		trackCheckState(parent, checked);
+		checkNode(parent, checked);
 		
 		if ( children != null ) 
 		{
@@ -137,7 +245,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			{
 				// set child visibility & check state
 				child.setEnabled(checked);
-				trackCheckState(child, checked);
+				checkNode(child, checked);
 				
 				logger.debug("Adding child:" + child.getName() + " to the tree");
 				parent.addChild(child);
@@ -249,12 +357,36 @@ public class WWTreeViewer extends CheckboxTreeViewer
 	    	// Must add layer to both tree & world wind model
 	    	EarthView.world.getModel().getLayers().add(layer);
 	    	
-	    	final TreeObject to = new TreeObject(layer, LayersView.guessIcon(layer.getName()));
+	    	final TreeObject to = new TreeObject(layer, guessIcon(layer.getName()));
 	    	
 	    	top.addChild(to);
 	    }
 	    
 	    // self + children
+	    top.setRemovable(false);
+	    return top;
+	}
+	
+	/*
+	 * Others such as MS Virtual Earth (disabled by default)
+	 */
+	private TreeParent buildOtherLayers() 
+	{
+		VirtualEarthLayer layer =  new VirtualEarthLayer();
+		
+		// MS VE Logo
+//		ScreenOverlayLayer logo = new ScreenOverlayLayer("MS VE Logo"
+//				, "worldwind/contrib/layers/quadkey/logo_msve.png"
+//				, ScreenOverlayLayer.SOUTHWEST);
+//		
+//		logo.setIconScale(0.5);
+//		layer.setLogo(logo);
+		layer.setEnabled(false);
+		
+		// add to ww model (so it will render)
+		EarthView.world.getModel().getLayers().add(layer);
+		
+		TreeParent top = new TreeParent(layer, null);
 	    top.setRemovable(false);
 	    return top;
 	}
@@ -268,7 +400,6 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		
         // Add World Wind built-in layers (all enabled)
 		LayerList layerList = EarthView.world.getModel().getLayers();
-       
 
         // WW parent layer for Model layers
         RenderableLayer topLayer = new RenderableLayer();
@@ -281,15 +412,30 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		for (Layer layer : layerList) 
 		{
 			final TreeObject to = new TreeObject(layer
-					, LayersView.guessIcon(layer.getName())	// Tree icon
+					, guessIcon(layer.getName())	// Tree icon
 					);
+			
 			parent.addChild(to);
+			
+			// These layers use compressed textured which won't work in most
+			// Linux/Old PCs thus are disabled by default
+			if ( layer instanceof USGSDigitalOrtho || layer instanceof LandsatI3
+					|| layer instanceof USGSUrbanAreaOrtho)
+			{
+				layer.setEnabled(false);
+				checkNode(to, false);
+			}
+			else
+				checkNode(to, true);
 		}
 		
 		// self + children
 		parent.setRemovable(false);
 		
-		trackCheckState(parent, true); 
+		// Check parent 
+		checkedTreeNodes.add(parent);
+		// enable all by default
+		//checkNode(parent, true); 
 		
 		return parent;
 	}
@@ -301,7 +447,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 	{
 		for (TimeLoopGroundOverlay aov : ovs) 
 		{
-			TreeParent parent = new TreeParent(aov, LayersView.guessIcon(aov.getName()));
+			TreeParent parent = new TreeParent(aov, guessIcon(aov.getName()));
 			
 			// # of frames in loop
 			int overlaySize 			= aov.getOverlays().size();
@@ -322,7 +468,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			// Add loop frames to the tree array
 			for (int i = 0; i < childOvs.length; i++) {
 				children[i] = new TreeObject(childOvs[i]
-						, LayersView.guessIcon(childOvs[i].getName())
+						, guessIcon(childOvs[i].getName())
 						);
 			}
 			
@@ -334,5 +480,28 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			addTreeObject(parent, children, false, false);
 		}
 	}
+	
+	/*
+	 * Very simple logic to load an icon from a layer name
+	 */
+	static public final Image guessIcon(String layerName) 
+	{
+    	Image icon = null;
+    	String name = layerName.toLowerCase();
+    	
+    	// set some icons
+    	if ( name.indexOf("usgs") != -1 )
+    		icon = Activator.ICON_USGS;
+    	else if ( name.indexOf("us ") != -1)
+    		icon = Activator.ICON_FLAG_US;
+    	else if ( name.indexOf("nasa") != -1
+    			|| name.indexOf("blue marble") != -1 
+    			|| name.indexOf("compass") != -1)
+    		icon = Activator.ICON_NASA;
+    	else
+    		icon = Activator.getSharedImage(ISharedImages.IMG_DEF_VIEW);
+    	return icon;
+	}
+
 	
 }

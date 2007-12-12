@@ -33,6 +33,7 @@
             id="WWPlugin"
             name="World Wind">
       </category>
+      <!--
       <view
             category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.LayersView"
@@ -47,6 +48,7 @@
             id="org.eclipse.plugin.worldwind.views.PlacesView"
             name="My Places">
       </view>
+      -->
 		<view
             name="Animation Progress View"
             icon="icons/16x16-nasa.png"
@@ -62,12 +64,21 @@
             id="org.eclipse.plugin.worldwind.views.WebBrowserView"
             name="Web Browser">
       </view>
+      <!--
       <view
             category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.GeoSearchView"
             icon="icons/16x16-yahoo.png"
             id="org.eclipse.plugin.worldwind.views.GeoSearchView"
             name="GeoSearch View">
+      </view>
+      -->
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.NavigatorView"
+            icon="icons/16x16-layers.png"
+            id="org.eclipse.plugin.worldwind.views.NavigatorView"
+            name="Navigator">
       </view>
    </extension>
    <extension
