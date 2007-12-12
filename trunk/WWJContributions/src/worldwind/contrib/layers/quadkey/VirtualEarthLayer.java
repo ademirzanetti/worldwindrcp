@@ -61,13 +61,10 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 		super.cacheRoot = Messages.getText("quad.ms.ve.cache.root", "VirtualEarth/");
 		
 		setOpacity(opacity);
-		
-		// Logo
-		logo = new ScreenOverlayLayer("MS VE Logo"
-				, "/worldwind/contrib/layers/quadkey/logo_msve.png"
-				, ScreenOverlayLayer.SOUTHWEST);
-		
-		logo.setIconScale(0.5);
+	}
+	
+	public void setLogo (ScreenOverlayLayer logo) {
+		super.logo = logo;
 	}
 	
 	@Override

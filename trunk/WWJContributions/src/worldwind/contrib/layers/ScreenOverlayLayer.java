@@ -248,6 +248,21 @@ public class ScreenOverlayLayer extends AbstractLayer
 
         try
         {
+        	// look in cache first
+        	URL url = WorldWind.getDataFileCache().findFile(getName(), false);
+        	
+        	if ( url != null ) 
+        	{
+        		try {
+        			logger.debug("Looking for screen ov " + getName() + " in cache");
+        			
+        			iconTexture = TextureIO.newTexture(new File(url.toURI()), true);
+        			return;
+				} catch (Exception e) {
+					logger.error(e + " for cached screen ov " + getName());
+				}
+        	}
+        	
         	logger.debug("Initializing texture " + getName() 
         			+ " from " + (iconFile != null ? iconFile : iconURL));
         	
@@ -272,6 +287,14 @@ public class ScreenOverlayLayer extends AbstractLayer
         		iconTexture = TextureIO.newTexture(iconURL, true, null);
         	}
             
+        	// cache texture
+        	if ( iconTexture != null) {
+        		final File f = WorldWind.getDataFileCache().newFile(getName() + ".png");
+        		
+        		logger.debug("Caching screen ov as " + f);
+        		TextureIO.write(iconTexture, f);
+        	}
+        	
             this.iconTexture.bind();
         }
         catch (IOException e)
@@ -458,9 +481,21 @@ public class ScreenOverlayLayer extends AbstractLayer
  
     public String toKML(boolean useAbsolutePaths) 
     {
-    	String icon = ( iconURL != null ? iconURL.toString() : iconFile.toString() );
+    	String icon = null;
     	
-    	icon = useAbsolutePaths ? icon : new File(icon).getName();
+    	if ( iconURL != null ) 
+    		icon = iconURL.toString();
+    	
+    	if ( icon == null && iconFile != null && iconFile.exists() && useAbsolutePaths)
+    		icon =  iconFile.toString();
+    	
+    	if ( icon == null && iconFile != null && iconFile.exists() && ! useAbsolutePaths)
+    		icon = iconFile.getName();
+    	
+    	if ( icon == null ) {
+    		logger.debug("Unable to get icon href for screen overlay " + getName());
+    		return null;
+    	}
     	
     	return " <ScreenOverlay>" + Messages.NL
     		+ "<name>" + getName() + "</name>" + Messages.NL
@@ -480,12 +515,25 @@ public class ScreenOverlayLayer extends AbstractLayer
 							+ Messages.NL
 				)
 			+ "</ScreenOverlay>" + Messages.NL ;
-     }
+    }
     
-    public File getFile () throws Exception {
-    	return iconFile != null 
-    			? iconFile
-    			: new File( iconURL.toURI());
+    /**
+     * Get the overlay cache file
+     * @return
+     * @throws Exception
+     */
+    public File getFile () throws Exception 
+    {
+    	if (iconFile != null ) return iconFile;
+    	
+    	// in cache?
+    	URL url = WorldWind.getDataFileCache().findFile(getName(), false);
+    	if ( url != null) return new File( url.toURI());
+    	
+    	if (iconURL.getProtocol().startsWith("http"))
+    		throw new IOException("No overlay " + getName() + " in cache.");
+    	
+    	return  new File( iconURL.toURI());
     }
     
     

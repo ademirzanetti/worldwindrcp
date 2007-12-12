@@ -1072,14 +1072,15 @@ public class DemoSWT
 		buf.append("</xml>");
 		
 		// save XML in WW cache folder
-		System.out.println("Layers not saved.");
-//		File file = WorldWind.dataFileCache().newFile("layers.xml");
-//		try {
-//			Messages.writeToFile(file, buf.toString().getBytes());
-//		} catch (Exception e) {
-//			// Unable to save file
-//			e.printStackTrace();
-//		}
+		File file = WorldWind.getDataFileCache().newFile("layers.xml");
+		System.out.println("Saving " + top.length + " KML layers to " + file);
+		
+		try {
+			Messages.writeToFile(file, buf.toString().getBytes());
+		} catch (Exception e) {
+			// Unable to save file
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -1219,7 +1220,7 @@ public class DemoSWT
 
 
 	public synchronized void statusChanged(int current, int total, GroundOverlayLayer layer) {
-		System.out.println("statusChanged " + current + "/" + total + " " + layer.getName());
+		logger.debug("statusChanged " + current + "/" + total + " " + layer.getName());
 	}
 
 

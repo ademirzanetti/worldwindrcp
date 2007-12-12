@@ -634,11 +634,23 @@ public class GroundOverlayLayer extends AbstractLayer
 
 		String icon;
 		
+		// use tile from cache if available
+		URL localFile = WorldWind.getDataFileCache().findFile(tileKey, false);
+		
 		// Absolute paths?
 		try {
-			icon = useAbsolutePaths 
-				? textureURL.toString() 
-				: new File(textureURL.toURI()).getName() ;
+			if ( localFile == null )
+				icon = textureURL.toString();
+			else if ( useAbsolutePaths ) 
+				icon = localFile.toExternalForm();
+			else
+				icon = new File(localFile.toURI()).getName() ;
+			
+			logger.debug("KML icon href: " + icon);
+			
+//			icon = useAbsolutePaths 
+//				? textureURL.toString() 
+//				: new File(textureURL.toURI()).getName() ;
 		} catch (URISyntaxException e) {
 			icon = textureURL.toString();
 			logger.error("Unable to build icon with abs path: " + useAbsolutePaths 
@@ -708,5 +720,20 @@ public class GroundOverlayLayer extends AbstractLayer
 	public void dispose() {
 		super.dispose();
 //		deleteFromCache();
+	}
+	
+	/**
+	 * Get a file for the texture stored in WW cache
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public File getFileFromCache() throws URISyntaxException 
+	{
+		URL url = WorldWind.getDataFileCache().findFile(tileKey, false);
+		
+		if ( url != null) 
+			return new File(url.toURI());
+		
+		return null;
 	}
 }
