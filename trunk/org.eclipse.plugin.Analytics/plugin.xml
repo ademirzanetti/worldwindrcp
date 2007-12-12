@@ -25,7 +25,7 @@
             id="WWAnalyticsPlugin"
             name="Analytics">
       </category>
-         
+	<!--         
       <view
       		category="WWAnalyticsPlugin"
             name="VisAD SpreadSheet for Numerical Analysis"
@@ -33,23 +33,15 @@
             class="org.eclipse.plugin.analytics.views.VisADSpreadSheetView"
             id="org.eclipse.plugin.analytics.views.VisADSpreadSheetView">
       </view>
+      -->
       <view
       		category="WWAnalyticsPlugin"
-            name="Models-3/Community Multiscale Air Quality (CMAQ)"
+            name="NetCDF Dataset Viewer"
             icon="icons/epa_16.png"
             class="org.eclipse.plugin.analytics.views.VerdiModels3View"
             id="org.eclipse.plugin.analytics.views.VerdiModels3View">
       </view>
    </extension>
-   <!--
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="help/toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-   -->
 <!--
 This extension causes J3D errors when loading libraries from different
 class loaders
