@@ -560,8 +560,12 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 				+ "]]></description>" + Messages.NL);
 		
 		// append legend (screen overlay)
-		if ( legend != null ) {
-			buf.append(legend.toKML(useAbsolutePaths) + Messages.NL);
+		if ( legend != null ) 
+		{
+			final String legendKml = legend.toKML(useAbsolutePaths) ;
+			
+			if ( legendKml != null)
+				buf.append(legendKml + Messages.NL);
 		}
 			
 		for (GroundOverlayLayer ov : overlays) 
