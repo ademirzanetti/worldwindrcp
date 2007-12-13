@@ -326,12 +326,16 @@ public class GroundOverlayLayer extends AbstractLayer
         		logger.debug("Invalid resp content type " + contentType + " buffer " + buf);
         		
         		// XML error response 
-        		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")) {
+        		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")
+        			 || contentType.equalsIgnoreCase("text/xml") ) 
+        		{
         			// WMS XML response?...extract message from: 
         			// <ServiceException>MESSAGE</ServiceException>
-        			final String xml 	= buf;
-        			errorMessage			= ( xml != null && xml.indexOf("<ServiceException>") != -1) 
-        				? xml.substring(xml.indexOf("<ServiceException>") + 18, xml.indexOf("</ServiceException>"))
+        			// TODO: Parse Exception Repoort XML
+        			
+        			final String xml 		= buf;
+        			errorMessage			= xml != null && xml.indexOf("<ServiceException>") != -1  
+        				? xml.substring(xml.indexOf("<ServiceException") + 18, xml.indexOf("</ServiceException>"))
         				: xml;
         		}
         		else {
@@ -340,17 +344,18 @@ public class GroundOverlayLayer extends AbstractLayer
         		}
         	}
         	
+        	client.close();
+        	
         	if ( errorMessage != null ) 
                 throw new IOException("Download failed: " + errorMessage );
         	
-        	client.close();
 		} 
     	catch ( Exception e) 
     	{
     		// remove file from disk
             if ( outFile != null && outFile.exists()) 
             {
-            	logger.error("Download failed" 
+            	logger.error("Download failed: " 
             			+ e.getMessage() 
             			+ ". Deleting cache file " + outFile);
             	

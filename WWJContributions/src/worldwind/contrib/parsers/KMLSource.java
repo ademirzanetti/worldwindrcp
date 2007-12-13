@@ -220,7 +220,7 @@ public class KMLSource
 		if ( doc.screenOverlays != null )  
 		{
 			// Get KML screen overlay representing the legend
-			final ScreenOverlay so = getLegend(doc.screenOverlays); //  doc.screenOverlays[0];
+			final ScreenOverlay so = getLegend(doc.screenOverlays); 
 			
 			legend = ( so.icon != null)
 				? new ScreenOverlayLayer(so.name, so.icon, so.position)
@@ -230,7 +230,8 @@ public class KMLSource
 			if ( so.sizeX != null 
 					&& so.sizeY != null 
 					&& so.sizeX.equals("0") 
-					&& so.sizeY.equals("0") )
+					&& so.sizeY.equals("0") 
+				)
 				legend.setResizeBehavior(ScreenOverlayLayer.RESIZE_KEEP_FIXED_SIZE);
 			
 			aov.setLegend(legend);
@@ -542,7 +543,7 @@ System.out.println("KML=" + kmlDoc);
 		out.close();
 	}
 	
-// /* 
+ /* 
 	// test only
 	public static void main(String[] args) {
 		try {
@@ -596,5 +597,5 @@ System.out.println("KML=" + kmlDoc);
 			e.printStackTrace();
 		}
 	}
-	
+*/	
 }

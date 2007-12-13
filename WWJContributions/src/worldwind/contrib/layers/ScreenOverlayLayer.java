@@ -68,7 +68,7 @@ public class ScreenOverlayLayer extends AbstractLayer
     private double compassToViewportScale = 0.27; 
     private double iconScale = 1.0;
     private int borderWidth = 20; 
-    private String position = NORTHEAST; 
+    private String position = SOUTHEAST; 
     private String resizeBehavior = RESIZE_SHRINK_ONLY;
     private Texture iconTexture = null;
     private Vec4 locationCenter = null;
