@@ -102,17 +102,23 @@ public class KMLSource
 			// file couldn't be created. Perhaps URL contains a query string?
 			// Use a generic name
 			file = WorldWind.getDataFileCache().newFile("download-" + System.currentTimeMillis());
-			logger.debug(file + " couldn't be created. Using " + file);
+			logger.debug(fileName + " couldn't be created in cache. Using " + file);
 		}
 		
 		logger.debug("Downloading " + url + " to " + file);
 		
 		client.doGet( new FileOutputStream( file ));
-		
-		process(file, client.getContentType());
-		
-		// done w/ file, remove
-		file.delete();
+
+		try {
+			process(file, client.getContentType());
+		} 
+		catch (Exception e) {
+			throw new IOException(e.getMessage());
+		}
+		finally {
+			// done w/ file, remove
+			file.delete();
+		}
 	}
 	
 	/**
@@ -548,7 +554,8 @@ System.out.println("KML=" + kmlDoc);
 	public static void main(String[] args) {
 		try {
 			//String url = "http://services.google.com/earth/kmz/cumbria_waymarking_n.kmz";
-			String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
+			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
+			String url = "http://gds.rtpnc.epa.gov:9090/geo/kml?mode=netlink";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
@@ -577,7 +584,7 @@ System.out.println("KML=" + kmlDoc);
 			//System.out.println("kml=" + kml + " ov=" + overlay.getDescription());
 			
 			
-	        buildKMZ(new File("c:/temp/moo.kmz"), overlay);
+//	        buildKMZ(new File("c:/temp/moo.kmz"), overlay);
 	        
 			//System.out.println(kml.toKML());
 //			LayerList list = kml.toLayerList();

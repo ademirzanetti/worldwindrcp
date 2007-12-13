@@ -917,4 +917,42 @@ public class ParserUtils
 	    os.close();
     }
     
+    /**
+     * Parse errors returned by WMS 
+     * <pre>&lt;ServiceExceptionReport version="1.3.0"
+  xmlns="http://www.opengis.net/ogc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/ogc http://svs.gsfc.nasa.gov/exceptions_1_3_0.xsd">
+  &lt;ServiceException code="InvalidDimensionValue">
+    2005-08-23T14:45:00Z is not valid for Layer 3240_24673.
+  &lt;/ServiceException>
+  &lt;ServiceException code="LayerNotDefined">
+    Unable to find layer corresponding to parameters: LAYERS=3240_24673,STYLES=opaque,CRS=CRS:84,BBOX=-100,10,-60,50,TIME=2005-08-23T14:45:00Z,WIDTH=1024,HEIGHT=1024
+  &lt;/ServiceException>
+&lt;/ServiceExceptionReport> </pre>
+     * @param is
+     * @return
+     */
+    static public String parseServiceExceptionReportXML (InputStream is)
+    {
+    	Document doc 	= null;
+    	String errors 	= null;
+    	try {
+    		doc = parse(is);
+    		
+    		NodeList nl =  doc.getElementsByTagName("ServiceException");
+    		
+    		if ( nl.getLength() == 0) return null;
+    		
+    		errors = ((Element)nl.item(0)).getTextContent().trim();
+    		
+    		for (int i = 1; i < nl.getLength(); i++) {
+    			final Element e = (Element)nl.item(i);
+    			errors +=  e.getTextContent().trim();
+			}
+		} catch (Exception e) {	}
+		
+    	return errors;
+    }
+    
 }

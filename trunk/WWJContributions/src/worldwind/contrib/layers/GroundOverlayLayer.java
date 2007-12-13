@@ -13,6 +13,7 @@ package worldwind.contrib.layers;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import worldwind.contrib.Messages;
+import worldwind.contrib.parsers.ParserUtils;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.WMS_Capabilities;
 
@@ -230,7 +232,6 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
     private synchronized boolean loadTexture(TextureCache tc, URL textureURL) 
     {
-//        TextureData textureData = null;
     	Texture texture = null;
     	
         try {
@@ -245,54 +246,12 @@ public class GroundOverlayLayer extends AbstractLayer
         	return false;
         }
        
-//        Texture texture = TextureIO.newTexture(textureData);
-//
-//        logger.debug("Got texture: " 
-//        		+ tileKey 
-//        		+ " TexData (w,h)=" + textureData.getWidth() + "," + textureData.getHeight()
-//        		+ " Texture w=" + texture.getWidth() + " h=" + texture.getHeight() 
-//        		+ " from " + textureURL //( textureURL != null ? textureURL : textureFile ) 
-//        		+ " Est mem size:" + textureData.getEstimatedMemorySize());
-        
-        /*
-         * Texture/TextureData w/h mismatch bug: sometimes W/H don't match
-         * between Texture & TextureData. This causes a messed up img to display.
-         * A solution? ... resize img to 1024x1024
-         */
-//        if ( textureData.getWidth() != texture.getWidth() 
-//        		|| textureData.getHeight() != texture.getHeight() )
-//        {
-//        	try 
-//        	{
-//            	final URL url = WorldWind.getDataFileCache().findFile(tileKey, false);
-//            	
-//            	// texture exists?
-//            	File file = ( url == null ) 
-//            		? WorldWind.getDataFileCache().newFile(tileKey)
-//            		: new File(url.toURI())	;
-//            	
-//            	logger.error("Texture/TextureData w/h don't match. Saving to disk & resizing " 
-//            			+ file + " file exists " + file.exists());
-//        		
-//        		// Fetch manually & store on disk
-//            	if ( !file.exists())
-//            		downloadResource(textureURL, file);
-//        		
-//            	// scale file from disk to 1024x1024 (preserving alpha)
-//            	scaleImage(file, formatName, 1024, 1024);
-//            	
-//            	// reload texture
-//            	texture = TextureIO.newTexture(file, true);
-//        	} 
-//        	catch (Exception e) {
-//        		logger.error(e);
-//			}
-//        }
         
         tile.setTexture(tc, texture);
         
-        this.addTileToMemoryCache();
-
+        if ( ! addTileToMemoryCache() );
+        	logger.error("Unable to load " + tileKey + " to memory cache");
+        	
         return true;
     }
 
@@ -329,14 +288,15 @@ public class GroundOverlayLayer extends AbstractLayer
         		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")
         			 || contentType.equalsIgnoreCase("text/xml") ) 
         		{
-        			// WMS XML response?...extract message from: 
+        			// WMS XML Error response?...extract message from: 
         			// <ServiceException>MESSAGE</ServiceException>
-        			// TODO: Parse Exception Repoort XML
-        			
         			final String xml 		= buf;
-        			errorMessage			= xml != null && xml.indexOf("<ServiceException>") != -1  
-        				? xml.substring(xml.indexOf("<ServiceException") + 18, xml.indexOf("</ServiceException>"))
-        				: xml;
+        			
+//        			errorMessage			= xml != null && xml.indexOf("<ServiceException>") != -1  
+//        				? xml.substring(xml.indexOf("<ServiceException") + 18, xml.indexOf("</ServiceException>"))
+//        				: xml;
+        			errorMessage = ParserUtils.parseServiceExceptionReportXML(
+        					new ByteArrayInputStream(xml.getBytes()));
         		}
         		else {
         			// just set the err msg to whatever is on the byte buffer
@@ -369,12 +329,13 @@ public class GroundOverlayLayer extends AbstractLayer
     }
     
     
-    private void addTileToMemoryCache()   
+    private boolean addTileToMemoryCache()   
     {
         if (this.getTileFromMemoryCache() == null ) { 
         	logger.debug("Adding tile " + tile + " key=" + tileKey + " to memory cache.");
-            WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).add(tileKey, tile);
+            return WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).add(tileKey, tile);
         }
+        return false;
     }
 
     private TextureTile getTileFromMemoryCache() 

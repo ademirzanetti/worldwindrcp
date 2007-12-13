@@ -447,8 +447,12 @@ public class SimpleKMLParser
 			docName = name;
 		
 		KMLDocument kmlDoc = new KMLDocument(docName);
-
-		kmlDoc.description	  = ParserUtils.getTextContent(e, "description").trim(); 
+		
+		// Description is optional
+		try {
+			kmlDoc.description	  = ParserUtils.getTextContent(e, "description").trim();
+		} catch (Exception ex) {}
+		
 		kmlDoc.groundOverlays = parseGroundOverlays(e.getElementsByTagName("GroundOverlay"));
 		kmlDoc.screenOverlays = parseScreenOverlays(e.getElementsByTagName("ScreenOverlay"));
 		kmlDoc.placemarks	  = parsePlaceMarks(e.getElementsByTagName("Placemark"));
