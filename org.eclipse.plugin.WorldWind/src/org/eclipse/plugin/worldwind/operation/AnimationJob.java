@@ -39,7 +39,7 @@ public class AnimationJob extends Job
 	
 	private TimeLoopGroundOverlay layer;
 	private boolean done 	= false;
-	private long interval 	= 30000; 	// base sleep interval
+	private long interval 	= 40000; 	// base sleep interval
 	private int speed 		= 50;		// animation speed: 0..100
 	private Display display;
 	private StatusLine statusLine;
@@ -102,8 +102,7 @@ public class AnimationJob extends Job
 				{
 					final long sleep = interval/speed;
 					
-					final String message = layer.getName() + ":" 
-						+ overlays.get(i).getName() 
+					final String message =  overlays.get(i).getName() 
 						+ " ("  + (i+1) + "/" + size + ")" ;
 	
 					final boolean frameInCache = layer.isFrameinCache(i);
@@ -115,7 +114,7 @@ public class AnimationJob extends Job
 							public void run() 
 							{
 								// show a frame update message
-								statusLine.setLoopStatusMessage(message);
+								statusLine.setLoopStatusMessage(layer.getName() + ":" + message);
 								
 								// if not in cache show a progress bar
 								if ( ! frameInCache ) {
