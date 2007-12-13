@@ -170,10 +170,15 @@ public class NavigatorView extends ViewPart implements Listener
 		
 		// initialize status line
 		statusLine 	= ApplicationActionBarAdvisor.getDefaultStatusLine();
-		toolkit 	= new FormToolkit(parent.getDisplay());
 		
-		scrolledForm 		= toolkit.createScrolledForm(parent);
+		toolkit 		= new FormToolkit(parent.getDisplay());
+		scrolledForm 	= toolkit.createScrolledForm(parent);
 
+		scrolledForm.setText(Messages.getText("view.navigator.hdr"));
+		//scrolledForm.setImage(Activator.ICON_NASA);
+
+		toolkit.decorateFormHeading(scrolledForm.getForm());	
+		
 		// Form Toolbar setup
 		makeActions();
 		contributeToActionBars();
