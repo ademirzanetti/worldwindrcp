@@ -91,7 +91,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 
     	// Visible frame. Only 1 frame is visible at a given time
         private int visibleFrame = 0;
-    	private long interval = 70000;
+    	private long interval = 50000;
 
     	// animation speed: 0..100
     	private int speed = 50;
