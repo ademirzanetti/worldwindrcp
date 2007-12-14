@@ -39,7 +39,7 @@ public class AnimationJob extends Job
 	
 	private TimeLoopGroundOverlay layer;
 	private boolean done 	= false;
-	private long interval 	= 40000; 	// base sleep interval
+	private long interval 	= 50000; 	// base sleep interval
 	private int speed 		= 50;		// animation speed: 0..100
 	private Display display;
 	private StatusLine statusLine;
