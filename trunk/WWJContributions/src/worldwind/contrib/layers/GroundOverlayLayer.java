@@ -124,8 +124,11 @@ public class GroundOverlayLayer extends AbstractLayer
         {
             long size = Configuration.getLongValue(AVKey.TEXTURE_IMAGE_CACHE_SIZE, 4000000L);
             MemoryCache cache = new BasicMemoryCache((long) (0.95 * size), size);
-            cache.setName("Texture Tiles");
+            
+            cache.setName("Ground Overlays");
             WorldWind.getMemoryCacheSet().addCache(GroundOverlayLayer.class.getName(), cache);
+            
+            logger.debug("Initialized memory cache: " + cache);
         }
 	}
 	
@@ -249,9 +252,10 @@ public class GroundOverlayLayer extends AbstractLayer
         
         tile.setTexture(tc, texture);
         
-        if ( ! addTileToMemoryCache() );
+        if ( ! addTileToMemoryCache() ) {
         	logger.error("Unable to load " + tileKey + " to memory cache");
-        	
+        }
+        
         return true;
     }
 
@@ -331,8 +335,8 @@ public class GroundOverlayLayer extends AbstractLayer
     
     private boolean addTileToMemoryCache()   
     {
-        if (this.getTileFromMemoryCache() == null ) { 
-        	logger.debug("Adding tile " + tile + " key=" + tileKey + " to memory cache.");
+    	if ( ! isTileInMemory()) {
+        	logger.debug("Adding tile to memory " + tile + " key=" + tileKey);
             return WorldWind.getMemoryCache(GroundOverlayLayer.class.getName()).add(tileKey, tile);
         }
         return false;

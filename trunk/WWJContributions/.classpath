@@ -12,8 +12,8 @@
 	<classpathentry kind="lib" path="C:/eclipse-SDK/eclipse/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
 	<classpathentry kind="lib" path="config"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/WWJavaSDK-030"/>
 	<classpathentry kind="lib" path="/WWJavaSDK-030/lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="/WWJavaSDK-030/lib/jogl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WWJavaSDK-030"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
