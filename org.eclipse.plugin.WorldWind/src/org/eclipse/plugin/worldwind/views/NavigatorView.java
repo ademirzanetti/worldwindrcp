@@ -104,7 +104,8 @@ import worldwind.contrib.parsers.ParserUtils;
  * @author Vladimir Silva
  *
  */
-public class NavigatorView extends ViewPart implements Listener
+public class NavigatorView extends ViewPart 
+	implements Listener //, GroundOverlayLoopListener
 {
 	private static final Logger logger = Logger.getLogger(NavigatorView.class);
 	
@@ -622,11 +623,10 @@ public class NavigatorView extends ViewPart implements Listener
 				logger.debug("Starting animated job " + job + " id=" + to.getID());
 				job.play();
 				
-				
 			}
 			else { 
 				//overlay.stop();
-//				overlay.removeLoopListener(this);
+				//overlay.removeLoopListener(this);
 				
 				// Get job from pool
 				AnimationJob job = animatedJobs.get(to.getID());
@@ -1116,5 +1116,51 @@ public class NavigatorView extends ViewPart implements Listener
 		
 		myPlacesViewer.addTreeObject(parent, null, true, enabled);
 	}
+	
+	/******************************************************
+	 * Ground Overlay listeners
+	 ******************************************************/
+	
+	/**
+	 * Fires on ground overlay error
+	 */
+	public void onError(GroundOverlayLayer layer, Exception ex) 
+	{
+		final String message = layer.getName() + ": " 
+			+ ex.getClass() + " " + ex.getMessage();
+		
+		Display display = getViewSite().getShell().getDisplay();
+		
+		display.syncExec(new Runnable() {
+			public void run() {
+				statusLine.setErrorMessage(message);
+			}
+		});
+
+		// stop rendering layer
+		layer.setEnabled(false);
+	}
+
+	/**
+	 * fires when an animated ground overlay loops thru
+	 */
+	public synchronized void statusChanged(final int current, final int total, final GroundOverlayLayer layer) 
+	{
+		if ( getViewSite() == null || getViewSite().getShell() == null ) return;
+		
+		Display display = getViewSite().getShell().getDisplay();
+		
+        display.syncExec(new Runnable() {
+        	public void run() {
+        		String message = layer + " ("  + current + "/" + total + ")" ;
+        		statusLine.setLoopStatusMessage(message);
+        	}
+        });
+	}
+
+	/******************************************************
+	 * End Ground Overlay listeners
+	 ******************************************************/
+
 	
 }
