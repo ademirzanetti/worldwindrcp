@@ -453,6 +453,8 @@ public class KMLSource
 				buf.append( ((GroundOverlayLayer)layer).toKML() + Messages.NL);
 			else if ( layer instanceof TimeLoopGroundOverlay )
 				buf.append( ((TimeLoopGroundOverlay)layer).toKML() + Messages.NL);
+			else if ( layer instanceof PlacemarkLayer )
+				buf.append( ((PlacemarkLayer)layer).toKML() + Messages.NL);
 		}
 		buf.append("</Document>");
 		
@@ -488,7 +490,6 @@ public class KMLSource
 			// relative paths
 			kmlDoc = loop.toKML(false, true);
 			
-System.out.println("KML=" + kmlDoc);
 
 			// add overlay files
 			for (GroundOverlayLayer ov : loop.getOverlays()) 
@@ -549,27 +550,29 @@ System.out.println("KML=" + kmlDoc);
 		out.close();
 	}
 	
- /* 
+/*  
 	// test only
 	public static void main(String[] args) {
 		try {
 			//String url = "http://services.google.com/earth/kmz/cumbria_waymarking_n.kmz";
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
-			String url = "http://gds.rtpnc.epa.gov:9090/geo/kml?mode=netlink";
+			//String url = "http://gds.rtpnc.epa.gov:9090/geo/kml?mode=netlink";
+			String url = "http://code.google.com/apis/kml/documentation/KML_Samples.kml";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";
 			//String file = "src/demo/xml/nexrad.kmz";
 			KMLSource kml = new KMLSource(new URL(url));
 	
+			System.out.println(kml.toKML());
 			
 			//KMLSource kml = new KMLSource(new File(file), SimpleHTTPClient.CT_KMZ);
 			
-			TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			//TimeLoopGroundOverlay overlay = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
 			
 			//System.out.println("Ov kml=" + overlay.toKML());
 			
-			LayerList list = kml.toLayerList();
+			//LayerList list = kml.toLayerList();
 			
 //			System.out.println("List size=" + list.size());
 			

@@ -433,7 +433,9 @@ public class DemoSWT
 //                WWIcon icon = new UserFacingIcon("demo/images/32x32-icon-nasa.png",
 //                    new Position(Angle.fromDegrees(lat), Angle.fromDegrees(lon), alt));
                 final String path = "demo/images/32x32-icon-nasa.png";
-                WWIcon icon = new PlacemarkLayer.PlacemarkIcon(path
+                WWIcon icon = new PlacemarkLayer.PlacemarkIcon(
+                		"Icon at " + lon + "," + lat 
+                		, path
                 		, new Position(Angle.fromDegrees(lat), Angle.fromDegrees(lon), alt)
                 		, "<i>Icon:" + path + "</i><br/><b>Icon Test</b><br/> Lat=" + lat + " <br/>Lon=" + lon);
                 
