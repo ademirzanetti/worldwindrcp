@@ -334,10 +334,10 @@ public class EarthView extends ViewPart
 		view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
         		(OrbitView)view
         		, globe
-        		, latlon
-        		, Angle.ZERO
-        		, Angle.ZERO
-        		, Angle.ZERO.degrees)
+        		, latlon		// bbox
+        		, Angle.ZERO	// Heading
+        		, Angle.ZERO	// Pitch
+        		, 5e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
         		);
 	}
 }
