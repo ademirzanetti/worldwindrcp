@@ -3,7 +3,6 @@ package org.eclipse.plugin.worldwind.views;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +19,9 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -41,8 +42,6 @@ import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer.LayersLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -198,17 +197,17 @@ public class NavigatorView extends ViewPart
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 		
 		// create UI elements
-		searchViewer 	= createSearchSection("Y! Places Search", null, collapsed, 2);
+		searchViewer 	= createSearchSection(Messages.getText("view.navigator.places"), null, collapsed, 2);
 		
 		//myPlacesViewer 	= createTreeSection("My Places", null, expanded, 2, 150);
-		layersViewer 	= createTreeSection("Layers", null, expanded, 2, 300);
+		layersViewer 	= createTreeSection(Messages.getText("view.navigator.layers"), null, expanded, 2, 300);
 
 		
 		initLayers();	
 		//initMyPaces();
 		
 		// load local layers from cache
-		//loadLayers();
+		loadLayers();
 	}
 
 	
@@ -259,6 +258,7 @@ public class NavigatorView extends ViewPart
     /*
      * Load tree data
      */
+/*	
 	private TreeParent getInitialInput () 
 	{
 		// the root tree node (invisible)
@@ -270,6 +270,7 @@ public class NavigatorView extends ViewPart
 
 		return invisibleRoot;
 	}
+*/
 	
 	/*
 	 * Initialize layers tree w/ WW built in layers and realtime sat
@@ -394,8 +395,9 @@ public class NavigatorView extends ViewPart
 		// Search results table
 		Table table = toolkit.createTable(sectionClient, SWT.FILL);
 		
-		td = new TableWrapData(TableWrapData.FILL_GRAB);
-		td.colspan = 2;
+		td 				= new TableWrapData(TableWrapData.FILL_GRAB);
+		td.colspan 		= 2;
+		td.heightHint 	= 100;
 		
 		table.setLayoutData(td);
 		
@@ -567,8 +569,6 @@ public class NavigatorView extends ViewPart
 			layer.setName(displayName);
 			layer.setValue("KMLSOURCE", kml.toKML());
 
-System.out.println("kml=" + kml.toKML());
-
 			TreeParent top = new TreeParent(layer
 					, WWTreeViewer.guessIcon(displayName)
 					);
@@ -727,16 +727,22 @@ System.out.println("kml=" + kml.toKML());
 	/**
 	 * On click move globe to the centroid of the BBOX dataset
 	 */
-	private void hookClickAction (final WWTreeViewer treeViewer) {
-		treeViewer.getTree().addSelectionListener(new SelectionListener() 
+	private void hookClickAction (final WWTreeViewer treeViewer) 
+	{
+		//treeViewer.getTree().addSelectionListener(new SelectionListener() 
+		treeViewer.addDoubleClickListener(new IDoubleClickListener()
 		{
-			public void widgetDefaultSelected(SelectionEvent e) {
-				//clickAction.run();
-				flyOnClickAction(treeViewer);
-			}
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				//clickAction.run();
+//				flyOnClickAction(treeViewer);
+//			}
+//
+//			public void widgetSelected(SelectionEvent e) {
+//				//clickAction.run();
+//				flyOnClickAction(treeViewer);
+//			}
 
-			public void widgetSelected(SelectionEvent e) {
-				//clickAction.run();
+			public void doubleClick(DoubleClickEvent arg0) {
 				flyOnClickAction(treeViewer);
 			}
 		});
@@ -780,7 +786,7 @@ System.out.println("kml=" + kml.toKML());
 		actionRemoveNode = new Action() {
 			public void run() 
 			{
-				final WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
+				final WWTreeViewer nodeViewer = layersViewer; 
 				if ( nodeViewer == null ) return;
 				
 				IStructuredSelection selection = (IStructuredSelection)nodeViewer.getSelection();
@@ -790,7 +796,9 @@ System.out.println("kml=" + kml.toKML());
 				if ( to == null ) return ;
 
 				// built-in layers cannot be removed
-				if ( nodeViewer.equals(layersViewer)) {
+				//if ( nodeViewer.equals(layersViewer)) {
+				if ( ! myLayers.contains(to.getLayer()))
+				{
 					MessageDialog.openInformation(getViewSite().getShell()
 							, Messages.getText("info.dialog.title")
 							, Messages.getText("err.msg.builtin.layer"
@@ -804,6 +812,9 @@ System.out.println("kml=" + kml.toKML());
 
 					// remove node from tree & dispose resources
 					nodeViewer.removeTreeObject(selection.toArray());
+					
+					// remove from cached layers
+					myLayers.remove(to.getLayer());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -1011,14 +1022,6 @@ System.out.println("kml=" + kml.toKML());
 	 */
 	private void saveLayers() 
 	{
-		
-		System.out.println("TODO: Save layers");
-		
-		for (Layer lyr : myLayers) {
-			System.out.println(lyr.getName());
-		}
-		
-		
 		//TreeObject[] topLayers = ((TreeParent)myPlacesViewer.getInput()).getChildren();
 		try {
 			StringBuffer buf = new StringBuffer("<xml>" + Messages.NL);
@@ -1028,17 +1031,16 @@ System.out.println("kml=" + kml.toKML());
 			
 			buf.append("</xml>");
 
-			System.out.println(buf);
-			
 			// save XML in WW cache folder
-			//File file = WorldWind.getDataFileCache().newFile("layers.xml");
+			File file = WorldWind.getDataFileCache().newFile("layers.xml");
 			
-			//worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
-		} catch (Exception e) {
+			worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
+		} 
+		catch (Exception e) 
+		{
 			// Unable to save file!....Why?
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**

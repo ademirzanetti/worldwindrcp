@@ -13,6 +13,7 @@ package org.eclipse.plugin.worldwind.views.tree;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.layers.Earth.BMNGSurfaceLayer;
 import gov.nasa.worldwind.layers.Earth.LandsatI3;
 import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
 import gov.nasa.worldwind.layers.Earth.USGSDigitalOrtho;
@@ -422,7 +423,8 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			
 			// These layers use compressed textures which won't work in most
 			// Linux/Old PCs thus are disabled by default
-			if ( layer instanceof USGSDigitalOrtho 
+			if ( layer instanceof BMNGSurfaceLayer
+					|| layer instanceof USGSDigitalOrtho 
 					|| layer instanceof LandsatI3
 					|| layer instanceof USGSUrbanAreaOrtho
 					|| layer instanceof USGSTopographicMaps
