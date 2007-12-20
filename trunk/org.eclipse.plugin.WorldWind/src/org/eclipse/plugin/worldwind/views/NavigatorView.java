@@ -3,6 +3,7 @@ package org.eclipse.plugin.worldwind.views;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -119,13 +120,16 @@ public class NavigatorView extends ViewPart
 	private ScrolledForm scrolledForm;
 	
 	// My places tree viewer has user defined layers 
-	private WWTreeViewer myPlacesViewer;
+	//private WWTreeViewer myPlacesViewer;
+	
+	// User defined layers (must be saved on exit) & loaded at startup
+	private LayerList myLayers = new LayerList();
 	
 	// Layers tree has: WWJ built in layers + real time sat
 	private WWTreeViewer layersViewer;
 	
 	// Which tree is slected? places/layers (used by the toolbar logic)
-	private byte selectedTree = -1;
+	//private byte selectedTree = -1;
 	
 	// Yahoo location search table
 	private TableViewer searchViewer;
@@ -194,20 +198,24 @@ public class NavigatorView extends ViewPart
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 		
 		// create UI elements
-		searchViewer = createSearchSection("Y! Places Search", null, collapsed, 2);
+		searchViewer 	= createSearchSection("Y! Places Search", null, collapsed, 2);
 		
-		myPlacesViewer = createTreeSection("My Places", null, expanded, 2, 150);
-		layersViewer = createTreeSection("Layers", null, collapsed, 2, 200);
+		//myPlacesViewer 	= createTreeSection("My Places", null, expanded, 2, 150);
+		layersViewer 	= createTreeSection("Layers", null, expanded, 2, 300);
 
 		
 		initLayers();	
-		initMyPaces();	
+		//initMyPaces();
+		
+		// load local layers from cache
+		//loadLayers();
 	}
 
 	
 	/*
 	 * Initialize my places w/ user defined layers from cache
 	 */
+/*	
 	private void initMyPaces()
 	{
 		// Tooltip support
@@ -246,6 +254,7 @@ public class NavigatorView extends ViewPart
 		// load local layers from cache
 		loadLayers();
 	}
+*/
 	
     /*
      * Load tree data
@@ -496,11 +505,16 @@ public class NavigatorView extends ViewPart
 	 */
 	public void addLayer (Layer layer, Image icon, boolean enabled) {
 		layer.setEnabled(enabled);
-		myPlacesViewer.addTreeObject(new TreeParent(layer, icon	)
+		//myPlacesViewer.addTreeObject(new TreeParent(layer, icon	)
+		TreeParent parent = new TreeParent(layer, icon);
+		
+		layersViewer.addTreeObject( parent
 				, null
-				, true		// Make lare renderable
+				, true		// Make layer renderable
 				, enabled); // checked
 		
+		// for caching
+		myLayers.add(layer);
 	}
 	
 	/**
@@ -510,7 +524,7 @@ public class NavigatorView extends ViewPart
 	 */
 	public void addKMLSource (KMLSource kml,  boolean enabled) 
 	{
-		WWTreeViewer nodeViewer = myPlacesViewer;
+		WWTreeViewer nodeViewer = layersViewer; // myPlacesViewer;
 		
 		String displayName 		= kml.getDocument().getName();
 		LayerList list 			= kml.toLayerList();
@@ -521,21 +535,29 @@ public class NavigatorView extends ViewPart
 		// If the doc has more than 1 ground overlay, the layer will be
 		// displayed as a TimeLoop overlay. 
 		// There should be a better way of doing this...
-		if ( kml.groundOverlaysSize() > 1) {
+		if ( kml.groundOverlaysSize() > 1) 
+		{
+			final TimeLoopGroundOverlay lov = KMLSource.toTimeLoopGroundOverlay(kml.getDocument());
+			
 			nodeViewer.addTimeLoopGroundOverlays( 
-					new TimeLoopGroundOverlay[] { 
-							KMLSource.toTimeLoopGroundOverlay(kml.getDocument()) 
-							} 
+					new TimeLoopGroundOverlay[] { lov } 
 					);
+			
+			// for caching
+			myLayers.add(lov);
 		}
 		// Doc has a single element 
 		else if ( list.size() == 1) 
 		{
 			final Layer child = list.iterator().next();
+			
 			nodeViewer.addTreeObject(new TreeParent(child, WWTreeViewer.guessIcon(child.getName()))
 					, null
 					, true
 					, enabled);
+			
+			// for caching
+			myLayers.add(child);
 		}
 		else {
 			// Otherwise other elements: Screen Ovs & placemarks will be composed
@@ -544,7 +566,9 @@ public class NavigatorView extends ViewPart
 			
 			layer.setName(displayName);
 			layer.setValue("KMLSOURCE", kml.toKML());
-			
+
+System.out.println("kml=" + kml.toKML());
+
 			TreeParent top = new TreeParent(layer
 					, WWTreeViewer.guessIcon(displayName)
 					);
@@ -568,6 +592,9 @@ public class NavigatorView extends ViewPart
 				 
 			}
 			nodeViewer.addTreeObject(top, children, true, enabled);
+
+			// for caching
+			myLayers.add(layer);
 		}
 	}
 	
@@ -753,7 +780,7 @@ public class NavigatorView extends ViewPart
 		actionRemoveNode = new Action() {
 			public void run() 
 			{
-				final WWTreeViewer nodeViewer = getSelectedViewer();
+				final WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
 				if ( nodeViewer == null ) return;
 				
 				IStructuredSelection selection = (IStructuredSelection)nodeViewer.getSelection();
@@ -793,7 +820,8 @@ public class NavigatorView extends ViewPart
 		actionSaveLayer = new Action() {
 			public void run() 
 			{
-				final WWTreeViewer nodeViewer = getSelectedViewer();
+				final WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
+				
 				if ( nodeViewer == null ) return;
 				
 				ISelection selection 	= nodeViewer.getSelection();
@@ -865,18 +893,20 @@ public class NavigatorView extends ViewPart
 	/*
 	 * Get selected tree viewer. The toobar needs to know which tree is active selected
 	 */
+/*	
 	private WWTreeViewer getSelectedViewer ()
 	{
 		if (selectedTree == 0) return myPlacesViewer;
 		return layersViewer;
 	}
+*/
 	
 	/*
 	 * Show selected layer controls
 	 */
 	private void showLayerControls() 
 	{
-		WWTreeViewer nodeViewer = getSelectedViewer();
+		WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
 		
 		if ( nodeViewer == null ) return;
 		
@@ -912,13 +942,14 @@ public class NavigatorView extends ViewPart
 	}
 	
 	/**
-	 * Handle events
+	 * Handle GUI events: Mouse clicks, button presses, etc
 	 */
 	public void handleEvent(Event event) 
 	{
 		Widget w = event.widget;
-		try {
-			// Text has been entered in the combo box
+		try 
+		{
+			// The search button has been presssed
 			if ( w instanceof Button ) 
 			{
 				String location = searchText.getText(); // ((Text)w).getText();
@@ -957,6 +988,7 @@ public class NavigatorView extends ViewPart
 				view.flyTo(latlon);
 			}
 			// Which tree is selected?
+/*			
 			else if ( w instanceof Tree ) 
 			{
 				if ( myPlacesViewer.getTree().equals((Tree)w))
@@ -964,6 +996,7 @@ public class NavigatorView extends ViewPart
 				else
 					selectedTree = 1;	// layers selected
 			}
+*/			
 		} catch (Exception e) {
 			// show error in status line
 			e.printStackTrace();
@@ -978,22 +1011,34 @@ public class NavigatorView extends ViewPart
 	 */
 	private void saveLayers() 
 	{
-		TreeObject[] topLayers = ((TreeParent)myPlacesViewer.getInput()).getChildren();
+		
+		System.out.println("TODO: Save layers");
+		
+		for (Layer lyr : myLayers) {
+			System.out.println(lyr.getName());
+		}
+		
+		
+		//TreeObject[] topLayers = ((TreeParent)myPlacesViewer.getInput()).getChildren();
 		try {
 			StringBuffer buf = new StringBuffer("<xml>" + Messages.NL);
 			
-			getKML(topLayers, buf);
+			//getKML(topLayers, buf);
+			getKML(myLayers, buf);
 			
 			buf.append("</xml>");
 
-			// save XML in WW cache folder
-			File file = WorldWind.getDataFileCache().newFile("layers.xml");
+			System.out.println(buf);
 			
-			worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
+			// save XML in WW cache folder
+			//File file = WorldWind.getDataFileCache().newFile("layers.xml");
+			
+			//worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
 		} catch (Exception e) {
 			// Unable to save file!....Why?
 			e.printStackTrace();
 		}
+		
 	}
 	
 	/**
@@ -1002,11 +1047,13 @@ public class NavigatorView extends ViewPart
 	 * @param topLayers
 	 * @param buf
 	 */
-	private void getKML ( TreeObject[] topLayers, StringBuffer buf)
+	//private void getKML ( TreeObject[] topLayers, StringBuffer buf)
+	private void getKML ( LayerList topLayers, StringBuffer buf)
 	{
-		for (TreeObject treeObject : topLayers) 
+		//for (TreeObject treeObject : topLayers) 
+		for (Layer layer : topLayers)
 		{
-			final Layer layer = treeObject.getLayer();
+			//final Layer layer = treeObject.getLayer();
 	
 			// Layers generated from a KML URL store the XML internally
 			final String kml = (String)layer.getValue("KMLSOURCE");
@@ -1024,8 +1071,8 @@ public class NavigatorView extends ViewPart
 						+ ((TimeLoopGroundOverlay)layer).toKML() + Messages.NL
 						+ "</kml>" + Messages.NL;
 			}
-			else if (layer instanceof GroundOverlayLayer 
-					&& ! (treeObject.getParent().getLayer() instanceof TimeLoopGroundOverlay) ) 
+			else if (layer instanceof GroundOverlayLayer )
+					//&& ! (treeObject.getParent().getLayer() instanceof TimeLoopGroundOverlay) ) 
 			{
 				buffer = "<kml>" + Messages.NL
 						+ ((GroundOverlayLayer)layer).toKML() + Messages.NL
@@ -1074,7 +1121,9 @@ public class NavigatorView extends ViewPart
 		}
 		
 		// Add to view
-		myPlacesViewer.addTreeObject(parent, children, true, enabled);
+		//myPlacesViewer.addTreeObject(parent, children, true, enabled);
+		layersViewer.addTreeObject(parent, children, true, enabled);
+		
 	}
 	
 	/**
@@ -1087,17 +1136,29 @@ public class NavigatorView extends ViewPart
 		Layer first = layers[0];
 		
 		// Time Loop layer
-		if ( first instanceof TimeLoopGroundOverlay) {
-			myPlacesViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
+		if ( first instanceof TimeLoopGroundOverlay) 
+		{
+			//myPlacesViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
+			layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
+			
+			// for caching
+			for (Layer layer : layers) {
+				myLayers.add(layer);
+			}
+			
 			return;
 		}
 		// Ground overlays
-		else if ( first instanceof GroundOverlayLayer) {
+		else if ( first instanceof GroundOverlayLayer) 
+		{
 			for (Layer layer : layers) {
 				addGroundOverlay((GroundOverlayLayer)layer, enabled);
+				
+				// for caching
+				myLayers.add(layer);
 			}
 		}
-		// regular layer
+		// regular layer (Not a Ground Overlay or Time Loop) - don't save
 		else {
 			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
 		}
@@ -1114,7 +1175,11 @@ public class NavigatorView extends ViewPart
 					, WWTreeViewer.guessIcon(overlay.getName())
 		            );
 		
-		myPlacesViewer.addTreeObject(parent, null, true, enabled);
+		//myPlacesViewer.addTreeObject(parent, null, true, enabled);
+		layersViewer.addTreeObject(parent, null, true, enabled);
+		
+		// Add to my layers so it will be saved
+		myLayers.add(overlay);
 	}
 	
 	/******************************************************

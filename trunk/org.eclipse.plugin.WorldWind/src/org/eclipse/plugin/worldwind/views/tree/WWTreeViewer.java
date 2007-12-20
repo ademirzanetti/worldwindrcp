@@ -16,6 +16,8 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.layers.Earth.LandsatI3;
 import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
 import gov.nasa.worldwind.layers.Earth.USGSDigitalOrtho;
+import gov.nasa.worldwind.layers.Earth.USGSTopoHighRes;
+import gov.nasa.worldwind.layers.Earth.USGSTopographicMaps;
 import gov.nasa.worldwind.layers.Earth.USGSUrbanAreaOrtho;
 
 import java.util.Vector;
@@ -423,6 +425,8 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			if ( layer instanceof USGSDigitalOrtho 
 					|| layer instanceof LandsatI3
 					|| layer instanceof USGSUrbanAreaOrtho
+					|| layer instanceof USGSTopographicMaps
+					|| layer instanceof USGSTopoHighRes
 					|| layer instanceof TerrainProfileLayer)
 			{
 				layer.setEnabled(false);
