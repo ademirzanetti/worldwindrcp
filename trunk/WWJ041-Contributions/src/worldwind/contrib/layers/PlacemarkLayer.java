@@ -16,6 +16,11 @@ import java.awt.Point;
 import java.awt.font.TextAttribute;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+
+import org.apache.log4j.Logger;
+
+import worldwind.contrib.Messages;
 
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.IconLayer;
@@ -34,6 +39,8 @@ import gov.nasa.worldwind.render.WWIcon;
  */
 public class PlacemarkLayer extends IconLayer  
 {
+	private static final Logger logger = Logger.getLogger(PlacemarkLayer.class);
+	
 	// Default icon path
 	static final String defaultIconPath = "worldwind/contrib/layers/placemark.png"; 
 	
@@ -42,6 +49,8 @@ public class PlacemarkLayer extends IconLayer
 
 	private IconRenderer renderer = new IconRenderer();
 
+	//private String description;
+	
 	static {
     	attribs.setTextColor(Color.BLACK);
     	attribs.setBackgroundColor(Color.WHITE);
@@ -56,9 +65,14 @@ public class PlacemarkLayer extends IconLayer
 	public static class PlacemarkIcon extends UserFacingIcon 
 	{
 		GlobeAnnotation bubble;
+		String name;
+		String description;
 		
-		public PlacemarkIcon(String iconPath, Position iconPosition, String description) {
+		public PlacemarkIcon(String name, String iconPath, Position iconPosition, String description) {
 			super(iconPath, iconPosition);
+			
+			this.name 			= name;
+			this.description 	= description;
 			
 			if ( description != null)
 				bubble = new GlobeAnnotation(description, iconPosition, attribs);
@@ -110,14 +124,17 @@ public class PlacemarkLayer extends IconLayer
     	super.addIcon(icon);
     }
     
-    public void addDefaultIcon(String name, Position iconPosition, String description) {
+    public void addDefaultIcon(String name, Position iconPosition, String description) 
+    {
     	//WWIcon icon = new UserFacingIcon(defaultIconPath, iconPosition);
-    	WWIcon icon = new PlacemarkIcon(defaultIconPath, iconPosition, description);
+    	WWIcon icon = new PlacemarkIcon(name ,defaultIconPath, iconPosition, description);
     	
     	icon.setToolTipText(name);
     	icon.setToolTipFont(makeToolTipFont());
     	icon.setToolTipTextColor(java.awt.Color.BLACK);
     	addIcon(icon);
+    	
+    	//this.description = description;
     }
 
     /*
@@ -131,4 +148,36 @@ public class PlacemarkLayer extends IconLayer
         return Font.decode("Arial-12").deriveFont(fontAttributes);
     }
    
+    /**
+     * Get kml of the first icon only for now....
+     * @return
+     */
+    public String toKML ()
+    {
+    	Iterator<WWIcon> iter =  getIcons().iterator();
+    	StringBuffer buff 		= new StringBuffer();
+    	
+    	while ( iter.hasNext()) 
+    	{
+    		PlacemarkIcon icon = (PlacemarkIcon)iter.next();
+    	
+	    	if ( icon == null ) {
+	    		logger.error("No placemark icon for layer " + getName());
+	    		continue;
+	    	}
+    		
+	    	Position pos = icon.getPosition();
+    	
+	    	buff.append("<Placemark><name>" + icon.name +  "</name>" + Messages.NL
+	    			+ (icon.description != null 
+	    					? "<description><![CDATA[" + icon.description + "]]>" 
+	    							+ "</description>" + Messages.NL
+	    					: "" )
+	    			+ "<Point><coordinates>" + pos.getLatLon().getLongitude().degrees
+	    				+ "," + pos.getLatLon().getLatitude().degrees 
+	    				+ "</coordinates></Point>" + Messages.NL
+	    			+ "</Placemark>" + Messages.NL);
+    	}
+    	return buff.toString();
+    }
 }
