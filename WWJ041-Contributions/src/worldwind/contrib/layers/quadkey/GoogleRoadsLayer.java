@@ -13,7 +13,8 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 
 	public GoogleRoadsLayer() {
 		super("Google Roads");
-		super.cacheRoot = "GoogleRoads/";
+		super.cacheRoot 	= "GoogleRoads/";
+		super.mapExtension	= ".png";
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		
 		// render road tile (17 = max zoom)
 		final String mtUrl = buildRoadsTileUrl(tileX, tileY, 17 - zoomLevel);
-		final String mtKey = tileX + "." + tileY + ".png";
+		final String mtKey = tileX + "." + tileY + mapExtension;
 		
 		renderTile(dc, mtKey , mtUrl, sector);
 	}
@@ -121,7 +122,7 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		
 		// render MT (mass transit) tile 
 		final String mtUrl = buildRoadsTileUrl(tileX, tileY, 17 - zoomLevel);
-		final String mtKey = tileX + "." + tileY + ".png";
+		final String mtKey = tileX + "." + tileY + mapExtension;
 		
 		renderTile(dc, mtKey , mtUrl, sector);
 

@@ -51,19 +51,20 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 	
 	static final String cacheRoot 	= "GoogleEarth/";
 
-	// Only satellite tiles are supported (jpg)
-	private final String mapExtension = ".jpg";
-	
 	// default transparency
 	private double opacity = 0.9;
 
 
 	/**
-	 * Constructor
+	 * Constructor. This is for testing purposes. Google will sue if you use this
+	 * stuff.
 	 */
-	public GoogleEarthLayer() { 
+	public GoogleEarthLayer() 
+	{ 
 		super("Google Earth");
-		super.cacheRoot = "GoogleEarth/";
+		super.cacheRoot 	= "GoogleEarth/";
+		super.mapExtension 	= ".jpg";
+		
 		setOpacity(opacity);
 
 		// Logo
@@ -78,33 +79,8 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 	@Override
 	protected void doRender(DrawContext dc) {
 		super.doRenderTiles(dc);
-		
-//		// return if not at the min display zoom level
-//		if ( zoomLevel < minZoomLevel) 
-//			return;
-//
-//		// render MT (mass transit) tile 
-//		final String mtUrl = buildMtTileUrl(tileX, tileY, 17 - zoomLevel);
-//		final String mtKey = tileX + "." + tileY + ".png";
-//		
-//		renderTile(dc, mtKey , mtUrl, sector);
 	}
 	
-	
-	/**
-	 * Build mass transit tile PNG urls
-	 * @param zoom
-	 * @return
-	 */
-//	private String buildMtTileUrl(int tileX, int tileY, int zoom) {
-//		// format: http://mt[0-3].google.com/mt?n=404&v=w2t.63&x=1916&y=3187&zoom=4
-//		// Use a rand server # (0-3) Zoom level start at 17 (whole earth)
-//		return "http://mt"
-//			+ (int)(Math.random() * 4.0) 
-//			+ ".google.com/mt?n=404&v=w2t.63&x=" + tileX  
-//			+ "&y=" + tileY + "&zoom=" + zoom;
-//		
-//	}
 	
 	/**
 	 * Render a neighbor tile
@@ -132,11 +108,6 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 		
 		renderTile(dc, quadKey + mapExtension, tileURL, sector);
 
-		// render ass transtit (MT) tile
-//		final String mtUrl = buildMtTileUrl(tileX, tileY, 17 - zoomLevel);
-//		final String mtKey = tileX + "." + tileY + ".png";
-//		
-//		renderTile(dc, mtKey , mtUrl, sector);
 	}
 	
 	

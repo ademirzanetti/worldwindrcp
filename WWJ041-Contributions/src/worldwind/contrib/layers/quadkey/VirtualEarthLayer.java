@@ -48,6 +48,9 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 	// default transparency
 	private double opacity = 0.8;
 
+	public static final String  MAP_HYBRID 	= "h";
+	public static final String  MAP_ROAD 	= "r";
+	public static final String  MAP_AERIAL	= "a";
 	
 	/**
 	 * Constructor
@@ -61,6 +64,10 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 		super.cacheRoot = Messages.getText("quad.ms.ve.cache.root", "VirtualEarth/");
 		
 		setOpacity(opacity);
+		
+		// Hybrid by default, ext = .jpeg
+		setMapType(MAP_HYBRID);
+		super.mapExtension = ".jpeg";
 	}
 	
 	public void setLogo (ScreenOverlayLayer logo) {
@@ -70,6 +77,12 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 	@Override
 	protected void doRender(DrawContext dc) 
 	{
+		// Adjust the tile extension properly
+		if ( mapType.equals(MAP_HYBRID) || mapType.equals(MAP_AERIAL)) 
+			mapExtension = ".jpeg";
+		else if ( mapType.equals(MAP_ROAD))
+			mapExtension = ".png";
+		
 		super.doRenderTiles(dc);
 	}
 
@@ -191,5 +204,16 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
         {
             return new Box(x, y, tileSize, tileSize);
         } 
+    }
+    
+    /**
+     * Set VE map type: Aerial, Road, or Hybrid
+     */
+    public void setMapType(String mapType) {
+    	if ( ! mapType.equalsIgnoreCase(MAP_AERIAL) 
+    			&& ! mapType.equalsIgnoreCase(MAP_ROAD)
+    			&& ! mapType.equalsIgnoreCase(MAP_HYBRID) )
+    		return;
+    	super.mapType = mapType;
     }
 }
