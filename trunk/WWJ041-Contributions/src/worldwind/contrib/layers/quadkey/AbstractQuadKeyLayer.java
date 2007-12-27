@@ -35,8 +35,11 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.view.BasicOrbitView;
 
 /**
- * Common subs for QuadKey based tiled servers: MS Virtual Earth/Google Earth
- * @author Owner
+ * Common subs for QuadKey based tiled servers: MS Virtual Earth/Google Earth.
+ * See tile server conventions online at:
+ * 	http://modestmaps.mapstraction.com/trac/wiki/TileNamingConventions
+ * 
+ * @author Vladimir Silva
  *
  */
 public abstract class AbstractQuadKeyLayer extends AbstractLayer 
@@ -50,11 +53,11 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 	// Min zoom at which tiles will be rendered
 	protected int minZoomLevel		= 6;
 
-	// Default map type h=hybrid, a=aerial (only hybrid tiles are supported)
-	protected String mapType 		= "h";
+	// Default map type for example: h=hybrid, a=aerial, r=road 
+	protected String mapType; 
 	
-	// default tile extension for hybrid tiles
-	protected String mapExtension 	= ".jpeg";
+	// default tile extension for tiles
+	protected String mapExtension; 
 	
 	// tile col,(x), row(y) & zoom
 	protected int zoomLevel;
@@ -183,11 +186,6 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		tileY = meterY / imageSize;
 
 		final String quadKey = TileToQuadKey(tileX, tileY, zoomLevel);
-
-		if ( mapType.equals("h") || mapType.equals("a")) 
-			mapExtension = ".jpeg";
-		else if ( mapType.equals("r"))
-			mapExtension = ".png";
 
 		// tile sector
 		sector = QuadKeyToSector(quadKey);
@@ -328,19 +326,6 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		
 	}
 	
-	/**
-	 * @param mapType the mapType to set
-	 */
-	public void setMapType(String mapType) {
-		this.mapType = mapType;
-	}
-
-	/**
-	 * @return the mapType
-	 */
-	public String getMapType() {
-		return mapType; 
-	}
 	
 	/**
 	 * A box describing the bounds of a earth map tile
@@ -437,7 +422,7 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
     }
 
     /**
-     * Get the Lat/lon sector fro a given VE tile
+     * Get the Lat/lon sector from a given VE tile
      * @param quadKey
      * @return
      */
@@ -525,4 +510,23 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		int x = (int)Math.round((earthHalfCirc + metersX) / arc);
 		return x;
 	}
+	
+	/**
+	 * @param mapType the mapType to set
+	 */
+	public void setMapType(String mapType) {
+		this.mapType = mapType;
+	}
+
+	/**
+	 * @return the mapType
+	 */
+	public String getMapType() {
+		return mapType; 
+	}
+
+	public void setMapExtension(String ext) {
+		this.mapExtension = ext;
+	}
+	
 }

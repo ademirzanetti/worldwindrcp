@@ -741,8 +741,10 @@ public class DemoSWT
 			world.getModel().getLayers().add(layer);
 			invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
 			
-			// MS VE / goolge
+			// MS VE / google earth & google roads
 			layer = new VirtualEarthLayer(); 
+			((VirtualEarthLayer)layer).setMapType(VirtualEarthLayer.MAP_AERIAL);
+			
 			world.getModel().getLayers().add(layer);
 			invisibleRoot.addChild(new TreeParent(new NavigatorLayer(layer, null, false)));
 
