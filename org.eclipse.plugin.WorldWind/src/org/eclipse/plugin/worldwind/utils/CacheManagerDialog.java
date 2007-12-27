@@ -4,12 +4,14 @@ import gov.nasa.worldwind.WorldWind;
 
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,6 +45,16 @@ public class CacheManagerDialog extends Dialog
 		nf.setMaximumFractionDigits(2);
 	}
 
+    /**
+     * Configure dialog 
+     */
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+        
+        // set title
+        shell.setText(Messages.getText("CacheManagerDialog.0")); //$NON-NLS-1$
+    }
+	
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
@@ -55,7 +67,7 @@ public class CacheManagerDialog extends Dialog
 		GridData gd = new GridData(GridData.FILL_BOTH);
 
 		Label l1 = new Label(container, SWT.NONE);
-		l1.setText("Cache location");
+		l1.setText(Messages.getText("CacheManagerDialog.1")); //$NON-NLS-1$
 		
 		combo =  new Combo(container, SWT.BORDER);
 		combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -66,13 +78,13 @@ public class CacheManagerDialog extends Dialog
 				
 				viewer.getTable().removeAll();
 				
-				System.out.println(path);
+				//System.out.println(path);
 				loadTable(new File(path));
 			}
 		});
 
 		
-		viewer = new TableViewer(container, SWT.BORDER);
+		viewer = new TableViewer(container, SWT.BORDER | SWT.MULTI);
 		viewer.getTable().setLayoutData(gd);
 		
 		loadData();
@@ -107,9 +119,9 @@ public class CacheManagerDialog extends Dialog
     	
 		for (int i = 0; i < filelist.length; i++) 
 		{
-			viewer.add(filelist[i] + " - (" 
+			viewer.add(filelist[i] + " - ("  //$NON-NLS-1$
 					+ nf.format((double)(getFileSize(filelist[i])/1e6)) 
-					+ " MB)" );
+					+ " MB)" ); //$NON-NLS-1$
 		}
 	}
 	
@@ -120,25 +132,41 @@ public class CacheManagerDialog extends Dialog
     protected void createButtonsForButtonBar(Composite parent) 
     {
         Button btn = createButton(parent, IDialogConstants.NO_ID, 
-            "Delete Selected", true);
+            Messages.getText("CacheManagerDialog.2"), true); //$NON-NLS-1$
         
         btn.addSelectionListener(new SelectionAdapter()
         {
-			public void widgetSelected(SelectionEvent e) {
+			@SuppressWarnings("unchecked") //$NON-NLS-1$
+			public void widgetSelected(SelectionEvent e) 
+			{
 				// Delete selected
 				try {
-					final String sel = (String)((IStructuredSelection)viewer.getSelection()).getFirstElement();
+					IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
 					
-					if ( sel == null )
+					if ( selection == null || selection.isEmpty() )
 						return;
 					
-					// get path
-					final String path = sel.split("-")[0].trim();
+					Iterator iter = selection.iterator();
 					
-					//System.out.println("Delete " + path);
-					deleteDirectory(new File(path));
+					// delete selected items
+					while (iter.hasNext()) 
+					{
+						final String sel = (String)iter.next();
+						// get path
+						final String path = sel.split("-")[0].trim(); //$NON-NLS-1$
+						
+						//System.out.println("Delete " + path);
+						deleteResource(new File(path));
+					}
 					
-				} catch (Exception ex) {
+					// refresh table
+					final String path = combo.getText();
+					
+					viewer.getTable().removeAll();
+					
+					loadTable(new File(path));
+				} 
+				catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			}
@@ -181,24 +209,29 @@ public class CacheManagerDialog extends Dialog
 	}     
     
     /*
-     * Delete a folder recursively
+     * Delete a file or folder recursively
      */
-    public static void deleteDirectory(File dir)  
+    public static void deleteResource(File dir)  
     {	       
-    	if ((dir == null) || !dir.isDirectory())
+    	if (dir == null) 
 			return; 
 
+    	if (dir.isFile()) {
+    		dir.delete();
+    		return;
+    	}
+    	
 		final File[] files = dir.listFiles();
 		final int size = files.length;
 
 		for (int i = 0; i < size; i++) 
 		{
 			if (files[i].isDirectory()) 
-				deleteDirectory(files[i]);
+				deleteResource(files[i]);
 			else
-				System.out.println("del file " + files[i]);// files[i].delete();
+				files[i].delete();  
 		}
-		System.out.println("del dir " + dir); //dir.delete();
+		dir.delete();
     }
     
 
