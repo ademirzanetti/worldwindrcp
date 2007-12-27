@@ -12,6 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point; 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite; 
 import org.eclipse.swt.widgets.Control; 
 import org.eclipse.swt.widgets.Event;
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell; 
 
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 
 public class LayerControlsDialog extends Dialog
 	implements Listener
@@ -33,31 +35,52 @@ public class LayerControlsDialog extends Dialog
 	// Applies for TimeLoops only
 	private AnimationJob animation = null;
 	
-	
+	/**
+	 * Layer Controls Constructor
+	 * @param parentShell
+	 * @param layer
+	 */
     public LayerControlsDialog(Shell parentShell, Layer layer) {
         super(parentShell);
         this.layer = layer;
     } 
+
+    /**
+     * Configure dialog 
+     */
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+        
+        // set title
+        shell.setText(Messages.getText("lyr.ctl.0"));
+     }
     
     public void setAnimationJob (AnimationJob job) {
     	animation = job;
     }
     
+    /**
+     * Dialog GUI
+     */
     protected Control createDialogArea(Composite parent) { 
     	
-		Composite container = new Composite(parent, SWT.NULL);		
+		Composite container = new Composite(parent, SWT.NULL);	
+		
 		container.setLayout(new GridLayout(2, false));
 		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
-				, GridData.FILL_HORIZONTAL, true, true, 5, 5));
+				, GridData.FILL_VERTICAL, true, true)); 
 		
     	logger.debug(layer);
 
+    	// Layer
 		Label l1 = new Label(container, SWT.NONE);
 		l1.setText(Messages.getText("lyr.ctl.1"));
 		
+		// Layer name
 		Label l2 = new Label(container, SWT.NONE);
 		l2.setText(layer.getName());
 
+		// Opacity
 		Label l3 = new Label(container, SWT.NONE);
 		l3.setText(Messages.getText("lyr.ctl.2"));
 
@@ -72,6 +95,7 @@ public class LayerControlsDialog extends Dialog
 
 		if  ( layer instanceof TimeLoopGroundOverlay ) 
 		{
+			// Speed
 			Label l4 = new Label(container, SWT.NONE);
 			l4.setText(Messages.getText("lyr.ctl.3"));
 	
@@ -88,6 +112,46 @@ public class LayerControlsDialog extends Dialog
 				speed.setSelection(animation.getSpeed());
 		}
 		
+		// MS VE layer controls: Map type: Aerial, Road or Hybrid
+		if ( layer instanceof VirtualEarthLayer )
+		{
+			VirtualEarthLayer msVe = (VirtualEarthLayer)layer;
+			
+			GridData gd = new GridData(GridData.FILL_BOTH);
+			gd.horizontalSpan = 2;
+			gd.grabExcessHorizontalSpace = true;
+			
+			// road
+			Button btnRoad = new Button(container, SWT.RADIO);
+			btnRoad.setData("MAP_TYPE", VirtualEarthLayer.MAP_ROAD);
+			btnRoad.setText(Messages.getText("lyr.ctl.4"));
+			btnRoad.setLayoutData(gd);
+		    btnRoad.addListener(SWT.Selection, this);
+
+		    // Aerial
+			Button btnAerial = new Button(container, SWT.RADIO);
+			btnAerial.setData("MAP_TYPE", VirtualEarthLayer.MAP_AERIAL);
+			btnAerial.setText(Messages.getText("lyr.ctl.5"));
+			btnAerial.setLayoutData(gd);
+			btnAerial.addListener(SWT.Selection, this);
+
+			// Hybrid
+			Button btnHybrid = new Button(container, SWT.RADIO);
+			btnHybrid.setData("MAP_TYPE", VirtualEarthLayer.MAP_HYBRID);
+			btnHybrid.setText(Messages.getText("lyr.ctl.6"));
+			btnHybrid.setLayoutData(gd);
+			btnHybrid.addListener(SWT.Selection, this);
+			
+			// set button selection
+			final String mapType = msVe.getMapType();
+			
+			if ( mapType.equals(VirtualEarthLayer.MAP_ROAD))
+				btnRoad.setSelection(true);
+			else if ( mapType.equals(VirtualEarthLayer.MAP_AERIAL))
+				btnAerial.setSelection(true);
+			else 
+				btnHybrid.setSelection(true);
+		}
         return container; 
     }
     
@@ -104,7 +168,17 @@ public class LayerControlsDialog extends Dialog
     }
 
 
-	public void handleEvent(Event event) {
+	public void handleEvent(Event event) 
+	{
+		// Layer is of type VirtualEarth
+		if ( event.widget instanceof Button ) 
+		{
+			Button btn 		= (Button)event.widget;
+			((VirtualEarthLayer)layer).setMapType((String)btn.getData("MAP_TYPE"));
+			return;
+		}
+		
+		// handle scale widgets
 		Scale scale 		= (Scale)event.widget;
 		final String name 	= scale.getData("NAME").toString();
 		

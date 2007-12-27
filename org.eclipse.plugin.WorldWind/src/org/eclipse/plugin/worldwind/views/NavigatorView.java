@@ -15,6 +15,9 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,6 +45,8 @@ import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer.LayersLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,12 +56,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Form;
@@ -75,6 +82,7 @@ import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.TiledWMSLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
 
@@ -118,17 +126,11 @@ public class NavigatorView extends ViewPart
 	private FormToolkit toolkit;
 	private ScrolledForm scrolledForm;
 	
-	// My places tree viewer has user defined layers 
-	//private WWTreeViewer myPlacesViewer;
-	
 	// User defined layers (must be saved on exit) & loaded at startup
 	private LayerList myLayers = new LayerList();
 	
 	// Layers tree has: WWJ built in layers + real time sat
 	private WWTreeViewer layersViewer;
-	
-	// Which tree is slected? places/layers (used by the toolbar logic)
-	//private byte selectedTree = -1;
 	
 	// Yahoo location search table
 	private TableViewer searchViewer;
@@ -153,6 +155,9 @@ public class NavigatorView extends ViewPart
 	
 	// Save layer: KMZ only
 	private Action actionSaveLayer;
+	
+	// Fly to a layer
+	private Action actionFlyToLayer;
 	
 	// A hash table to track animations
 	private ConcurrentHashMap<String, AnimationJob> animatedJobs 
@@ -202,75 +207,12 @@ public class NavigatorView extends ViewPart
 		//myPlacesViewer 	= createTreeSection("My Places", null, expanded, 2, 150);
 		layersViewer 	= createTreeSection(Messages.getText("view.navigator.layers"), null, expanded, 2, 300);
 
-		
 		initLayers();	
-		//initMyPaces();
 		
 		// load local layers from cache
 		loadLayers();
 	}
 
-	
-	/*
-	 * Initialize my places w/ user defined layers from cache
-	 */
-/*	
-	private void initMyPaces()
-	{
-		// Tooltip support
-		LayersLabelProvider labelProvider = new LayersLabelProvider();
-		
-		// Tooltip support
-		tipSupport = LayersToolTipSupport.enablefor(myPlacesViewer
-				, ToolTip.NO_RECREATE
-				, getViewSite().getWorkbenchWindow());
-
-		labelProvider.setTipSupport(tipSupport);
-		
-		myPlacesViewer.setContentProvider(new WWTreeViewer.LayersContentProvider());
-		myPlacesViewer.setLabelProvider(labelProvider);
-
-		// init tree data
-		myPlacesViewer.setInput(getInitialInput());
-		
-		// When user checks a checkbox in the tree, check all its children
-	    myPlacesViewer.addCheckStateListener(new ICheckStateListener() {
-	      public void checkStateChanged(CheckStateChangedEvent event) 
-	      {
-	    	  boolean checked = event.getChecked(); 
-	    	  
-	    	  // check node
-	    	  TreeObject to = (TreeObject)event.getElement();
-	    	  
-	    	  // handle state
-	    	  handleCheckState(checked, to, (WWTreeViewer)event.getSource());
-	      }
-	    });
-	
-		// on click fly to layer center
-		hookClickAction(myPlacesViewer);
-		
-		// load local layers from cache
-		loadLayers();
-	}
-*/
-	
-    /*
-     * Load tree data
-     */
-/*	
-	private TreeParent getInitialInput () 
-	{
-		// the root tree node (invisible)
-		RenderableLayer rl = new RenderableLayer();
-		rl.setName("invisible");
-		
-		TreeParent invisibleRoot = new TreeParent(rl, null);
-
-
-		return invisibleRoot;
-	}
-*/
 	
 	/*
 	 * Initialize layers tree w/ WW built in layers and realtime sat
@@ -305,7 +247,11 @@ public class NavigatorView extends ViewPart
 	      }
 	    });
 		
+	    // on double click fly to the selected layer
 		hookClickAction(layersViewer);
+		
+		// Add a tree ctx menu
+		hookContextMenu();
 		
 		// Set initially checked layers
 		layersViewer.updateCheckState();
@@ -770,6 +716,7 @@ public class NavigatorView extends ViewPart
 		Form form = scrolledForm.getForm(); 
 		form.getToolBarManager().add(actionLayerControls);
 		form.getToolBarManager().add(actionSaveLayer);
+		form.getToolBarManager().add(actionFlyToLayer);
 		
 		form.getToolBarManager().add(new Separator());
 		
@@ -782,48 +729,27 @@ public class NavigatorView extends ViewPart
 	/* View local actions */
 	private void makeActions() 
 	{
+		// Fly to the selected layer
+		actionFlyToLayer = new Action() {
+			public void run() 
+			{
+				flyOnClickAction(layersViewer);
+			}
+		};
+		actionFlyToLayer.setText(Messages.getText("layer.action.fly"));
+		actionFlyToLayer.setToolTipText(Messages.getText("layer.action.fly"));
+		actionFlyToLayer.setImageDescriptor(Activator.ICON_WEB_BROWSER );
+		
 		// Remove layer from tree node: All layers in this view can be removed
 		actionRemoveNode = new Action() {
 			public void run() 
 			{
-				final WWTreeViewer nodeViewer = layersViewer; 
-				if ( nodeViewer == null ) return;
-				
-				IStructuredSelection selection = (IStructuredSelection)nodeViewer.getSelection();
-				
-				TreeObject to = (TreeObject) selection.getFirstElement();
-
-				if ( to == null ) return ;
-
-				// built-in layers cannot be removed
-				//if ( nodeViewer.equals(layersViewer)) {
-				if ( ! myLayers.contains(to.getLayer()))
-				{
-					MessageDialog.openInformation(getViewSite().getShell()
-							, Messages.getText("info.dialog.title")
-							, Messages.getText("err.msg.builtin.layer"
-									, new Object[] { to.getLayer().getName()}) );
-					return;
-				}
-				
-				try {
-					// Stop/Hide
-					handleCheckState(false, to, nodeViewer);
-
-					// remove node from tree & dispose resources
-					nodeViewer.removeTreeObject(selection.toArray());
-					
-					// remove from cached layers
-					myLayers.remove(to.getLayer());
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e);
-				}
+				removeNode();
 			}
 		};
 		
 		actionRemoveNode.setToolTipText(Messages.getText("layer.action.remove"));
+		actionRemoveNode.setText(Messages.getText("layer.action.remove"));
 		actionRemoveNode.setImageDescriptor(
 				Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		
@@ -883,6 +809,7 @@ public class NavigatorView extends ViewPart
 		};
 		
 		actionSaveLayer.setToolTipText(Messages.getText("layer.action.save"));
+		actionSaveLayer.setText(Messages.getText("layer.action.save"));
 		actionSaveLayer.setImageDescriptor(ICON_SAVE);
 		
 		// Layer controls: opacity, speed, etc.
@@ -896,21 +823,55 @@ public class NavigatorView extends ViewPart
 				}
 			}
 		};
+		
 		actionLayerControls.setToolTipText(Messages.getText("layer.action.controls"));
+		actionLayerControls.setText(Messages.getText("layer.action.controls"));
 		actionLayerControls.setImageDescriptor(Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 		
 	}
 	
 	/*
-	 * Get selected tree viewer. The toobar needs to know which tree is active selected
+	 * Remove a node from the tree
 	 */
-/*	
-	private WWTreeViewer getSelectedViewer ()
+	private void removeNode ()
 	{
-		if (selectedTree == 0) return myPlacesViewer;
-		return layersViewer;
+		IStructuredSelection selection = (IStructuredSelection)layersViewer.getSelection();
+		
+		TreeObject to = (TreeObject) selection.getFirstElement();
+
+		if ( to == null ) return ;
+
+		// built-in layers cannot be removed
+		if ( ! myLayers.contains(to.getLayer()))
+		{
+			MessageDialog.openInformation(getViewSite().getShell()
+					, Messages.getText("info.dialog.title")
+					, Messages.getText("err.msg.builtin.layer"
+							, new Object[] { to.getLayer().getName()}) );
+			return;
+		}
+		
+		try {
+			// remove
+			if ( MessageDialog.openQuestion(getViewSite().getShell()
+					, Messages.getText("question.dialog.title")
+					, Messages.getText("layer.action.remove") + " " + to.getLayer().getName() + "?"))
+			{
+				// Stop/Hide
+				handleCheckState(false, to, layersViewer);
+	
+				// remove node from tree & dispose resources
+				layersViewer.removeTreeObject(selection.toArray());
+				
+				// remove from cached layers
+				myLayers.remove(to.getLayer());
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e);
+		}
 	}
-*/
 	
 	/*
 	 * Show selected layer controls
@@ -933,9 +894,12 @@ public class NavigatorView extends ViewPart
 		Shell shell = getViewSite().getShell();
 		Layer layer = to.getLayer();
 
-		
+		// Only ground overlays & custom layers like MS VE support controls
 		if ( ! (layer instanceof TimeLoopGroundOverlay)
-				&& ! (layer instanceof GroundOverlayLayer) ) {
+				&& ! (layer instanceof GroundOverlayLayer) 
+				&& ! (layer instanceof VirtualEarthLayer)
+				) 
+		{
 			MessageDialog.openInformation(shell
 					, Messages.getText("info.dialog.title")
 					, Messages.getText("ctl.dlg.invalid.layer"
@@ -960,7 +924,7 @@ public class NavigatorView extends ViewPart
 		Widget w = event.widget;
 		try 
 		{
-			// The search button has been presssed
+			// The search button has been pressed
 			if ( w instanceof Button ) 
 			{
 				String location = searchText.getText(); // ((Text)w).getText();
@@ -976,8 +940,6 @@ public class NavigatorView extends ViewPart
 					searchViewer.add(result);
 				}
 				
-//				if ( event.type == SWT.DefaultSelection)
-//					((Combo)w).add(location);
 			}
 			else if ( w instanceof Table ) {
 				// A search result has been clicked within the table
@@ -999,16 +961,12 @@ public class NavigatorView extends ViewPart
 				view.flyTo(latlon);
 			}
 			// Which tree is selected?
-/*			
 			else if ( w instanceof Tree ) 
 			{
-				if ( myPlacesViewer.getTree().equals((Tree)w))
-					selectedTree = 0;	// my places selected
-				else
-					selectedTree = 1;	// layers selected
+				updateActions();
 			}
-*/			
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			// show error in status line
 			e.printStackTrace();
 			statusLine.setErrorMessage(e.getMessage());
@@ -1229,5 +1187,64 @@ public class NavigatorView extends ViewPart
 	 * End Ground Overlay listeners
 	 ******************************************************/
 
-	
+	/*
+	 * Create a PopUp or context menu
+	 */
+	private void hookContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(manager);
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(layersViewer.getControl());
+
+		// Add a menu listener to enable/disable menu items
+		menu.addMenuListener(new MenuListener(){
+
+			public void menuHidden(MenuEvent e) {
+			}
+
+			public void menuShown(MenuEvent e) {
+				updateActions();
+			}});
+		
+		layersViewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, layersViewer);
+	}
+
+	/*
+	 * Add actions to the context menu
+	 */
+	private void fillContextMenu(IMenuManager manager) 
+	{
+		manager.add(actionLayerControls);
+		manager.add(actionSaveLayer);
+		manager.add(actionFlyToLayer);
+		manager.add(new Separator());
+		manager.add(actionRemoveNode);
+		// Other plug-ins can contribute there actions here
+		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+	}
+
+	/*
+	 * Enable/disable actions according to the selected layer
+	 */
+	private void updateActions ()
+	{
+		TreeObject to = (TreeObject)((IStructuredSelection)layersViewer.getSelection()).getFirstElement();
+		Layer layer = to.getLayer();
+		
+		// only user defined can be removed
+		boolean bool =  myLayers.contains(layer);
+		
+		actionRemoveNode.setEnabled(bool);
+
+		// Ground overlays can be flown to...
+		bool =  (layer instanceof GroundOverlayLayer)
+				|| (layer instanceof TimeLoopGroundOverlay);
+		
+		actionFlyToLayer.setEnabled(bool);
+	}
 }

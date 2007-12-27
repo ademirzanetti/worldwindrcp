@@ -28,7 +28,6 @@ import org.eclipse.plugin.worldwind.views.WebBrowserView;
 public class OpenWebBrowserAction extends Action 
 {
     private final IWorkbenchWindow window;
-	private final String ICON_WEBBROWSER = "icons/16x16-browser.png";
 	
 	private int instanceNum = 0;
 	
@@ -42,7 +41,7 @@ public class OpenWebBrowserAction extends Action
         
         // Associate the action with a pre-defined command, to allow key bindings.
         setActionDefinitionId(ICommandIds.CMD_OPEN_WEB_BROWSER);
-        setImageDescriptor(Activator.getImageDescriptor(ICON_WEBBROWSER));
+        setImageDescriptor(Activator.ICON_WEB_BROWSER); //getImageDescriptor(ICON_WEBBROWSER));
 	}
 	
     public void run() {
