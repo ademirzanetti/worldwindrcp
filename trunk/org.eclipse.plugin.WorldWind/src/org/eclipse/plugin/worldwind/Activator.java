@@ -35,7 +35,8 @@ public class Activator extends AbstractUIPlugin {
 	private static final String ICON_NASA_PATH = "icons/16x16-nasa.png";
 	private static final String ICON_USGS_PATH = "icons/16x16-usgs.png";
 	private static final String ICON_FLAG_US_PATH = "icons/16x16-flag-us.png";
-	
+	private static final String ICON_BROWSER_PATH = "icons/16x16-browser.png";
+
 	public static Image ICON_NASA = getImage(ICON_NASA_PATH);
 	public static Image ICON_USGS = getImage(ICON_USGS_PATH);
 	public static Image ICON_FLAG_US = getImage(ICON_FLAG_US_PATH);
@@ -44,7 +45,7 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor ICON_GEORSS = getImageDescriptor("icons/16x16-georss.png");
 	public static ImageDescriptor ICON_WMS = getImageDescriptor("icons/16x16-wms.png");
 	public static ImageDescriptor ICON_NOAA = getImageDescriptor("icons/16x16-noaa.png");
-	
+	public static ImageDescriptor ICON_WEB_BROWSER = getImageDescriptor(ICON_BROWSER_PATH);	
 	
     static
     {

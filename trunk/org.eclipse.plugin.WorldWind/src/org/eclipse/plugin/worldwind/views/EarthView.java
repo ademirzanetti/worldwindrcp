@@ -337,7 +337,7 @@ public class EarthView extends ViewPart
         		, latlon		// bbox
         		, Angle.ZERO	// Heading
         		, Angle.ZERO	// Pitch
-        		, 5e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
+        		, 3e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
         		);
 	}
 }

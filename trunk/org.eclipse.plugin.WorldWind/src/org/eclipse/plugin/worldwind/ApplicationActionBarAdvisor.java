@@ -42,7 +42,9 @@ import org.eclipse.plugin.worldwind.actions.OpenWebBrowserAction;
 import org.eclipse.plugin.worldwind.actions.ShowPerspectiveAction;
 import org.eclipse.plugin.worldwind.actions.WMSWizardAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
+import org.eclipse.plugin.worldwind.utils.CacheManagerDialog;
 import org.eclipse.plugin.worldwind.views.StatusLine;
+
 
 /**
  * An action bar advisor is responsible for creating, adding, and disposing of
@@ -63,6 +65,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private OpenWebBrowserAction openWebBrowser;
 	private IWorkbenchAction exitAction;
 
+	private Action cacheManagerAction;
+	
 	// Help Menu actions
 	private IWorkbenchAction aboutAction;
 	private IWorkbenchAction showHelpAction;
@@ -109,7 +113,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		register(exitAction);
 		
 		/*
-		 * Perpective Menu: Get All perspectives , and add actions to open them
+		 * Perspective Menu: Get All perspectives , and add actions to open them
 		 */
 		IWorkbench workbench 			= window.getWorkbench();
 		IPerspectiveRegistry registry 	= workbench.getPerspectiveRegistry();
@@ -144,6 +148,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 		// Show Views/Other contribution item
 		showViewsItem = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+
+		// Open the cache manager action
+		cacheManagerAction = new Action(){ 
+			public void run() {
+				new CacheManagerDialog(window.getShell()).open();
+			}
+		};
+		cacheManagerAction.setText(Messages.getText("menu.cache.name"));
 		
 		// Help menu
 		aboutAction = ActionFactory.ABOUT.create(window);
@@ -174,36 +186,38 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	    fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
 
+		// Window
+		MenuManager perspectiveMenu = new MenuManager(
+				Messages.getText("menu.perspective.name")
+				, "org.eclipse.plugin.worldwind.PERSPECTIVES");
+		
 		// Create a Perspective switch menu only if 1+ perspectives available
 		if ( perspectiveActions.size() > 1 ) {
-		
-			MenuManager perspectiveMenu = new MenuManager(
-					Messages.getText("menu.perspective.name")
-					, "org.eclipse.plugin.worldwind.PERSPECTIVES");
-
 			// Add perspective actions
 			for (Action action : perspectiveActions) {
 				perspectiveMenu.add(action);
 			}
-			
-			// Show View Menu
-			MenuManager showViewMenuMgr = new MenuManager(
-					Messages.getText("menu.showview.name")
-					, "showView");
-
-			// Add perspective actions
-			for (Action action : openViewActions) {
-				showViewMenuMgr.add(action);
-			}
-			
-			showViewMenuMgr.add(showViewsItem);
-			
-			// Add show views menu
-			perspectiveMenu.add(showViewMenuMgr);
-			
-			menuBar.add(perspectiveMenu);
-			
 		}
+		// Show View Menu
+		MenuManager showViewMenuMgr = new MenuManager(
+				Messages.getText("menu.showview.name")
+				, "showView");
+
+		// Add views
+		for (Action action : openViewActions) {
+			showViewMenuMgr.add(action);
+		}
+		
+		showViewMenuMgr.add(showViewsItem);
+		
+		// Add show views menu
+		perspectiveMenu.add(showViewMenuMgr);
+		
+		// Cache mgr dlg
+		perspectiveMenu.add(new Separator());
+		perspectiveMenu.add(cacheManagerAction);
+		
+		menuBar.add(perspectiveMenu);
 
 		// Add a group marker indicating where action set menus will appear.
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
