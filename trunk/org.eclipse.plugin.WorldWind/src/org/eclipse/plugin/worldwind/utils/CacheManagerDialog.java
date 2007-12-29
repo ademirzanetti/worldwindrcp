@@ -175,7 +175,7 @@ public class CacheManagerDialog extends Dialog
         
         // close dlg
         createButton(parent, IDialogConstants.CANCEL_ID, 
-            IDialogConstants.CANCEL_LABEL, false); 
+        		IDialogConstants.CLOSE_LABEL, false); 
     } 
     
     protected Point getInitialSize() { 
