@@ -194,7 +194,7 @@ public class WebBrowserView extends ViewPart
 					evt.doit = false;
 					
 					logger.debug("DODS URL detected: " + location);
-					handleDODSLocation(location);
+					// TODO handleDODSLocation(location);
 				}
 			}
 		} 
@@ -218,7 +218,7 @@ public class WebBrowserView extends ViewPart
 	private void handleDODSLocation(String location) {
 		try {
 			//"org.eclipse.plugin.analytics.views.VerdiModels3View";
-			final String VERDI_VIEW_ID = org.eclipse.plugin.analytics.views.VerdiModels3View.ID;
+			final String VERDI_VIEW_ID = "org.eclipse.plugin.analytics.views.VerdiModels3View.ID";
 
 			// Clean up URL: remove any .info|.das|.dds|.html
 			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
@@ -250,7 +250,7 @@ public class WebBrowserView extends ViewPart
 			}
 			
 			// load remote dataset
-			((org.eclipse.plugin.analytics.views.VerdiModels3View)view).addDatasetFromUrl(location);
+			//((org.eclipse.plugin.analytics.views.VerdiModels3View)view).addDatasetFromUrl(location);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
