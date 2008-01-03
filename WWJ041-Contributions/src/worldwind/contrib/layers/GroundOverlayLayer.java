@@ -87,7 +87,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	
 	/**
 	 * Build a {@link GroundOverlayLayer}
-	 * @param description Name of this ground overlay
+	 * @param name Name of this ground overlay
 	 * @param sector Lat/lon box for the overlay
 	 * @param textureURL URL of the overlay image
 	 * @param fileSuffix Image extension used to download and possible scale texture (e.g .png, .gif, etc)
