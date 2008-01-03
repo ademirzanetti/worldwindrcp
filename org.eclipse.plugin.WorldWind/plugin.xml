@@ -80,6 +80,19 @@
             id="org.eclipse.plugin.worldwind.views.NavigatorView"
             name="Navigator">
       </view>
+      <category
+            id="WWNetCDF"
+            name="NetCDF">
+      </category>
+         
+      <view
+            name="NetCDF Viewer"
+            category="WWNetCDF"
+            allowMultiple="true"
+            icon="icons/16-epa.png"
+            class="org.eclipse.plugin.worldwind.views.NetCDFView"
+            id="org.eclipse.plugin.worldwind.views.NetCDFView">
+      </view>
    </extension>
    <extension
          id="product"
