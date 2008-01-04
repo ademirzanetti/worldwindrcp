@@ -200,6 +200,8 @@ public class AnimationJob extends Job
 	 */
 	public void onError(GroundOverlayLayer layer, Exception ex) 
 	{
+		ex.printStackTrace();
+		
 		final String message = layer.getName() + ": " 
 			+ ex.getClass() + " " + ex.getMessage();
 		

@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -392,7 +395,7 @@ public class NetCDFView extends ViewPart
 	/*
 	 * Plot grid
 	 */
-	private void plotGrid() //throws IOException //, URISyntaxException
+	private void plotGrid() throws MalformedURLException
 	{
 		int t1 = tmin.getSelectionIndex();
 		int t2 = tmax.getSelectionIndex();
@@ -463,16 +466,23 @@ public class NetCDFView extends ViewPart
 			else {
 				logger.debug(cacheName + " already in cache");
 			}
+
+			final Sector sector = new Sector(Angle.fromDegrees(bbox.getLatMin())
+					, Angle.fromDegrees(bbox.getLatMax())
+					, Angle.fromDegrees(bbox.getLonMin())
+					, Angle.fromDegrees(bbox.getLonMax())
+					);
+			
+			final URL url = new URL(frame.toString().replaceAll(" ", "%20"));
+			
+			logger.debug("Groung ov " + tmin.getItem(i) + " Sector:" + sector + " Url:" + url);
 			
 			// add the ground ov to the loop
 			loop.add(new GroundOverlayLayer(
 					tmin.getItem(i)	// time step is the overlay name
-					, new Sector(Angle.fromDegrees(bbox.getLatMin())
-							, Angle.fromDegrees(bbox.getLatMax())
-							, Angle.fromDegrees(bbox.getLonMin())
-							, Angle.fromDegrees(bbox.getLonMax())
-							)
-					, frame, ".png"
+					, sector
+					, url		// URL
+					, ".png" 	// format
 					));
 			
 			// grab 1st legend
@@ -482,13 +492,27 @@ public class NetCDFView extends ViewPart
 				if ( legendU != null)
 					loop.setLegend(new ScreenOverlayLayer("legend"
 						, legendU
-						, ScreenOverlayLayer.SOUTHEAST));
+						, ScreenOverlayLayer.SOUTHWEST));
 			}
 		}
 		
-		logger.debug(loop.toKML());
+		// description as HTML
+		loop.setDescription("<pre>" + dataset.getInfo() + "</pre>");
+		
 		
 		// Add loop to the earth view
+		// show view if hidden
+		try {
+			getViewSite().getWorkbenchWindow().getActivePage().showView(NavigatorView.ID);
+		} catch (PartInitException e) {
+			// shouldn't happen
+		}
+
+		// Get Navigator and add the loop overlay
+		NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
+				, NavigatorView.ID);
+		
+		view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
 	}
 
 	/*
@@ -583,9 +607,9 @@ public class NetCDFView extends ViewPart
 		
 		try {
 			dataset = GridDataset.open(uri);
-
+			
 			List<GeoGrid> grids = dataset.getGrids();
-
+			
 			clearForm();
 			
 			// load grid names into table
@@ -596,8 +620,15 @@ public class NetCDFView extends ViewPart
 			
 			// ds information
 			metaData.setText(dataset.getInfo());
-		} catch (Exception e) {
-			e.printStackTrace();
+		} 
+		catch (Exception e) 
+		{
+			//e.printStackTrace();
+			logger.error(e.getMessage());
+			MessageDialog.openError(getSite().getShell()
+					, "NetCDFView"
+					, e.getMessage());
+			
 		}
 	}
 	
@@ -681,18 +712,18 @@ public class NetCDFView extends ViewPart
 				display.syncExec(new Runnable() {
 					public void run() 
 					{
-//						try {
+						try {
 							if (doPlot)
 								plotGrid();
 							else
 								subsetGrid();
-//						} 
-//						catch (Exception e) {
-//							e.printStackTrace();
-//						}
-//						finally {
+						} 
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+						finally {
 							setUIState(UI_STATE.IDLE);
-//						}
+						}
 					}
 				});
 			}

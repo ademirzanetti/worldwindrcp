@@ -7,15 +7,14 @@ Bundle-Activator: org.eclipse.plugin.worldwind.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.update.ui,
- org.eclipse.plugin.WorldWind.Help,
  org.eclipse.ui.forms,
- org.eclipse.update.core
+ org.eclipse.update.core,
+ org.eclipse.plugin.WorldWind.Help
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  config/,
  lib/gluegen-rt.jar,
  lib/jogl.jar,
- lib/log4j-1.2.15.jar,
  lib/worldwind-041.jar,
  lib/wwcontrib-041.jar,
  lib/netcdf/bufr-1.1.00.jar,
