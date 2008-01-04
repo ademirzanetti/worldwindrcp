@@ -52,10 +52,11 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.*;
 
+import org.eclipse.plugin.worldwind.actions.OpenViewAction;
+import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 import worldwind.contrib.parsers.KMLSource;
@@ -194,7 +195,7 @@ public class WebBrowserView extends ViewPart
 					evt.doit = false;
 					
 					logger.debug("DODS URL detected: " + location);
-					// TODO handleDODSLocation(location);
+					handleDODSLocation(location);
 				}
 			}
 		} 
@@ -218,36 +219,45 @@ public class WebBrowserView extends ViewPart
 	private void handleDODSLocation(String location) {
 		try {
 			//"org.eclipse.plugin.analytics.views.VerdiModels3View";
-			final String VERDI_VIEW_ID = "org.eclipse.plugin.analytics.views.VerdiModels3View.ID";
+			//final String VERDI_VIEW_ID = "org.eclipse.plugin.analytics.views.VerdiModels3View.ID";
 
 			// Clean up URL: remove any .info|.das|.dds|.html
-			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
-			
-			// The suffix .dods is required in the URL for the dataset to be loaded
-			if ( 	location.indexOf(".jnl") == -1 
-					&& location.indexOf(".grib") == -1 
-					&& location.indexOf(".dods") == -1) 
-			{
-				logger.debug("Appending suffix .dods to " + location);
-				location += ".dods";
-			}
+//			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
+//			
+//			// The suffix .dods is required in the URL for the dataset to be loaded
+//			if ( 	location.indexOf(".jnl") == -1 
+//					&& location.indexOf(".grib") == -1 
+//					&& location.indexOf(".dods") == -1) 
+//			{
+//				logger.debug("Appending suffix .dods to " + location);
+//				location += ".dods";
+//			}
 
 			// Show the Verdi view 
-			getViewSite().getWorkbenchWindow().getActivePage().showView(VERDI_VIEW_ID);
+			//getViewSite().getWorkbenchWindow().getActivePage().showView(VERDI_VIEW_ID);
 			
 			// Get it
-			IViewPart view = Activator.getView(getViewSite().getWorkbenchWindow()
-					, VERDI_VIEW_ID);
+//			IViewPart view = Activator.getView(getViewSite().getWorkbenchWindow()
+//					, VERDI_VIEW_ID);
 			
 			logger.debug("Opening remote DODS url " + location);
 
+			OpenViewAction action = new OpenViewAction(""
+					, getViewSite().getWorkbenchWindow()
+					, NetCDFView.ID
+					, true
+					, VIEW_TYPE.NETCDF);
+			
+			action.setNetCDFUri(location);
+			action.run();
+			
 			// load remote data set
-			if ( view == null ) {
-				MessageDialog.openError(getViewSite().getShell()
-						, Activator.PLUGIN_ID
-						, "Unable to load Verdi view"); //$NON-NLS-1$
-				return;
-			}
+//			if ( view == null ) {
+//				MessageDialog.openError(getViewSite().getShell()
+//						, Activator.PLUGIN_ID
+//						, "Unable to load Verdi view"); //$NON-NLS-1$
+//				return;
+//			}
 			
 			// load remote dataset
 			//((org.eclipse.plugin.analytics.views.VerdiModels3View)view).addDatasetFromUrl(location);

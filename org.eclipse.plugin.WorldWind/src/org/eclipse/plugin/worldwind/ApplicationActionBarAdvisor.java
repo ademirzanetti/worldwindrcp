@@ -37,13 +37,17 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
+import org.eclipse.plugin.worldwind.actions.ICommandIds;
 import org.eclipse.plugin.worldwind.actions.OpenFileAction;
-import org.eclipse.plugin.worldwind.actions.OpenWebBrowserAction;
+import org.eclipse.plugin.worldwind.actions.OpenViewAction;
 import org.eclipse.plugin.worldwind.actions.ShowPerspectiveAction;
 import org.eclipse.plugin.worldwind.actions.WMSWizardAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
+import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
 import org.eclipse.plugin.worldwind.utils.CacheManagerDialog;
+import org.eclipse.plugin.worldwind.views.NetCDFView;
 import org.eclipse.plugin.worldwind.views.StatusLine;
+import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 
 /**
@@ -62,7 +66,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private OpenFileAction openFileAction;
 	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
-	private OpenWebBrowserAction openWebBrowser;
+//	private OpenWebBrowserAction openWebBrowser;
+	private OpenViewAction openWebBrowser;
+	private OpenViewAction openDataSet;
+	
 	private IWorkbenchAction exitAction;
 
 	private Action cacheManagerAction;
@@ -106,9 +113,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		weatherWizardAction = new WeatherWizardAction(Messages.getText("weather.wiz.tooltip"), window);
 		register(weatherWizardAction);
 		
-		openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
+		//openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
+		openWebBrowser = new OpenViewAction(Messages.getText("open.web.browset.tooltip")
+				, window, WebBrowserView.ID, true, VIEW_TYPE.WEB_BROWSER);
+		
+		// menu information
+		openWebBrowser.initMenu(ICommandIds.CMD_OPEN_WEB_BROWSER, Activator.ICON_WEB_BROWSER);
+		
 		register(openWebBrowser);
 
+		openDataSet = new OpenViewAction("Open NetCDF Dataset"
+				, window, NetCDFView.ID, true, VIEW_TYPE.NETCDF);
+		
 		exitAction = ActionFactory.QUIT.create(window);
 		register(exitAction);
 		
@@ -179,6 +195,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		// File
 		fileMenu.add(openFileAction);
+		fileMenu.add(openDataSet);
 		fileMenu.add(weatherWizardAction);
 		fileMenu.add(wmsWizardAction);
 		fileMenu.add(new Separator());

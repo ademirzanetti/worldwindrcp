@@ -819,7 +819,7 @@ public class NavigatorView extends ViewPart
 				try {
 					showLayerControls();
 				} catch (Exception e) {
-					logger.error(e);
+					logger.error(e.getMessage());
 				}
 			}
 		};
@@ -869,7 +869,7 @@ public class NavigatorView extends ViewPart
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e);
+			logger.error(e.getMessage());
 		}
 	}
 	
