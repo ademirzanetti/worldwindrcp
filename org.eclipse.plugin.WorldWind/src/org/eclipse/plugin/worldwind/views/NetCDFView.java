@@ -7,7 +7,6 @@ import gov.nasa.worldwind.geom.Sector;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -224,7 +223,7 @@ public class NetCDFView extends ViewPart
 		sectionClient.setLayout(layout); 
 		
 		// Lat
-		toolkit.createLabel(sectionClient, "Latitude", SWT.NONE); //Label l1 = 
+		toolkit.createLabel(sectionClient, "Latitude", SWT.NONE);  
 		
 		latMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
 		latMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -233,8 +232,7 @@ public class NetCDFView extends ViewPart
 		latMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		// Lon
-		toolkit.createLabel(sectionClient, "Longitude", SWT.NONE); // Label l2 = 
-		//l2.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		toolkit.createLabel(sectionClient, "Longitude", SWT.NONE);  
 		
 		lonMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
 		lonMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -243,52 +241,47 @@ public class NetCDFView extends ViewPart
 		lonMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		// Z(level)  
-		toolkit.createLabel(sectionClient, "Level", SWT.NONE); //Label l3 = 
-		//l3.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		toolkit.createLabel(sectionClient, "Level", SWT.NONE);  
 
 		TableWrapData td = new TableWrapData(TableWrapData.LEFT);
 		td.colspan = 2;
 		
 		lev = new Combo(sectionClient, SWT.READ_ONLY);
-		lev.setLayoutData(td); //new TableWrapData(TableWrapData.LEFT));
+		lev.setLayoutData(td); 
 		lev.addListener(SWT.Selection, this);
 		//lev.addListener(SWT.DefaultSelection, this);
 
 		// tmin
-		toolkit.createLabel(sectionClient, "Time min", SWT.NONE); //Label l4 = 
-		//l4.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		toolkit.createLabel(sectionClient, "Time min", SWT.NONE);  
+		
 		
 		tmin = new Combo(sectionClient, SWT.READ_ONLY);
 		
 		td = new TableWrapData(TableWrapData.LEFT);
 		td.colspan = 2;
 		
-		tmin.setLayoutData(td); //new TableWrapData(TableWrapData.FILL_GRAB));
+		tmin.setLayoutData(td); 
 		tmin.addListener(SWT.Selection, this);
 		tmin.addListener(SWT.DefaultSelection, this);
 		
 		// tmax
-		toolkit.createLabel(sectionClient, "Time max", SWT.NONE); // Label l5 = 
-		//l5.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		toolkit.createLabel(sectionClient, "Time max", SWT.NONE);  
 		
 		tmax = new Combo(sectionClient, SWT.READ_ONLY);
 		
 		td = new TableWrapData(TableWrapData.LEFT);
 		td.colspan = 2;
 		
-		tmax.setLayoutData(td); //new TableWrapData(TableWrapData.FILL_GRAB));
+		tmax.setLayoutData(td); 
 		tmax.addListener(SWT.Selection, this);
 		tmax.addListener(SWT.DefaultSelection, this);
 
 		// progress bar
 		statusMessage = toolkit.createLabel(sectionClient, "", SWT.NONE);
-//		pb = new ProgressBar(sectionClient, SWT.HORIZONTAL);
-//		pb.setVisible(false);
 
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
 		td.colspan = 3;
 		
-//		pb.setLayoutData(td);
 		statusMessage.setLayoutData(td);
 		
 		// plot btn
@@ -393,7 +386,7 @@ public class NetCDFView extends ViewPart
 	}
 	
 	/*
-	 * Plot grid
+	 * Plot grid according to the selected dimensions
 	 */
 	private void plotGrid() throws MalformedURLException
 	{
@@ -417,23 +410,24 @@ public class NetCDFView extends ViewPart
 		// plotter
 		Plot plotter = new Plot();
 		
-		// loop ov
+		// loop overlay
 		TimeLoopGroundOverlay loop = new TimeLoopGroundOverlay((new File(dataset.getLocationURI())).getName());
+
+		// grid (variable) to plot
+		IStructuredSelection sel 	= (IStructuredSelection) viewer.getSelection();
+		final GeoGrid grid 			= (GeoGrid)sel.getFirstElement();
 		
-		// bbox
-		LatLonRect bbox = dataset.getBoundingBox();
+		// bbox (not always +-180 longitude)
+		final LatLonRect bbox = dataset.getBoundingBox();
 		
 		for (int i = t1; i <= t2; i++) 
 		{
-			// get grid
-			IStructuredSelection sel 	= (IStructuredSelection) viewer.getSelection();
-			final GeoGrid grid 			= (GeoGrid)sel.getFirstElement();
-
 			// WW cache name
 			final String cacheName = "Earth" 
 				+ "/" + (new File(dataset.getLocationURI())).getName() 
 				+ "/" + grid.getName() + ".t" + i + ".z" + z;
 
+			// look for frame in cache
 			URL frame = WorldWind.getDataFileCache().findFile(cacheName + ".png", false);
 			
 			// if file not in cache plot
@@ -458,7 +452,7 @@ public class NetCDFView extends ViewPart
 					
 					frame = imF.toURL();
 				} 
-				catch (IOException e) {
+				catch (Exception e) {
 					statusMessage.setText(grid.getName() + " t=" + i + " z=" + lev.getText() 
 							+ " " + e.getMessage());
 				}
@@ -467,17 +461,15 @@ public class NetCDFView extends ViewPart
 				logger.debug(cacheName + " already in cache");
 			}
 
-			final Sector sector = new Sector(Angle.fromDegrees(bbox.getLatMin())
-					, Angle.fromDegrees(bbox.getLatMax())
-					, Angle.fromDegrees(bbox.getLonMin())
-					, Angle.fromDegrees(bbox.getLonMax())
-					);
+			// Overlay sector (lon must always be +-180)
+			final Sector sector = normalizeBBox(bbox); 
 			
+			// Overlay image URL
 			final URL url = new URL(frame.toString().replaceAll(" ", "%20"));
 			
 			logger.debug("Groung ov " + tmin.getItem(i) + " Sector:" + sector + " Url:" + url);
 			
-			// add the ground ov to the loop
+			// add the ground overlay to the loop
 			loop.add(new GroundOverlayLayer(
 					tmin.getItem(i)	// time step is the overlay name
 					, sector
@@ -497,7 +489,7 @@ public class NetCDFView extends ViewPart
 		}
 		
 		// description as HTML
-		loop.setDescription("<pre>" + dataset.getInfo() + "</pre>");
+		loop.setDescription("<pre>" + dataset.getDetailInfo() + "</pre>");
 		
 		
 		// Add loop to the earth view
@@ -515,6 +507,28 @@ public class NetCDFView extends ViewPart
 		view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
 	}
 
+	/**
+	 * Convert a NetCDF bbox {@link LatLonRect} to WWJ {@link Sector}
+	 * Longitude must be +-180
+	 * @return
+	 */
+	private Sector normalizeBBox (LatLonRect bbox)
+	{
+		double lonMin = bbox.getLonMin();
+		double lonMax = bbox.getLonMax();
+		
+		if ( lonMax > 180 ) {
+			lonMin = -bbox.getCenterLon();
+			lonMax = bbox.getCenterLon();
+		}
+		
+		return new Sector(Angle.fromDegrees(bbox.getLatMin())
+				, Angle.fromDegrees(bbox.getLatMax())
+				, Angle.fromDegrees(lonMin)
+				, Angle.fromDegrees(lonMax)
+				);		
+	}
+	
 	/*
 	 * Fires when the subset btn is pressed
 	 */

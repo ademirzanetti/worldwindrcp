@@ -70,7 +70,7 @@ public class LayerControlsDialog extends Dialog
 		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
 				, GridData.FILL_VERTICAL, true, true)); 
 		
-    	logger.debug(layer);
+    	logger.debug(layer.toString());
 
     	// Layer
 		Label l1 = new Label(container, SWT.NONE);

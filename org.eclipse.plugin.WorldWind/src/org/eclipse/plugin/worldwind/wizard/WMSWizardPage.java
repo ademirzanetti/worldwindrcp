@@ -143,9 +143,9 @@ public class WMSWizardPage  extends WizardPage
 			// Save indices to extract Layers from Caps obj later on
 			selectedIndices = indices;
 			
-			for (int idx : indices) {
-				logger.debug(capabilities.getLayers().get(idx));
-			}
+//			for (int idx : indices) {
+//				logger.debug(capabilities.getLayers().get(idx));
+//			}
 			
 			loadNextPage();
 			setPageComplete(true);
