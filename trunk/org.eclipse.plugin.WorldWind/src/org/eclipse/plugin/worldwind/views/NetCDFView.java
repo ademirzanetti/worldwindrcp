@@ -679,7 +679,7 @@ public class NetCDFView extends ViewPart
 	
 	private void clearForm() {
 		lev.removeAll();
-		viewer.getTable().clearAll();
+		viewer.getTable().removeAll();
 		tmin.removeAll();
 		tmax.removeAll();
 	}
