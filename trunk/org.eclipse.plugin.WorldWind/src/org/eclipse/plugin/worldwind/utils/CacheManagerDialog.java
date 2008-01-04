@@ -108,7 +108,7 @@ public class CacheManagerDialog extends Dialog
 	}
 	
 	/*
-	 * Load table data
+	 * Load table with All directory names/sizes within a location
 	 */
 	private void loadTable ( File folder)
 	{
@@ -119,9 +119,13 @@ public class CacheManagerDialog extends Dialog
     	
 		for (int i = 0; i < filelist.length; i++) 
 		{
-			viewer.add(filelist[i] + " - ("  //$NON-NLS-1$
+			if ( filelist[i].isDirectory()) {
+				viewer.add(filelist[i] + " - ("  //$NON-NLS-1$
 					+ nf.format((double)(getFileSize(filelist[i])/1e6)) 
 					+ " MB)" ); //$NON-NLS-1$
+				
+				loadTable(filelist[i]);
+			}
 		}
 	}
 	

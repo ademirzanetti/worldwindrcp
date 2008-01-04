@@ -222,7 +222,7 @@ public class WebBrowserView extends ViewPart
 			//final String VERDI_VIEW_ID = "org.eclipse.plugin.analytics.views.VerdiModels3View.ID";
 
 			// Clean up URL: remove any .info|.das|.dds|.html
-//			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
+			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
 //			
 //			// The suffix .dods is required in the URL for the dataset to be loaded
 //			if ( 	location.indexOf(".jnl") == -1 
