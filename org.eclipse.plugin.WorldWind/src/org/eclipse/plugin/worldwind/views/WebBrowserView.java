@@ -127,7 +127,7 @@ public class WebBrowserView extends ViewPart
 		
 	    browser = new Browser(sashForm, SWT.NONE);
 	    browser.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-	    browser.setUrl(Messages.getText("wb.start.url")); 
+	    browser.setUrl(Messages.getString("wb.start.url")); 
 
 	    browser.addLocationListener(new LocationListener(){
 
@@ -389,8 +389,8 @@ public class WebBrowserView extends ViewPart
 				browser.back();
 			}
 		};
-		actionBack.setText(Messages.getText("wb.action.back.text"));
-		actionBack.setToolTipText(Messages.getText("wb.action.back.tooltip"));
+		actionBack.setText(Messages.getString("wb.action.back.text"));
+		actionBack.setToolTipText(Messages.getString("wb.action.back.tooltip"));
 		actionBack.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
 		
@@ -399,19 +399,19 @@ public class WebBrowserView extends ViewPart
 				browser.forward();
 			}
 		};
-		actionForward.setText(Messages.getText("wb.action.forward.text"));
-		actionForward.setToolTipText(Messages.getText("wb.action.forward.tooltip"));
+		actionForward.setText(Messages.getString("wb.action.forward.text"));
+		actionForward.setToolTipText(Messages.getString("wb.action.forward.tooltip"));
 		actionForward.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
 		
 
 		actionHome = new Action() {
 			public void run() {
-				browser.setUrl(Messages.getText("wb.start.url"));
+				browser.setUrl(Messages.getString("wb.start.url"));
 			}
 		};
-		actionHome.setText(Messages.getText("wb.action.home.text"));
-		actionHome.setToolTipText(Messages.getText("wb.action.home.tooltip"));
+		actionHome.setText(Messages.getString("wb.action.home.text"));
+		actionHome.setToolTipText(Messages.getString("wb.action.home.tooltip"));
 		actionHome.setImageDescriptor(ICON_HOME);
 
 		actionAddBookmark = new Action() {
@@ -419,8 +419,8 @@ public class WebBrowserView extends ViewPart
 				addBookmark(urlCombo.getText());
 			}
 		};
-		actionAddBookmark.setText(Messages.getText("wb.action.bookmark.text"));
-		actionAddBookmark.setToolTipText(Messages.getText("wb.action.bookmark.tooltip"));
+		actionAddBookmark.setText(Messages.getString("wb.action.bookmark.text"));
+		actionAddBookmark.setToolTipText(Messages.getString("wb.action.bookmark.tooltip"));
 		actionAddBookmark.setImageDescriptor( PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_OBJ_FILE));
 		
@@ -430,8 +430,8 @@ public class WebBrowserView extends ViewPart
 				getViewSite().getActionBars().getMenuManager().removeAll();
 			}
 		};
-		removeBookmarks.setText(Messages.getText("wb.action.remove.bm.text"));
-		removeBookmarks.setToolTipText(Messages.getText("wb.action.remove.bm.tooltip"));
+		removeBookmarks.setText(Messages.getString("wb.action.remove.bm.text"));
+		removeBookmarks.setToolTipText(Messages.getString("wb.action.remove.bm.tooltip"));
 		removeBookmarks.setImageDescriptor( PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		

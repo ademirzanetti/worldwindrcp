@@ -108,7 +108,7 @@ public class YGeoSearch
 	public YResult[] getLocations() throws Exception
 	{
 		
-		final String url = Messages.getText("Y.geo.url.pref")
+		final String url = Messages.getString("Y.geo.url.pref")
 			+ location;
 		
 		logger.debug("Url=" + url);

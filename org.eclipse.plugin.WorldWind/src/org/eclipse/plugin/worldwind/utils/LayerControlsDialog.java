@@ -52,7 +52,7 @@ public class LayerControlsDialog extends Dialog
         super.configureShell(shell);
         
         // set title
-        shell.setText(Messages.getText("lyr.ctl.0"));
+        shell.setText(Messages.getString("lyr.ctl.0"));
      }
     
     public void setAnimationJob (AnimationJob job) {
@@ -74,7 +74,7 @@ public class LayerControlsDialog extends Dialog
 
     	// Layer
 		Label l1 = new Label(container, SWT.NONE);
-		l1.setText(Messages.getText("lyr.ctl.1"));
+		l1.setText(Messages.getString("lyr.ctl.1"));
 		
 		// Layer name
 		Label l2 = new Label(container, SWT.NONE);
@@ -82,7 +82,7 @@ public class LayerControlsDialog extends Dialog
 
 		// Opacity
 		Label l3 = new Label(container, SWT.NONE);
-		l3.setText(Messages.getText("lyr.ctl.2"));
+		l3.setText(Messages.getString("lyr.ctl.2"));
 
 		Scale opacity = new Scale (container, SWT.NONE);
 		opacity.addListener(SWT.Selection, this);
@@ -97,7 +97,7 @@ public class LayerControlsDialog extends Dialog
 		{
 			// Speed
 			Label l4 = new Label(container, SWT.NONE);
-			l4.setText(Messages.getText("lyr.ctl.3"));
+			l4.setText(Messages.getString("lyr.ctl.3"));
 	
 			Scale speed = new Scale (container, SWT.NONE);
 			speed.setSize (200, 64);
@@ -124,21 +124,21 @@ public class LayerControlsDialog extends Dialog
 			// road
 			Button btnRoad = new Button(container, SWT.RADIO);
 			btnRoad.setData("MAP_TYPE", VirtualEarthLayer.MAP_ROAD);
-			btnRoad.setText(Messages.getText("lyr.ctl.4"));
+			btnRoad.setText(Messages.getString("lyr.ctl.4"));
 			btnRoad.setLayoutData(gd);
 		    btnRoad.addListener(SWT.Selection, this);
 
 		    // Aerial
 			Button btnAerial = new Button(container, SWT.RADIO);
 			btnAerial.setData("MAP_TYPE", VirtualEarthLayer.MAP_AERIAL);
-			btnAerial.setText(Messages.getText("lyr.ctl.5"));
+			btnAerial.setText(Messages.getString("lyr.ctl.5"));
 			btnAerial.setLayoutData(gd);
 			btnAerial.addListener(SWT.Selection, this);
 
 			// Hybrid
 			Button btnHybrid = new Button(container, SWT.RADIO);
 			btnHybrid.setData("MAP_TYPE", VirtualEarthLayer.MAP_HYBRID);
-			btnHybrid.setText(Messages.getText("lyr.ctl.6"));
+			btnHybrid.setText(Messages.getString("lyr.ctl.6"));
 			btnHybrid.setLayoutData(gd);
 			btnHybrid.addListener(SWT.Selection, this);
 			

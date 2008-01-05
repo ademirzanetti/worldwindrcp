@@ -104,17 +104,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// the window is closed.
 
 		// File Menu
-		openFileAction = new OpenFileAction(Messages.getText("file.open.tooltip"), window);
+		openFileAction = new OpenFileAction(Messages.getString("file.open.tooltip"), window);
 		register(openFileAction);
 		
-		wmsWizardAction = new WMSWizardAction(Messages.getText("wms.wiz.tooltip"), window);
+		wmsWizardAction = new WMSWizardAction(Messages.getString("wms.wiz.tooltip"), window);
 		register(wmsWizardAction);
 		
-		weatherWizardAction = new WeatherWizardAction(Messages.getText("weather.wiz.tooltip"), window);
+		weatherWizardAction = new WeatherWizardAction(Messages.getString("weather.wiz.tooltip"), window);
 		register(weatherWizardAction);
 		
 		//openWebBrowser = new OpenWebBrowserAction(Messages.getText("open.web.browset.tooltip"), window);
-		openWebBrowser = new OpenViewAction(Messages.getText("open.web.browset.tooltip")
+		openWebBrowser = new OpenViewAction(Messages.getString("open.web.browset.tooltip")
 				, window, WebBrowserView.ID, true, VIEW_TYPE.WEB_BROWSER);
 		
 		// menu information
@@ -171,7 +171,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				new CacheManagerDialog(window.getShell()).open();
 			}
 		};
-		cacheManagerAction.setText(Messages.getText("menu.cache.name"));
+		cacheManagerAction.setText(Messages.getString("menu.cache.name"));
 		
 		// Help menu
 		aboutAction = ActionFactory.ABOUT.create(window);
@@ -186,10 +186,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
-		MenuManager fileMenu = new MenuManager(Messages.getText("menu.file.name"),
+		MenuManager fileMenu = new MenuManager(Messages.getString("menu.file.name"),
 				IWorkbenchActionConstants.M_FILE);
 
-		MenuManager helpMenu = new MenuManager(Messages.getText("menu.help.name"), IWorkbenchActionConstants.M_HELP);
+		MenuManager helpMenu = new MenuManager(Messages.getString("menu.help.name"), IWorkbenchActionConstants.M_HELP);
 		
 		menuBar.add(fileMenu);
 
@@ -205,7 +205,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		// Window
 		MenuManager perspectiveMenu = new MenuManager(
-				Messages.getText("menu.perspective.name")
+				Messages.getString("menu.perspective.name")
 				, "org.eclipse.plugin.worldwind.PERSPECTIVES");
 		
 		// Create a Perspective switch menu only if 1+ perspectives available
@@ -217,7 +217,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		}
 		// Show View Menu
 		MenuManager showViewMenuMgr = new MenuManager(
-				Messages.getText("menu.showview.name")
+				Messages.getString("menu.showview.name")
 				, "showView");
 
 		// Add views

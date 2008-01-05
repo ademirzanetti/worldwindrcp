@@ -52,7 +52,7 @@ public class CacheManagerDialog extends Dialog
         super.configureShell(shell);
         
         // set title
-        shell.setText(Messages.getText("CacheManagerDialog.0")); //$NON-NLS-1$
+        shell.setText(Messages.getString("CacheManagerDialog.0")); //$NON-NLS-1$
     }
 	
 
@@ -67,7 +67,7 @@ public class CacheManagerDialog extends Dialog
 		GridData gd = new GridData(GridData.FILL_BOTH);
 
 		Label l1 = new Label(container, SWT.NONE);
-		l1.setText(Messages.getText("CacheManagerDialog.1")); //$NON-NLS-1$
+		l1.setText(Messages.getString("CacheManagerDialog.1")); //$NON-NLS-1$
 		
 		combo =  new Combo(container, SWT.BORDER);
 		combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -136,7 +136,7 @@ public class CacheManagerDialog extends Dialog
     protected void createButtonsForButtonBar(Composite parent) 
     {
         Button btn = createButton(parent, IDialogConstants.NO_ID, 
-            Messages.getText("CacheManagerDialog.2"), true); //$NON-NLS-1$
+            Messages.getString("CacheManagerDialog.2"), true); //$NON-NLS-1$
         
         btn.addSelectionListener(new SelectionAdapter()
         {

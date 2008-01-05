@@ -35,7 +35,7 @@ public class Messages
         return (String) res.getObject(property);
     }
 	
-	static public String getText(String key) {
+	static public String getString(String key) {
 		return retrieveMessage(key, BUNDLE_NAME);
 	}
 
@@ -44,9 +44,9 @@ public class Messages
 	 * with the given arguments. If the key is not found,
 	 * return the key.
 	 */
-	public static String getText(String key, Object[] args) {
+	public static String getString(String key, Object[] args) {
 		try {
-			return MessageFormat.format(getText(key), args);
+			return MessageFormat.format(getString(key), args);
 		} catch (MissingResourceException e) {
 			return key;
 		} catch (NullPointerException e) {

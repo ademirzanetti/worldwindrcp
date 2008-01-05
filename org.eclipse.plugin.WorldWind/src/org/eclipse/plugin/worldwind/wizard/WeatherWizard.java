@@ -34,7 +34,7 @@ public class WeatherWizard extends Wizard
 	public WeatherWizard(IWorkbenchWindow window)  
 	{
         super();
-        setWindowTitle(Messages.getText("wiz.weather.title"));
+        setWindowTitle(Messages.getString("wiz.weather.title"));
         setNeedsProgressMonitor(true);
         
         this.window = window; 
@@ -90,7 +90,7 @@ public class WeatherWizard extends Wizard
 		catch (Exception e) {
 			//e.printStackTrace();
 			Messages.showErrorMessage(window.getShell()
-					, Messages.getText("wiz.err.dlg.title")
+					, Messages.getString("wiz.err.dlg.title")
 					, e.getClass() + ": " +  e.getMessage());
 			return false;
 		}

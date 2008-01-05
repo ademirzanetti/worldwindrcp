@@ -34,7 +34,7 @@ public class OpenViewAction extends Action
     private IWorkbenchWindow window;
 	private String ViewID;
 	
-	private int instanceNum = 0;
+	private static int instanceNum = 0;
 	private boolean multiInstance = false;
 	
 	// view type: WebBrowser or NetCDF
