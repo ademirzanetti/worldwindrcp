@@ -30,6 +30,7 @@ public class StatusLine
 	
 	private boolean locked = false;
 	
+	@SuppressWarnings("restriction")
 	public StatusLine(IStatusLineManager statusLine) {
 		this.statusLine = statusLine;
 
@@ -53,6 +54,7 @@ public class StatusLine
 		statusLine.setErrorMessage(ICON_ERROR.createImage(), message); 
 	}
 
+	@SuppressWarnings("restriction")
 	public synchronized void setLoopStatusMessage (String message) {
 		StatusLineContributionItem item =  (StatusLineContributionItem)statusLine.find(LOOP_STATUS);
 		

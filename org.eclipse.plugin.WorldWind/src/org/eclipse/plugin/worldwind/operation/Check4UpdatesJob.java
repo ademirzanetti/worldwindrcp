@@ -49,6 +49,7 @@ public class Check4UpdatesJob extends Job
 		this.display	= window.getShell().getDisplay();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) 
 	{
