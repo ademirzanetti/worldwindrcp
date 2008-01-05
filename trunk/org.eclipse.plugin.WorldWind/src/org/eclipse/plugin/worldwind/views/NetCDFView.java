@@ -97,7 +97,7 @@ public class NetCDFView extends ViewPart
 	public static final String ID = NetCDFView.class.getName();
 
 	// state of the user interface
-	enum UI_STATE { IDLE, PLOTTING_SUBSETTING};
+	enum UI_STATE { IDLE, PLOTTING, SUBSETTING};
 	
 	private TableViewer viewer;
 
@@ -128,11 +128,18 @@ public class NetCDFView extends ViewPart
 	
 	private final String VIEW_TITLE = Messages.getString("NetCDFView.0"); //$NON-NLS-1$
 
+	private boolean cancelPlot = false;
+	
+	private Display display; 
+
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
-	public void createPartControl(Composite parent) {
+	public void createPartControl(Composite parent) 
+	{
+		display 		= getViewSite().getShell().getDisplay();
+		
 		toolkit 		= new FormToolkit(parent.getDisplay());
 		scrolledForm 	= toolkit.createScrolledForm(parent);
 
@@ -148,11 +155,13 @@ public class NetCDFView extends ViewPart
 		int expanded 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED;
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 
-		// create UI elements
+		// create UI elements: Metadata
 		createMetaSection(Messages.getString("NetCDFView.1"), null, collapsed, 2); //$NON-NLS-1$
 
+		// Grids list box section
 		viewer 	= createGridsSection(Messages.getString("NetCDFView.2"), null, expanded, 2); //$NON-NLS-1$
 		
+		// dataset dimensions
 		createDimsSection(Messages.getString("NetCDFView.3"), null, expanded, 2); //$NON-NLS-1$
 		
 	}
@@ -373,8 +382,17 @@ public class NetCDFView extends ViewPart
 			}
 			else if ( w == plot) 
 			{
-				// Plot
-				firePlotSubsetThread(true);
+				final String label =((Button)w).getText();
+				
+				// Is the btn label Cancel?
+				if (label.equalsIgnoreCase(Messages.getString("NetCDFView.5"))) {
+					cancelPlot();
+				}
+				else {
+					// Plot
+					cancelPlot = false;
+					firePlotSubsetThread(true);
+				}
 			}
 			else if ( w == subset) 
 			{
@@ -384,25 +402,32 @@ public class NetCDFView extends ViewPart
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}	
 	
-	/*
-	 * Plot grid according to the selected dimensions
+	/**
+	 * Plot Grid
+	 * @param t1 Start time idx
+	 * @param t2 End time idx
+	 * @param z Vertical level index
+	 * @param grid {@link GeoGrid} to plot
+	 * @param overlayNames Names for the {@link GroundOverlayLayer} frames.
+	 * 		  Time steps can be used. 
 	 */
-	private void plotGrid() throws Exception
+	private void plotGrid(int t1 , int t2, int z
+			, final GeoGrid grid, String[] overlayNames) 
+		throws Exception
 	{
-		int t1 = tmin.getSelectionIndex();
-		int t2 = tmax.getSelectionIndex();
-		
-		int z = lev.getSelectionIndex();
-		
 		logger.debug("t=[" + t1 + "," + t2 + "] z=" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		// z size can be 0, t should be > 0
-		if (( t1 == -1 || t2 == -1) ) { // && tmin.getItemCount() > 0 ) {
-			MessageDialog.openInformation(getSite().getShell()
-					, VIEW_TITLE
-					, Messages.getString("NetCDFView.20")); //$NON-NLS-1$
+		if (( t1 == -1 || t2 == -1) ) {
+			display.syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openInformation(getSite().getShell()
+							, VIEW_TITLE
+							, Messages.getString("NetCDFView.20")); //$NON-NLS-1$
+				}
+			});
 			return;
 		}
 		
@@ -412,17 +437,22 @@ public class NetCDFView extends ViewPart
 		Plot plotter = new Plot();
 		
 		// loop overlay
-		TimeLoopGroundOverlay loop = new TimeLoopGroundOverlay((new File(dataset.getLocationURI())).getName());
+		final TimeLoopGroundOverlay loop = new TimeLoopGroundOverlay((new File(dataset.getLocationURI())).getName());
 
-		// grid (variable) to plot
-		IStructuredSelection sel 	= (IStructuredSelection) viewer.getSelection();
-		final GeoGrid grid 			= (GeoGrid)sel.getFirstElement();
 		
 		// bbox (not always +-180 longitude)
 		final LatLonRect bbox = dataset.getBoundingBox();
 		
 		for (int i = t1; i <= t2; i++) 
 		{
+			final int tStep = i; // for SWT threads
+			
+			// canceled by user?
+			if ( cancelPlot ) {
+				logger.debug("Breaking out of plot loop at t=" + i);
+				return;
+			}
+			
 			// WW cache name
 			final String cacheName = "Earth"  //$NON-NLS-1$
 				+ "/" + (new File(dataset.getLocationURI())).getName()  //$NON-NLS-1$
@@ -439,7 +469,12 @@ public class NetCDFView extends ViewPart
 				
 				logger.debug("Plotting:" + cacheName + " to " + imF); //$NON-NLS-1$ //$NON-NLS-2$
 				
-				statusMessage.setText("t=" + i + " z=" +  lev.getText() + " to " + cacheName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				display.syncExec(new Runnable() {
+					public void run() {
+						statusMessage.setText("t=" + tStep + " z=" +  lev.getText() + " to " + cacheName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					}
+				});
+				
 				
 				try {
 					// plot: returns a buf img + legend
@@ -457,12 +492,17 @@ public class NetCDFView extends ViewPart
 					// something's wrong...abort
 					throw new Exception(iae);
 				}
-				catch (IOException e) 
+				catch (final IOException e) 
 				{
 					e.printStackTrace();
-					
-					statusMessage.setText(grid.getName() + " t=" + i + " z=" + lev.getText()  //$NON-NLS-1$ //$NON-NLS-2$
-							+ " " + e.getMessage()); //$NON-NLS-1$
+			
+					display.syncExec(new Runnable() {
+						public void run() {
+							statusMessage.setText(grid.getName() 
+									+ " t=" + tStep + " z=" + lev.getText()  //$NON-NLS-1$ //$NON-NLS-2$
+									+ " " + e.getMessage()); //$NON-NLS-1$
+						}
+					});
 					
 					// Current plot has failed. Continue to the next frame
 					continue;
@@ -478,11 +518,11 @@ public class NetCDFView extends ViewPart
 			// Overlay image URL
 			final URL url = new URL(frame.toString().replaceAll(" ", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 			
-			logger.debug("Groung ov " + tmin.getItem(i) + " Sector:" + sector + " Url:" + url); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			//logger.debug("Groung overlay " + overlayNames[i] + " Sector:" + sector + " Url:" + url); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			// add the ground overlay to the loop
 			loop.add(new GroundOverlayLayer(
-					tmin.getItem(i)	// time step is the overlay name
+					overlayNames[i] //tmin.getItem(i)	// time step is the overlay name
 					, sector
 					, url		// URL
 					, ".png" 	// format //$NON-NLS-1$
@@ -502,20 +542,24 @@ public class NetCDFView extends ViewPart
 		// description as HTML
 		loop.setDescription("<pre>" + dataset.getDetailInfo() + "</pre>"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		
-		// Add loop to the earth view
-		// show view if hidden
-		try {
-			getViewSite().getWorkbenchWindow().getActivePage().showView(NavigatorView.ID);
-		} catch (PartInitException e) {
-			// shouldn't happen
-		}
 
-		// Get Navigator and add the loop overlay
-		NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
-				, NavigatorView.ID);
-		
-		view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
+		display.syncExec(new Runnable() {
+			public void run() {
+				// Add loop to the earth view
+				// show view if hidden
+				try {
+					getViewSite().getWorkbenchWindow().getActivePage().showView(NavigatorView.ID);
+				} catch (PartInitException e) {
+					// shouldn't happen
+				}
+
+				// Get Navigator and add the loop overlay
+				NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
+						, NavigatorView.ID);
+				
+				view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
+			}
+		});
 	}
 
 	/**
@@ -541,7 +585,8 @@ public class NetCDFView extends ViewPart
 	}
 	
 	/*
-	 * Fires when the subset btn is pressed
+	 * Fires when the subset btn is pressed.
+	 * Subset dataset by Grid and Time range.
 	 */
 	private void subsetGrid ()
 	{
@@ -584,7 +629,7 @@ public class NetCDFView extends ViewPart
 			if ( new File(fileName).exists()) 
 				if ( ! MessageDialog.openQuestion(getSite().getShell()
 						, VIEW_TITLE
-						, fileName +  Messages.getString("NetCDFView.53"))) //$NON-NLS-1$
+						, fileName  + " " + Messages.getString("NetCDFView.53"))) //$NON-NLS-1$
 					return;
 			
 			//logger.debug("t range=" + t_range + " z range=" + z_range + " out=" + fileOut);
@@ -602,10 +647,13 @@ public class NetCDFView extends ViewPart
 		    Date start 				= format.stdDateTimeFormat(tmin.getText());
 		    Date end 				= format.stdDateTimeFormat(tmax.getText());
 
-			logger.debug("grid=" + grid.getName() + " date:" + start + "," + end  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			logger.debug("grid=" + grid.getName() 
+					+ " date:" + start + "," + end  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					+ " out=" + fileName); //$NON-NLS-1$
 		    
-			statusMessage.setText(Messages.getString("NetCDFView.76") + start + Messages.getString("NetCDFView.59") + end + " ..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			statusMessage.setText(Messages.getString("NetCDFView.76") + start + " "
+					+ Messages.getString("NetCDFView.59") 
+					+ end + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 		    writer.makeFile(fileName, dataset, gridList,
 		          dataset.getBoundingBox(),
@@ -716,16 +764,21 @@ public class NetCDFView extends ViewPart
 		{
 			case IDLE:
 				plot.setEnabled(true);
+				plot.setText(Messages.getString("NetCDFView.14"));
 				subset.setEnabled(true);
-				statusMessage.setText(""); //$NON-NLS-1$
-				//pb.setVisible(false);
+				//statusMessage.setText(""); //$NON-NLS-1$
+				break;
+
+			case PLOTTING:
+				plot.setText(Messages.getString("NetCDFView.5"));
+				subset.setEnabled(false);
 				break;
 				
-			case PLOTTING_SUBSETTING:
+			case SUBSETTING:
 				plot.setEnabled(false);
 				subset.setEnabled(false);
-				//pb.setVisible(true);
 				break;
+				
 			default:
 				break;
 		}
@@ -737,30 +790,61 @@ public class NetCDFView extends ViewPart
 	 */
 	private void firePlotSubsetThread (final boolean doPlot)
 	{
-		final Display display = getViewSite().getShell().getDisplay();
-	
-		setUIState(UI_STATE.PLOTTING_SUBSETTING);
+		// start/end time idices
+		final int t1 = tmin.getSelectionIndex();
+		final int t2 = tmax.getSelectionIndex();
 		
+		// vertical level index
+		final int z = lev.getSelectionIndex();
+
+		// GeoGrid to plot
+		IStructuredSelection sel 	= (IStructuredSelection) viewer.getSelection();
+		final GeoGrid grid 			= (GeoGrid)sel.getFirstElement();
+		
+		// Overlay names
+		final String[] names = tmin.getItems();
+		
+		// Set UI state
+		if (doPlot) 
+			setUIState(UI_STATE.PLOTTING);
+		else
+			setUIState(UI_STATE.SUBSETTING);
+	
 		new Thread(new Runnable() 
 		{
 			public void run() 
 			{
-				display.syncExec(new Runnable() {
-					public void run() 
-					{
-						try {
-							if (doPlot)
-								plotGrid();
-							else
-								subsetGrid();
-							
-							setUIState(UI_STATE.IDLE);
-						} 
-						catch (Exception e) {
-							statusMessage.setText(Messages.getString("NetCDFView.75") + e.getMessage()); //$NON-NLS-1$
-						}
+				try {
+					// Wrapping all this stuff in display.syncExec won't cancel
+					if (doPlot) {
+						plotGrid(t1, t2, z, grid, names);
 					}
-				});
+					else {
+						display.syncExec(new Runnable() {
+							public void run() {
+								subsetGrid();
+							}
+						});
+					}
+					
+					// done
+					display.syncExec(new Runnable() {
+						public void run() {
+							setUIState(UI_STATE.IDLE);
+						}
+					});
+				} 
+				catch (final Exception e) 
+				{
+					//e.printStackTrace();
+					
+					display.syncExec(new Runnable() {
+						public void run() {
+							statusMessage.setText(Messages.getString("NetCDFView.75") 
+									+ e.getMessage()); //$NON-NLS-1$
+						}
+					});
+				}
 			}
 		}).start();
 	}
@@ -775,4 +859,12 @@ public class NetCDFView extends ViewPart
 		} catch (Exception e) {}
 	}
 	
+	/*
+	 * Cancel a long runing plot 
+	 */
+	private void cancelPlot () {
+		logger.debug("Cancelling plot.");
+		cancelPlot = true;
+		setUIState(UI_STATE.IDLE);
+	}
 }
