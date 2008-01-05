@@ -69,21 +69,21 @@ public class WeatherWizardPage extends WizardPage
 	protected WeatherWizardPage(String pageName) 
 	{
 		super(pageName); 
-		setTitle(Messages.getText("wiz.weather.page.title"));
+		setTitle(Messages.getString("wiz.weather.page.title"));
 		setPageComplete(false);
-		setDescription(Messages.getText("wiz.weather.page.desc"));
+		setDescription(Messages.getString("wiz.weather.page.desc"));
 		
 		// Parse Source XML Files (stored in config/)
 		try {
 			if ( goes == null )
 				goes = ParserUtils.parseGOESSatFile(
 						Messages.getInputStream(WeatherWizardPage.class
-								, Messages.getText("layers.goes.xml.file")));
+								, Messages.getString("layers.goes.xml.file")));
 			
 			if ( nrl == null)
 				nrl = ParserUtils.parseNavyLabsFile(
 						Messages.getInputStream(WeatherWizardPage.class
-								, Messages.getText("layers.nrl.xml.file")));
+								, Messages.getString("layers.nrl.xml.file")));
 		} 
 		catch (Exception e) {
 			setErrorMessage("Error parsing satellite data from config: " 
@@ -101,13 +101,13 @@ public class WeatherWizardPage extends WizardPage
 		GridData data = new GridData(GridData.FILL_BOTH);
 		
 		Label lbl = new Label(container, SWT.NONE);
-		lbl.setText(Messages.getText("wiz.weather.page.lbl1")); 
+		lbl.setText(Messages.getString("wiz.weather.page.lbl1")); 
 		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		combo = new Combo(container, SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		combo.add(Messages.getText("layer.nrl.name"));
-		combo.add(Messages.getText("layer.goes.name"));
+		combo.add(Messages.getString("layer.nrl.name"));
+		combo.add(Messages.getString("layer.goes.name"));
 		combo.addSelectionListener(new SelectionListener()
 		{
 			public void widgetDefaultSelected(SelectionEvent e){
@@ -118,7 +118,7 @@ public class WeatherWizardPage extends WizardPage
 		});
 		
 		lbl = new Label(container, SWT.NONE);
-		lbl.setText(Messages.getText("wiz.weather.page.lbl2")); 
+		lbl.setText(Messages.getString("wiz.weather.page.lbl2")); 
 		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));  
 		
 		viewer = new TableViewer(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -218,14 +218,14 @@ public class WeatherWizardPage extends WizardPage
 			for ( ParserUtils.HTTPDataSet ds : nrl) {
 				viewer.add(ds.name);
 			}
-			setMessage(Messages.getText("wiz.weather.title.msg1",  new Object[] {nrl.size()}));
+			setMessage(Messages.getString("wiz.weather.title.msg1",  new Object[] {nrl.size()}));
 		}
 		// GOES Sat
 		else if (idx  == 1) {
 			for ( ParserUtils.HTTPDataSet ds : goes) {
 				viewer.add(ds.name);
 			}
-			setMessage(Messages.getText("wiz.weather.title.msg2",  new Object[] {goes.size()}));
+			setMessage(Messages.getString("wiz.weather.title.msg2",  new Object[] {goes.size()}));
 		}
 	}
 

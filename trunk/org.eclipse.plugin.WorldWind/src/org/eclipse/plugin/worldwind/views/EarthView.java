@@ -109,7 +109,7 @@ public class EarthView extends ViewPart
 	                if (service.hasActiveTasks()) 
 	                {
 	        			statusLine.beginTask(
-	        					Messages.getText("layer.worldview.probe.task.name")
+	        					Messages.getString("layer.worldview.probe.task.name")
 	        						, IProgressMonitor.UNKNOWN);
 	                }
 	                else {

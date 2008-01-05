@@ -50,7 +50,7 @@ public class LayerLoaderJob extends Job
 			, WWTreeViewer treeViewer
 			, StatusLine statusLine) 
 	{ 
-		super(Messages.getText("remote.layers.load.lbl"));
+		super(Messages.getString("remote.layers.load.lbl"));
 		this.treeViewer = treeViewer;
 		this.display = display;
 		this.statusLine = statusLine;
@@ -59,11 +59,11 @@ public class LayerLoaderJob extends Job
 	public IStatus run(IProgressMonitor monitor) 
 	{
 		try {
-			monitor.beginTask(Messages.getText("remote.layers.load.lbl"), IProgressMonitor.UNKNOWN );
+			monitor.beginTask(Messages.getString("remote.layers.load.lbl"), IProgressMonitor.UNKNOWN );
 			
 			display.syncExec(new Runnable() {
 				public void run() {
-					statusLine.beginTask(Messages.getText("remote.layers.load.lbl")
+					statusLine.beginTask(Messages.getString("remote.layers.load.lbl")
 							, IProgressMonitor.UNKNOWN);
 					statusLine.lockProgress();
 				}
@@ -105,7 +105,7 @@ public class LayerLoaderJob extends Job
 		{
 			display.syncExec(new Runnable() {
 				public void run() {
-					statusLine.setErrorMessage(Messages.getText("remote.layers.err.lbl") 
+					statusLine.setErrorMessage(Messages.getString("remote.layers.err.lbl") 
 							+ e.getMessage());
 				}
 			});
@@ -128,13 +128,13 @@ public class LayerLoaderJob extends Job
 		 * Satellite layers: NRL & NOAA
 		 */
     	RenderableLayer topLayer = new RenderableLayer();
-		topLayer.setName( Messages.getText("remote.layers.tree.lbl") );
+		topLayer.setName( Messages.getString("remote.layers.tree.lbl") );
 		
 		TreeParent top = new TreeParent(topLayer, null);
 		
 		// Build the layer list from the XML file config/sat.loops.xml
 		HTTPSatLoopLayerList list = new HTTPSatLoopLayerList(
-				Messages.getInputStream(LayerLoaderJob.class, Messages.getText("layers.loops.xml.file"))
+				Messages.getInputStream(LayerLoaderJob.class, Messages.getString("layers.loops.xml.file"))
 				);
 		
 		

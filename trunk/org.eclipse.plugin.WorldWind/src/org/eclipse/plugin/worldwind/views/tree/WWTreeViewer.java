@@ -352,7 +352,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		
 		// NASA WMS Layers nasaWmsLayerList. Must be added to the model
 		RenderableLayer topLayer = new RenderableLayer();
-		topLayer.setName( Messages.getText("layer.nasa.wms.name"));
+		topLayer.setName( Messages.getString("layer.nasa.wms.name"));
 		
 		TreeParent top = new TreeParent(topLayer, Activator.ICON_NASA);
 		
@@ -407,7 +407,7 @@ public class WWTreeViewer extends CheckboxTreeViewer
 
         // WW parent layer for Model layers
         RenderableLayer topLayer = new RenderableLayer();
-		topLayer.setName(Messages.getText("layer.nasa.builtin.name"));
+		topLayer.setName(Messages.getString("layer.nasa.builtin.name"));
 		
         // Tree parent that contains 1 TreeObject for each WW layer
 		TreeParent parent = new TreeParent(topLayer, Activator.ICON_NASA);

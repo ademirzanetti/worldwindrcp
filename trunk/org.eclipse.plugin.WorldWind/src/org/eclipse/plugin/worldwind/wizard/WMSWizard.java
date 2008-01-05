@@ -39,7 +39,7 @@ public class WMSWizard extends Wizard
 		throws Exception
 	{
         super();
-        setWindowTitle(Messages.getText("wiz.wms.title"));
+        setWindowTitle(Messages.getString("wiz.wms.title"));
         setNeedsProgressMonitor(true);
         
         this.window = window; 
@@ -53,7 +53,7 @@ public class WMSWizard extends Wizard
 	private void initialize() throws Exception
 	{
 		// load public servers from config folder
-		String list = Messages.getText("wiz.wms.servers.local.list");
+		String list = Messages.getString("wiz.wms.servers.local.list");
 		//String list = Messages.getText("wiz.wms.servers.list");
 		
 	    InputStream buffer  = new BufferedInputStream(Messages.getInputStream(ParserUtils.class, list));   

@@ -52,10 +52,10 @@ public class Check4UpdatesJob extends Job
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) 
 	{
-		final String updateSite = Messages.getText("upd.site");
+		final String updateSite = Messages.getString("upd.site");
 		
 		String features = "";
-		final String footer	= Messages.getText("upd.footer.msg");
+		final String footer	= Messages.getString("upd.footer.msg");
 		
 		try {
 			logger.debug("Checking 4 updates in " + updateSite);
@@ -99,7 +99,7 @@ public class Check4UpdatesJob extends Job
 							configuredSite, remoteFeatures[i].getFeature(monitor), null, null, null));					
 				}
 				
-				final String message =  Messages.getText("upd.job.1")
+				final String message =  Messages.getString("upd.job.1")
 				 					+ "\n" + features + "\n\n" + footer;
 				
 				// Ask if new features should be installed
@@ -107,7 +107,7 @@ public class Check4UpdatesJob extends Job
 					public void run() 
 					{
 						final boolean install = MessageDialog.openQuestion(display.getActiveShell()
-								, Messages.getText("info.dialog.title")
+								, Messages.getString("info.dialog.title")
 								, message) ;
 						
 						// install new features
@@ -148,14 +148,14 @@ public class Check4UpdatesJob extends Job
 			// Ask if the user wants to update
 			if ( installOps.size() > 0 )
 			{
-				final String message = Messages.getText("upd.job.2")
+				final String message = Messages.getString("upd.job.2")
 				 						+ "\n" + features + "\n\n" + footer;
 				
 				display.syncExec(new Runnable() {
 					public void run() 
 					{
 						final boolean update = MessageDialog.openQuestion(display.getActiveShell()
-								, Messages.getText("info.dialog.title")
+								, Messages.getString("info.dialog.title")
 								, message);
 						
 						// Update features
@@ -232,7 +232,7 @@ public class Check4UpdatesJob extends Job
 			}
 		} catch (Exception e) {
 			Messages.showErrorMessage(display.getActiveShell()
-					, Messages.getText("err.dialog.title")
+					, Messages.getString("err.dialog.title")
 					, e.getMessage());
 		}
 	}

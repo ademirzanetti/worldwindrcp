@@ -58,8 +58,8 @@ public class WMSWizardPage  extends WizardPage
 	public WMSWizardPage(String pageName) {
 		super(pageName);
 		
-		setTitle(Messages.getText("wiz.wms.page1.title"));
-		setDescription(Messages.getText("wiz.wms.page1.desc"));
+		setTitle(Messages.getString("wiz.wms.page1.title"));
+		setDescription(Messages.getString("wiz.wms.page1.desc"));
 		setPageComplete(false);
 	}
 	
@@ -73,7 +73,7 @@ public class WMSWizardPage  extends WizardPage
 		GridData data = new GridData(GridData.FILL_BOTH);
 		
 		Label lbl = new Label(container, SWT.NONE);
-		lbl.setText(Messages.getText("wiz.wms.page1.lbl1")); 
+		lbl.setText(Messages.getString("wiz.wms.page1.lbl1")); 
 		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		serverCombo = new Combo(container, SWT.NONE);
@@ -103,7 +103,7 @@ public class WMSWizardPage  extends WizardPage
 		loadServers();
 		
 		lbl = new Label(container, SWT.NONE);
-		lbl.setText(Messages.getText("wiz.wms.page1.lbl2")); 
+		lbl.setText(Messages.getString("wiz.wms.page1.lbl2")); 
 		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));  
 		
 		layerViewer = new TableViewer(container, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);

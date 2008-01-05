@@ -7,7 +7,7 @@ import gov.nasa.worldwind.geom.Sector;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.plugin.worldwind.Activator;
+import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -125,7 +126,7 @@ public class NetCDFView extends ViewPart
 	private FormToolkit toolkit;
 	private ScrolledForm scrolledForm;
 	
-	
+	private final String VIEW_TITLE = Messages.getString("NetCDFView.0"); //$NON-NLS-1$
 
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
@@ -135,7 +136,7 @@ public class NetCDFView extends ViewPart
 		toolkit 		= new FormToolkit(parent.getDisplay());
 		scrolledForm 	= toolkit.createScrolledForm(parent);
 
-		scrolledForm.setText("NetCDF Viewer");
+		scrolledForm.setText(VIEW_TITLE);
 		toolkit.decorateFormHeading(scrolledForm.getForm());
 		
 		// Create UI
@@ -148,11 +149,11 @@ public class NetCDFView extends ViewPart
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 
 		// create UI elements
-		createMetaSection("Information", null, collapsed, 2);
+		createMetaSection(Messages.getString("NetCDFView.1"), null, collapsed, 2); //$NON-NLS-1$
 
-		viewer 	= createGridsSection("Grids", null, expanded, 2);
+		viewer 	= createGridsSection(Messages.getString("NetCDFView.2"), null, expanded, 2); //$NON-NLS-1$
 		
-		createDimsSection("Dimensions", null, expanded, 2);
+		createDimsSection(Messages.getString("NetCDFView.3"), null, expanded, 2); //$NON-NLS-1$
 		
 	}
 
@@ -223,25 +224,25 @@ public class NetCDFView extends ViewPart
 		sectionClient.setLayout(layout); 
 		
 		// Lat
-		toolkit.createLabel(sectionClient, "Latitude", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("NetCDFView.4"), SWT.NONE);   //$NON-NLS-1$
 		
-		latMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		latMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		latMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		latMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		latMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		latMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		// Lon
-		toolkit.createLabel(sectionClient, "Longitude", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("NetCDFView.7"), SWT.NONE);   //$NON-NLS-1$
 		
-		lonMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		lonMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		lonMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		lonMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		lonMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		lonMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		// Z(level)  
-		toolkit.createLabel(sectionClient, "Level", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("NetCDFView.10"), SWT.NONE);   //$NON-NLS-1$
 
 		TableWrapData td = new TableWrapData(TableWrapData.LEFT);
 		td.colspan = 2;
@@ -252,7 +253,7 @@ public class NetCDFView extends ViewPart
 		//lev.addListener(SWT.DefaultSelection, this);
 
 		// tmin
-		toolkit.createLabel(sectionClient, "Time min", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("NetCDFView.11"), SWT.NONE);   //$NON-NLS-1$
 		
 		
 		tmin = new Combo(sectionClient, SWT.READ_ONLY);
@@ -265,7 +266,7 @@ public class NetCDFView extends ViewPart
 		tmin.addListener(SWT.DefaultSelection, this);
 		
 		// tmax
-		toolkit.createLabel(sectionClient, "Time max", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("NetCDFView.12"), SWT.NONE);   //$NON-NLS-1$
 		
 		tmax = new Combo(sectionClient, SWT.READ_ONLY);
 		
@@ -277,7 +278,7 @@ public class NetCDFView extends ViewPart
 		tmax.addListener(SWT.DefaultSelection, this);
 
 		// progress bar
-		statusMessage = toolkit.createLabel(sectionClient, "", SWT.NONE);
+		statusMessage = toolkit.createLabel(sectionClient, "", SWT.NONE); //$NON-NLS-1$
 
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
 		td.colspan = 3;
@@ -285,12 +286,12 @@ public class NetCDFView extends ViewPart
 		statusMessage.setLayoutData(td);
 		
 		// plot btn
-		plot = toolkit.createButton(sectionClient, "Plot", SWT.NONE);
+		plot = toolkit.createButton(sectionClient, Messages.getString("NetCDFView.14"), SWT.NONE); //$NON-NLS-1$
 		plot.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		plot.addListener(SWT.Selection, this);
 		
 		// subset btn
-		subset = toolkit.createButton(sectionClient, "Subset", SWT.NONE);
+		subset = toolkit.createButton(sectionClient, Messages.getString("NetCDFView.15"), SWT.NONE); //$NON-NLS-1$
 		subset.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		subset.addListener(SWT.Selection, this);
 		
@@ -316,7 +317,7 @@ public class NetCDFView extends ViewPart
 		sectionClient.setLayout(layout); 
 		
 		// Metadata label
-		metaData= toolkit.createLabel(sectionClient, "", SWT.WRAP); 
+		metaData= toolkit.createLabel(sectionClient, "", SWT.WRAP);  //$NON-NLS-1$
 		
 		TableWrapData td = new TableWrapData(TableWrapData.LEFT);
 		td.colspan = 2;
@@ -388,20 +389,20 @@ public class NetCDFView extends ViewPart
 	/*
 	 * Plot grid according to the selected dimensions
 	 */
-	private void plotGrid() throws MalformedURLException
+	private void plotGrid() throws Exception
 	{
 		int t1 = tmin.getSelectionIndex();
 		int t2 = tmax.getSelectionIndex();
 		
 		int z = lev.getSelectionIndex();
 		
-		logger.debug("t=[" + t1 + "," + t2 + "] z=" + z);
+		logger.debug("t=[" + t1 + "," + t2 + "] z=" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		// z size can be 0, t should be > 0
 		if (( t1 == -1 || t2 == -1) ) { // && tmin.getItemCount() > 0 ) {
 			MessageDialog.openInformation(getSite().getShell()
-					, "NetCDFView"
-					, "Select a time range");
+					, VIEW_TITLE
+					, Messages.getString("NetCDFView.20")); //$NON-NLS-1$
 			return;
 		}
 		
@@ -423,22 +424,22 @@ public class NetCDFView extends ViewPart
 		for (int i = t1; i <= t2; i++) 
 		{
 			// WW cache name
-			final String cacheName = "Earth" 
-				+ "/" + (new File(dataset.getLocationURI())).getName() 
-				+ "/" + grid.getName() + ".t" + i + ".z" + z;
+			final String cacheName = "Earth"  //$NON-NLS-1$
+				+ "/" + (new File(dataset.getLocationURI())).getName()  //$NON-NLS-1$
+				+ "/" + grid.getName() + ".t" + i + ".z" + z; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			// look for frame in cache
-			URL frame = WorldWind.getDataFileCache().findFile(cacheName + ".png", false);
+			URL frame = WorldWind.getDataFileCache().findFile(cacheName + ".png", false); //$NON-NLS-1$
 			
 			// if file not in cache plot
 			if (  frame == null) 
 			{
-				final File imF 		= WorldWind.getDataFileCache().newFile(cacheName + ".png");
-				final File legendF 	= WorldWind.getDataFileCache().newFile(cacheName + ".legend.png");
+				final File imF 		= WorldWind.getDataFileCache().newFile(cacheName + ".png"); //$NON-NLS-1$
+				final File legendF 	= WorldWind.getDataFileCache().newFile(cacheName + ".legend.png"); //$NON-NLS-1$
 				
-				logger.debug("Plotting:" + cacheName + " to " + imF);
+				logger.debug("Plotting:" + cacheName + " to " + imF); //$NON-NLS-1$ //$NON-NLS-2$
 				
-				statusMessage.setText("t=" + i + " z=" +  lev.getText() + " to " + cacheName);
+				statusMessage.setText("t=" + i + " z=" +  lev.getText() + " to " + cacheName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				
 				try {
 					// plot: returns a buf img + legend
@@ -447,49 +448,59 @@ public class NetCDFView extends ViewPart
 							, new Color(223, 223, 223));
 					
 					// write png: im + legend
-					ImageIO.write(im, "PNG", imF );
-					ImageIO.write(plotter.getLegend(), "PNG", legendF );
+					ImageIO.write(im, "PNG", imF ); //$NON-NLS-1$
+					ImageIO.write(plotter.getLegend(), "PNG", legendF ); //$NON-NLS-1$
 					
 					frame = imF.toURL();
 				} 
-				catch (Exception e) {
-					statusMessage.setText(grid.getName() + " t=" + i + " z=" + lev.getText() 
-							+ " " + e.getMessage());
+				catch ( IllegalArgumentException iae) {
+					// something's wrong...abort
+					throw new Exception(iae);
+				}
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+					
+					statusMessage.setText(grid.getName() + " t=" + i + " z=" + lev.getText()  //$NON-NLS-1$ //$NON-NLS-2$
+							+ " " + e.getMessage()); //$NON-NLS-1$
+					
+					// Current plot has failed. Continue to the next frame
+					continue;
 				}
 			}
 			else {
-				logger.debug(cacheName + " already in cache");
+				logger.debug(cacheName + " already in cache"); //$NON-NLS-1$
 			}
 
 			// Overlay sector (lon must always be +-180)
 			final Sector sector = normalizeBBox(bbox); 
 			
 			// Overlay image URL
-			final URL url = new URL(frame.toString().replaceAll(" ", "%20"));
+			final URL url = new URL(frame.toString().replaceAll(" ", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 			
-			logger.debug("Groung ov " + tmin.getItem(i) + " Sector:" + sector + " Url:" + url);
+			logger.debug("Groung ov " + tmin.getItem(i) + " Sector:" + sector + " Url:" + url); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			// add the ground overlay to the loop
 			loop.add(new GroundOverlayLayer(
 					tmin.getItem(i)	// time step is the overlay name
 					, sector
 					, url		// URL
-					, ".png" 	// format
+					, ".png" 	// format //$NON-NLS-1$
 					));
 			
 			// grab 1st legend
 			if ( i  == t1 ) 
 			{
-				final URL legendU = WorldWind.getDataFileCache().findFile(cacheName + ".legend.png", false);
+				final URL legendU = WorldWind.getDataFileCache().findFile(cacheName + ".legend.png", false); //$NON-NLS-1$
 				if ( legendU != null)
-					loop.setLegend(new ScreenOverlayLayer("legend"
+					loop.setLegend(new ScreenOverlayLayer("legend" //$NON-NLS-1$
 						, legendU
 						, ScreenOverlayLayer.SOUTHWEST));
 			}
 		}
 		
 		// description as HTML
-		loop.setDescription("<pre>" + dataset.getDetailInfo() + "</pre>");
+		loop.setDescription("<pre>" + dataset.getDetailInfo() + "</pre>"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		
 		// Add loop to the earth view
@@ -541,8 +552,8 @@ public class NetCDFView extends ViewPart
 
 			if ( tmin.getSelectionIndex() == -1 ) {
 				MessageDialog.openInformation(getSite().getShell()
-						, "NetCDFView"
-						, "Select a time range");
+						, VIEW_TITLE
+						, Messages.getString("NetCDFView.50")); //$NON-NLS-1$
 				return;
 			}
 /*			
@@ -560,8 +571,8 @@ public class NetCDFView extends ViewPart
 			// get a file name from the user
 			FileDialog dialog = new FileDialog(getSite().getShell(), SWT.OPEN);
 			
-			dialog.setFilterExtensions(new String[] { "*.*" } );
-			dialog.setFilterNames(new String[] { "All files (*.*)"});
+			dialog.setFilterExtensions(new String[] { "*.*" } ); //$NON-NLS-1$
+			dialog.setFilterNames(new String[] { "All files (*.*)"}); //$NON-NLS-1$
 			
 			// User defined path
 			String fileName 		= dialog.open();
@@ -572,8 +583,8 @@ public class NetCDFView extends ViewPart
 			// Does file exist?
 			if ( new File(fileName).exists()) 
 				if ( ! MessageDialog.openQuestion(getSite().getShell()
-						, "NetCDFView"
-						, fileName +  " already exists. Replace?"))
+						, VIEW_TITLE
+						, fileName +  Messages.getString("NetCDFView.53"))) //$NON-NLS-1$
 					return;
 			
 			//logger.debug("t range=" + t_range + " z range=" + z_range + " out=" + fileOut);
@@ -591,10 +602,10 @@ public class NetCDFView extends ViewPart
 		    Date start 				= format.stdDateTimeFormat(tmin.getText());
 		    Date end 				= format.stdDateTimeFormat(tmax.getText());
 
-			logger.debug("grid=" + grid.getName() + " date:" + start + "," + end 
-					+ " out=" + fileName);
+			logger.debug("grid=" + grid.getName() + " date:" + start + "," + end  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ " out=" + fileName); //$NON-NLS-1$
 		    
-			statusMessage.setText("Subsetting from " + start + " to " + end + " ...");
+			statusMessage.setText(Messages.getString("NetCDFView.76") + start + Messages.getString("NetCDFView.59") + end + " ..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 		    writer.makeFile(fileName, dataset, gridList,
 		          dataset.getBoundingBox(),
@@ -603,8 +614,8 @@ public class NetCDFView extends ViewPart
 		          1, 1, 1);
 		    
 			MessageDialog.openInformation(getSite().getShell()
-					, "NetCDFView"
-					, "Output file is " + fileName);
+					, VIEW_TITLE
+					, Messages.getString("NetCDFView.61") + fileName); //$NON-NLS-1$
 		    
 		} 
 		catch (Exception e) {
@@ -615,9 +626,12 @@ public class NetCDFView extends ViewPart
 	/*
 	 * Load netcdf dataset URI
 	 */
-	@SuppressWarnings("unchecked")
-	public void loadDataset( String uri) {
-		logger.debug("Uri " + uri);
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
+	public void loadDataset( String uri) 
+	{
+		logger.debug("Uri " + uri); //$NON-NLS-1$
+		
+		setPartName(uri);
 		
 		try {
 			dataset = GridDataset.open(uri);
@@ -625,7 +639,16 @@ public class NetCDFView extends ViewPart
 			List<GeoGrid> grids = dataset.getGrids();
 			
 			clearForm();
-			
+
+			// Warn if not in LatLon projection
+			if (!grids.isEmpty() && ! grids.get(0).getProjection().isLatLon())
+				MessageDialog.openWarning(getSite().getShell()
+						, VIEW_TITLE
+						, Messages.getString("NetCDFView.64") + uri   //$NON-NLS-1$
+							+ "\n" + Messages.getString("NetCDFView.66") //$NON-NLS-1$ //$NON-NLS-2$
+							+ grids.get(0).getProjection().getProjectionTypeLabel() 
+							+ "\n" + Messages.getString("NetCDFView.68"));				 //$NON-NLS-1$ //$NON-NLS-2$
+				
 			// load grid names into table
 			for (GeoGrid grid : grids) {
 				viewer.add(grid);
@@ -637,10 +660,9 @@ public class NetCDFView extends ViewPart
 		} 
 		catch (Exception e) 
 		{
-			//e.printStackTrace();
 			logger.error(e.getMessage());
 			MessageDialog.openError(getSite().getShell()
-					, "NetCDFView"
+					, VIEW_TITLE
 					, e.getMessage());
 			
 		}
@@ -649,7 +671,7 @@ public class NetCDFView extends ViewPart
 	/*
 	 * Update dims when viewer is selected
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void updateDimensions (GeoGrid grid ) 
 	{
 		// vertical levs
@@ -662,11 +684,11 @@ public class NetCDFView extends ViewPart
 		// bbox
 		LatLonRect bbox = dataset.getBoundingBox();
 
-		latMin.setText("" + bbox.getLatMin());
-		latMax.setText("" + bbox.getLatMax());
+		latMin.setText("" + bbox.getLatMin()); //$NON-NLS-1$
+		latMax.setText("" + bbox.getLatMax()); //$NON-NLS-1$
 		
-		lonMin.setText("" + bbox.getLonMin());
-		lonMax.setText("" + bbox.getLonMax());
+		lonMin.setText("" + bbox.getLonMin()); //$NON-NLS-1$
+		lonMax.setText("" + bbox.getLonMax()); //$NON-NLS-1$
 		
 		// times
 		List<NamedObject> times = grid.getTimes();
@@ -695,7 +717,7 @@ public class NetCDFView extends ViewPart
 			case IDLE:
 				plot.setEnabled(true);
 				subset.setEnabled(true);
-				statusMessage.setText("");
+				statusMessage.setText(""); //$NON-NLS-1$
 				//pb.setVisible(false);
 				break;
 				
@@ -731,18 +753,18 @@ public class NetCDFView extends ViewPart
 								plotGrid();
 							else
 								subsetGrid();
+							
+							setUIState(UI_STATE.IDLE);
 						} 
 						catch (Exception e) {
-							e.printStackTrace();
-						}
-						finally {
-							setUIState(UI_STATE.IDLE);
+							statusMessage.setText(Messages.getString("NetCDFView.75") + e.getMessage()); //$NON-NLS-1$
 						}
 					}
 				});
 			}
 		}).start();
 	}
+	
 	
 	@Override
 	public void dispose() {

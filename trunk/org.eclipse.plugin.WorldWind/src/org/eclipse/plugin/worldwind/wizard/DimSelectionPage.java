@@ -35,9 +35,9 @@ public class DimSelectionPage extends WizardPage implements Listener
 	
 	protected DimSelectionPage(String pageName) {
 		super(pageName);
-		setTitle(Messages.getText("wiz.weather.page.title"));
+		setTitle(Messages.getString("wiz.weather.page.title"));
 		setPageComplete(false);
-		setDescription(Messages.getText("wiz.weather.page1.desc"));
+		setDescription(Messages.getString("wiz.weather.page1.desc"));
 	}
 
 	public void createControl(Composite parent) 
@@ -49,7 +49,7 @@ public class DimSelectionPage extends WizardPage implements Listener
 		 * Start/End date combos
 		 */
 		l1 = new Label(container, SWT.NONE);
-		l1.setText(Messages.getText("wiz.weather.page1.lbl1"));
+		l1.setText(Messages.getString("wiz.weather.page1.lbl1"));
 		
 		final GridData gridData = new GridData(GridData.BEGINNING, GridData.CENTER, true, true);
 		gridData.minimumWidth = 300;
@@ -60,7 +60,7 @@ public class DimSelectionPage extends WizardPage implements Listener
 		startDate.addListener(SWT.Selection, this);
 		
 		l2 = new Label(container, SWT.NONE);
-		l2.setText(Messages.getText("wiz.weather.page1.lbl2"));
+		l2.setText(Messages.getString("wiz.weather.page1.lbl2"));
 
 		// end date combo
 		endDate = new Combo(container, SWT.NONE); // SWT.READ_ONLY); 
@@ -71,7 +71,7 @@ public class DimSelectionPage extends WizardPage implements Listener
 		 * Formats combo
 		 */
 		l7 = new Label (container, SWT.NONE);
-		l7.setText(Messages.getText("wiz.dim.page.formats"));
+		l7.setText(Messages.getString("wiz.dim.page.formats"));
 		
 		formats = new Combo(container, SWT.READ_ONLY);
 		formats.setLayoutData(gridData);
@@ -81,25 +81,25 @@ public class DimSelectionPage extends WizardPage implements Listener
 		 * BBOX: East, West, North, South
 		 */
 		l3 = new Label(container, SWT.NONE);
-		l3.setText(Messages.getText("wiz.dim.page.east"));
+		l3.setText(Messages.getString("wiz.dim.page.east"));
 		
 		east = new Text(container, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
 		east.addListener(SWT.Selection, this);
 		
 		l4 = new Label(container, SWT.NONE);
-		l4.setText(Messages.getText("wiz.dim.page.west"));
+		l4.setText(Messages.getString("wiz.dim.page.west"));
 		
 		west = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		west.addListener(SWT.Selection, this);
 		
 		l5 = new Label(container, SWT.NONE);
-		l5.setText(Messages.getText("wiz.dim.page.north"));
+		l5.setText(Messages.getString("wiz.dim.page.north"));
 		
 		north = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		north.addListener(SWT.Selection, this);
 		
 		l6 = new Label(container, SWT.NONE);
-		l6.setText(Messages.getText("wiz.dim.page.south"));
+		l6.setText(Messages.getString("wiz.dim.page.south"));
 		
 		south = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		south.addListener(SWT.Selection, this);

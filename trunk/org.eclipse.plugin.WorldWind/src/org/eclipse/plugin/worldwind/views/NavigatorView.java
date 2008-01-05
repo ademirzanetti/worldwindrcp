@@ -183,7 +183,7 @@ public class NavigatorView extends ViewPart
 		toolkit 		= new FormToolkit(parent.getDisplay());
 		scrolledForm 	= toolkit.createScrolledForm(parent);
 
-		scrolledForm.setText(Messages.getText("view.navigator.hdr"));
+		scrolledForm.setText(Messages.getString("view.navigator.hdr"));
 		//scrolledForm.setImage(Activator.ICON_NASA);
 
 		toolkit.decorateFormHeading(scrolledForm.getForm());	
@@ -202,10 +202,10 @@ public class NavigatorView extends ViewPart
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 		
 		// create UI elements
-		searchViewer 	= createSearchSection(Messages.getText("view.navigator.places"), null, collapsed, 2);
+		searchViewer 	= createSearchSection(Messages.getString("view.navigator.places"), null, collapsed, 2);
 		
 		//myPlacesViewer 	= createTreeSection("My Places", null, expanded, 2, 150);
-		layersViewer 	= createTreeSection(Messages.getText("view.navigator.layers"), null, expanded, 2, 300);
+		layersViewer 	= createTreeSection(Messages.getString("view.navigator.layers"), null, expanded, 2, 300);
 
 		initLayers();	
 		
@@ -558,11 +558,11 @@ public class NavigatorView extends ViewPart
 
 		// The real time weather node has too many layers. it cannot be checked
 		// Only its children can be checked
-		if ( layer.getName().equalsIgnoreCase(Messages.getText("remote.layers.tree.lbl")))
+		if ( layer.getName().equalsIgnoreCase(Messages.getString("remote.layers.tree.lbl")))
 		{
 			Messages.showErrorMessage(getViewSite().getShell()
-					, Messages.getText("err.dialog.title")
-					, Messages.getText("err.msg.realtime.sat", new Object[] { layer.getName()} ));
+					, Messages.getString("err.dialog.title")
+					, Messages.getString("err.msg.realtime.sat", new Object[] { layer.getName()} ));
 
 			treeViewer.setChecked(to, false);
 			return;
@@ -736,8 +736,8 @@ public class NavigatorView extends ViewPart
 				flyOnClickAction(layersViewer);
 			}
 		};
-		actionFlyToLayer.setText(Messages.getText("layer.action.fly"));
-		actionFlyToLayer.setToolTipText(Messages.getText("layer.action.fly"));
+		actionFlyToLayer.setText(Messages.getString("layer.action.fly"));
+		actionFlyToLayer.setToolTipText(Messages.getString("layer.action.fly"));
 		actionFlyToLayer.setImageDescriptor(Activator.ICON_WEB_BROWSER );
 		
 		// Remove layer from tree node: All layers in this view can be removed
@@ -748,8 +748,8 @@ public class NavigatorView extends ViewPart
 			}
 		};
 		
-		actionRemoveNode.setToolTipText(Messages.getText("layer.action.remove"));
-		actionRemoveNode.setText(Messages.getText("layer.action.remove"));
+		actionRemoveNode.setToolTipText(Messages.getString("layer.action.remove"));
+		actionRemoveNode.setText(Messages.getString("layer.action.remove"));
 		actionRemoveNode.setImageDescriptor(
 				Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		
@@ -802,14 +802,14 @@ public class NavigatorView extends ViewPart
 						kmzFile.delete();
 					
 					Messages.showErrorMessage(getViewSite().getShell()
-							, Messages.getText("err.dialog.title")
+							, Messages.getString("err.dialog.title")
 							, "Error saving " + layer + ": " + e.getMessage() );
 				}
 			}
 		};
 		
-		actionSaveLayer.setToolTipText(Messages.getText("layer.action.save"));
-		actionSaveLayer.setText(Messages.getText("layer.action.save"));
+		actionSaveLayer.setToolTipText(Messages.getString("layer.action.save"));
+		actionSaveLayer.setText(Messages.getString("layer.action.save"));
 		actionSaveLayer.setImageDescriptor(ICON_SAVE);
 		
 		// Layer controls: opacity, speed, etc.
@@ -824,8 +824,8 @@ public class NavigatorView extends ViewPart
 			}
 		};
 		
-		actionLayerControls.setToolTipText(Messages.getText("layer.action.controls"));
-		actionLayerControls.setText(Messages.getText("layer.action.controls"));
+		actionLayerControls.setToolTipText(Messages.getString("layer.action.controls"));
+		actionLayerControls.setText(Messages.getString("layer.action.controls"));
 		actionLayerControls.setImageDescriptor(Activator.getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 		
 	}
@@ -845,8 +845,8 @@ public class NavigatorView extends ViewPart
 		if ( ! myLayers.contains(to.getLayer()))
 		{
 			MessageDialog.openInformation(getViewSite().getShell()
-					, Messages.getText("info.dialog.title")
-					, Messages.getText("err.msg.builtin.layer"
+					, Messages.getString("info.dialog.title")
+					, Messages.getString("err.msg.builtin.layer"
 							, new Object[] { to.getLayer().getName()}) );
 			return;
 		}
@@ -854,8 +854,8 @@ public class NavigatorView extends ViewPart
 		try {
 			// remove
 			if ( MessageDialog.openQuestion(getViewSite().getShell()
-					, Messages.getText("question.dialog.title")
-					, Messages.getText("layer.action.remove") + " " + to.getLayer().getName() + "?"))
+					, Messages.getString("question.dialog.title")
+					, Messages.getString("layer.action.remove") + " " + to.getLayer().getName() + "?"))
 			{
 				// Stop/Hide
 				handleCheckState(false, to, layersViewer);
@@ -901,8 +901,8 @@ public class NavigatorView extends ViewPart
 				) 
 		{
 			MessageDialog.openInformation(shell
-					, Messages.getText("info.dialog.title")
-					, Messages.getText("ctl.dlg.invalid.layer"
+					, Messages.getString("info.dialog.title")
+					, Messages.getString("ctl.dlg.invalid.layer"
 							, new Object[] {layer.getName()} ));
 			return;
 		}
