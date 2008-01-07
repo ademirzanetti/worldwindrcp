@@ -23,7 +23,6 @@ Visit http://worldwind.arc.nasa.gov/java/
 plugin_customization.ini</programArgs>
       <vmArgs>-Xmx384m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.library.path=lib/native/osx</vmArgsMac>
-      <vmArgsWin>-Djava.library.path=lib/native/win32</vmArgsWin>
    </launcherArgs>
 
    <windowImages i16="icons/16x16-nasa.png" i32="icons/32x32-nasa.png"/>
