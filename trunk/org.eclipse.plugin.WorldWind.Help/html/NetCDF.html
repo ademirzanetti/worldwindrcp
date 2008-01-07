@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Scientific Data Access with NetCDF</title>
+</head>
+<body>
+
+<H1>NetCDF</H1>
+
+<P>
+NetCDF (network Common Data Form) is a set of software libraries and machine-independent data formats that support the creation, access, and sharing of array-oriented scientific data.  
+</P>
+http://www.unidata.ucar.edu/software/netcdf/
+
+<p>
+World Wind Geo uses the NerCDF library for Java http://www.unidata.ucar.edu/software/netcdf-java/
+to access scientific data in various formats including:
+</p>
+
+<ul>
+<li>NetCDF-3 (classic and large format)</li> 
+<li>HDF5 (version 4.0 will be mostly complete, earlier versions are partial)</li> 
+<li>OPeNDAP client/server protocol </li>
+<li>GRIB version 1 and version 2 (ongoing work on tables)</li> 
+<li>BUFR (limited - ongoing work) </li>
+<li>GINI (GOES Ingest and NOAAPORT Interface ) image format</li> 
+<li>GEMPAK gridded data (as of version 2.23) </li>
+<li>DMSP (Defense Meteorological Satellite Program)</li> 
+<li>NEXRAD Radar level 2 and level 3. </li>
+<li>ATD's DORADE radar file format </li>
+<li>ADDE client/server protocol (limited)</li> 
+</ul>
+
+<p>
+To access a NetCDF data set simply select "Open Dataset" from the file menu
+or point the built-in web browser to an OpeNDAP server for NetCDF. As soon
+as you click an hyperlink the dataset will be opened in the NetCDF View.</p>
+
+Here is a list of sample servers
+
+<ul>
+<li>COLA Climate Modeling Data Sets: http://dataportal.ucar.edu:9191/dods</li>
+<li>COLA Weather and Climate Data Sets: http://monsoondata.org:9090/dods</li>
+<li>US Global Ocean Data Assimilation Experiment (GODAE): http://www.usgodae.org/dods/GDS </li>
+</ul>
+
+<b>Note:</b>Currently data grids must:
+<ol>
+<li> have a 1D X and Y coordinate axes.
+<li> be lat/lon or Lambert Conformal Projection.
+<li> be equally spaced.
+</ol>
+
+</body>
+</html>
