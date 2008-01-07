@@ -685,7 +685,7 @@ public class NetCDFView extends ViewPart
 			dataset = GridDataset.open(uri);
 			
 			List<GeoGrid> grids = dataset.getGrids();
-			
+
 			clearForm();
 
 			// Warn if not in LatLon projection
@@ -803,6 +803,21 @@ public class NetCDFView extends ViewPart
 		
 		// Overlay names
 		final String[] names = tmin.getItems();
+		
+		// Grid Validation
+		// Must have a 1D X and Y coordinate axes.
+		// Be lat/lon or Lambert Conformal Projection
+		// Equally spaced
+		if ( doPlot) {
+			if (! grid.getCoordinateSystem().isRegularSpatial()) {
+				MessageDialog.openError(getSite().getShell()
+						, VIEW_TITLE
+						, grid.getName() 
+							+  " " + Messages.getString("NetCDFView.8")
+						); 
+				return;
+			}
+		}
 		
 		// Set UI state
 		if (doPlot) 
