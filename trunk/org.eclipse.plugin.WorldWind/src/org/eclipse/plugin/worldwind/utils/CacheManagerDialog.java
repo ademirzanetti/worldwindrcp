@@ -108,8 +108,12 @@ public class CacheManagerDialog extends Dialog
 	}
 	
 	/*
-	 * Load table with All directory names/sizes within a location
+	 * Load table with All directory names/sizes within a location.
+	 * 2 levels bellow root cache location only!
 	 */
+	private static final int MAX_DEPTH = 2;
+	private int depth = 0;
+	
 	private void loadTable ( File folder)
 	{
 		File[] filelist = folder.listFiles();
@@ -119,14 +123,15 @@ public class CacheManagerDialog extends Dialog
     	
 		for (int i = 0; i < filelist.length; i++) 
 		{
-			if ( filelist[i].isDirectory()) {
+			if ( filelist[i].isDirectory() && depth < MAX_DEPTH) {
 				viewer.add(filelist[i] + " - ("  //$NON-NLS-1$
 					+ nf.format((double)(getFileSize(filelist[i])/1e6)) 
 					+ " MB)" ); //$NON-NLS-1$
-				
+				depth++;
 				loadTable(filelist[i]);
 			}
 		}
+		depth--;
 	}
 	
 	/*
@@ -135,6 +140,7 @@ public class CacheManagerDialog extends Dialog
 	 */
     protected void createButtonsForButtonBar(Composite parent) 
     {
+    	// delete selected  btn
         Button btn = createButton(parent, IDialogConstants.NO_ID, 
             Messages.getString("CacheManagerDialog.2"), true); //$NON-NLS-1$
         
@@ -168,6 +174,7 @@ public class CacheManagerDialog extends Dialog
 					
 					viewer.getTable().removeAll();
 					
+					depth = 0;
 					loadTable(new File(path));
 				} 
 				catch (Exception ex) {
@@ -183,7 +190,7 @@ public class CacheManagerDialog extends Dialog
     } 
     
     protected Point getInitialSize() { 
-        return new Point(550, 320); 
+        return new Point(600, 320); 
     }
 	
     /*
@@ -224,9 +231,17 @@ public class CacheManagerDialog extends Dialog
     		dir.delete();
     		return;
     	}
-    	
-		final File[] files = dir.listFiles();
-		final int size = files.length;
+
+		// resource is dir
+		final File[] files 	= dir.listFiles();
+		
+		// empty dir
+		if ( files == null ) {
+			dir.delete();
+			return;
+		}
+			
+		final int size 		= files.length;
 
 		for (int i = 0; i < size; i++) 
 		{
