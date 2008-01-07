@@ -1,48 +1,8 @@
-#summary World Wind Geo Analytics Support.
+#summary World Wind Geo netCDf Viewer.
 #labels Featured,Phase-Design
 
-= Analytics support =
+=The NetCDF Viewer=
+NetCDF (network Common Data Form) is a set of software libraries and machine-independent data formats that support the creation, access, and sharing of array-oriented scientific data. http://www.unidata.ucar.edu/software/netcdf/ . WW Geo bundles a NetCDF viewer for the following conventions:
 
-We are planing to add an Analytics plugin for our RCP app. With the following features:
-
- * A view for the VisAD spreadsheet - http://www.ssec.wisc.edu/~curtis/ss.html. This view will support VisAD formats: Vis5D, COARDS NetCDF, DODS, etc.
-
- * A view for the EPA Models-3 Community Multiscale Air Quality (CMAQ) Modeling System NetCDF format, using software developed by ANL dubbed Visualization Environment for Rich Data Interpretation (VERDI).
-
-
-= Details =
-
-A new Analytics Plugin has been built with 2 eclipse views:
-
- * VisAD SpreadSheet view.
- * Models3/Community Multiscale Air Quality (CMAQ) view.
-
-
-== VisAD SpreadSheet ==
-The VisAD SpreadSheet is a program that utilizes VisAD to visualize data sets and do simple computations, without forcing the user to do any Java programming (see http://www.ssec.wisc.edu/~curtis/ss.html).
-
-Here is a screen shot of the spreadsheet.
-
-http://www.ssec.wisc.edu/~curtis/snap1.jpg
-
-The main panel of the spreadsheet has been integrated as a Eclipse view into a new Analytics Plugin for the World Wind Geobrowser.
-
-== Visualization Environment for Rich Data Interpretation (VERDI)==
-The EPA needs for a software tool to visualize scientific data and model output. Currently, the EPA user community utilizes the Package for Analysis and Visualization of Environmental Data (PAVE) for this purpose.  PAVE is a Unix-based software system written in C and Motif. Argonne National Laboratory has developed this tool in support of the Environmental Protection Agency (EPA).
-
-Here is a screen shot of the main VERDI GUI:
-
-http://worldwindrcp.googlecode.com/files/image001.gif
-
-
-Verdi is capable of reading Models3/CMAQ data only. It is a powefurl tool to create formulas and to display many plot types as shown in the next screen shot:
-
-http://worldwindrcp.googlecode.com/files/image019.jpg
-
-More documentation on VERDI is available from the downloads section of this site.
-
-== Conclusion ==
-The combination of both: VisAD and VERDI provides a powerful numerical analysis plugin to the World Wind Geobrowser capable on handling most modeling data formats.
-
-
-
+ # NetCDF File types: http://www.unidata.ucar.edu/software/netcdf-java/
+ # NetCDF conventions: COARS, Models3, WRF, CF, and others (see link above).
