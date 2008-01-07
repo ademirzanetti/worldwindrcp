@@ -6,3 +6,4 @@ NetCDF (network Common Data Form) is a set of software libraries and machine-ind
 
  # NetCDF File types: http://www.unidata.ucar.edu/software/netcdf-java/
  # NetCDF conventions: COARS, Models3, WRF, CF, and others (see link above).
+ # *To use the viewer * select "File/Open Dataser" or simply point the built-in web browser to any OpeNDAP/THREDDS data server such as http://dataportal.ucar.edu:9191/dods
