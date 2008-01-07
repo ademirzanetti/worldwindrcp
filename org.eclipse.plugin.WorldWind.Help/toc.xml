@@ -2,7 +2,10 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="World Wind Geo">
+	<!-- 
 	<topic label="Communty Multiscale Air Quality (CMAQ) using VERDI"  href="html/verdiUserManual.htm"/> 
-	<topic label="VisAD SpreadSheet"  href="html/visad_ss.html"/> 
+	<topic label="VisAD SpreadSheet"  href="html/visad_ss.html"/>
+	--> 
+	<topic label="Scientific Data Access with NetCDF"  href="html/NetCDF.html"/>
 	<topic label="Remote Access with OpeNDAP"  href="html/OpeNDAP.html"/>
 </toc>
