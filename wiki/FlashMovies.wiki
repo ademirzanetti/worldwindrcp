@@ -1,7 +1,7 @@
 #summary World Wind Geo user interface.
 #labels Featured
 
-=Wanna see World Wind Geo in action?=
+=See World Wind Geo in action!=
 Check out the following flash movie that demonstrates some of the capabilities of
 World Wind Geo.
 
