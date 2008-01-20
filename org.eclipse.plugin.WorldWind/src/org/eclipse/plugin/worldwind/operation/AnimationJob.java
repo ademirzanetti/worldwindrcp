@@ -57,6 +57,7 @@ public class AnimationJob extends Job
 		this.display 	= display;
 		legend 			= layer.getLegend();
 		
+		
 		addOverLayListeners();
 		logger.debug("layer=" + layer);
 	}
@@ -154,8 +155,13 @@ public class AnimationJob extends Job
 					monitor.done(); 
 					
 					// cancel job?
-//					if (monitor.isCanceled()) 
-//						return Status.CANCEL_STATUS;
+					if (monitor.isCanceled()) {
+						// hide legend
+						if ( legend != null) legend.setEnabled(false);
+						
+						// return w/ cancel status
+						return Status.CANCEL_STATUS;
+					}
 					
 					if ( done ) break;
 				}
@@ -167,7 +173,7 @@ public class AnimationJob extends Job
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return Status.CANCEL_STATUS;
 		}
 		finally {  

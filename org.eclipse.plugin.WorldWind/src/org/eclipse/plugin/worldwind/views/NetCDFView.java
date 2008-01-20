@@ -722,6 +722,9 @@ public class NetCDFView extends ViewPart
 	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void updateDimensions (GeoGrid grid ) 
 	{
+		// clear dimensions first: Vertical levl + times
+		clearDimensions();
+		
 		// vertical levs
 		List<NamedObject> levs = grid.getLevels();
 		
@@ -748,8 +751,12 @@ public class NetCDFView extends ViewPart
 	}
 	
 	private void clearForm() {
-		lev.removeAll();
 		viewer.getTable().removeAll();
+		clearDimensions();
+	}
+	
+	private void clearDimensions () {
+		lev.removeAll();
 		tmin.removeAll();
 		tmax.removeAll();
 	}
