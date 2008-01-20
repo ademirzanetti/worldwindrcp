@@ -118,7 +118,12 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		public String getToolTipText(Object element) 
 		{
 			final Layer layer 	= ((TreeObject)element).getLayer();
-			String description 	= ((TreeObject)element).toString();
+			
+			// Layer cannot be NULL
+			if ( layer == null ) 
+				return null;
+			
+			String description 	= layer.getName(); // ((TreeObject)element).toString();
 			
 			// Get layer description: only in GroundOverlay & TimeLoop Ovs
 			if ( layer instanceof TimeLoopGroundOverlay )
@@ -127,7 +132,10 @@ public class WWTreeViewer extends CheckboxTreeViewer
 			if ( layer instanceof GroundOverlayLayer )
 				description = ((GroundOverlayLayer)layer).getDescription();
 				
-				
+			// if null use layer name
+			if (description == null ) 
+				description = layer.getName();
+			
 			final String toolTip = "<html>" 
 				+ "<style>body, table {font-family:Arial;font-size=12px;background-color='#FFFFCC'}"
 				+ "</style>"

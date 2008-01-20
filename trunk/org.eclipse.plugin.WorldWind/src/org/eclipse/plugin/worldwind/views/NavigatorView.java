@@ -14,6 +14,8 @@ import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -87,11 +89,11 @@ import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
 
 /**
- * Navigator View using eclipse forms + Yahoo Geo search
+ * Layer Navigator View using eclipse forms + Yahoo Geo Search
  * 
- * The view has 2 trees:
- * 	1) A WW built in layers tree
- * 	2) A My places tree with user defined layers
+ * The view has the following sections:
+ * 	1) A places search text box using yahoo geo services
+ * 	2) A layers tree for built-in and user defined layers
  * 
  * The Y! GeoSearch works as follows:
  * 	http://local.yahooapis.com/MapsService/V1/geocode?appid=YahooDemo&location=durham
@@ -547,7 +549,7 @@ public class NavigatorView extends ViewPart
 	/*
 	 * Process a check state event
 	 */
-	private void handleCheckState (boolean checked, final TreeObject to, WWTreeViewer treeViewer)
+	private void handleCheckState (boolean checked, final TreeObject to, final WWTreeViewer treeViewer)
 	{
 		to.setEnabled(checked);
 
@@ -570,7 +572,8 @@ public class NavigatorView extends ViewPart
 		
 		// check all node children
 		treeViewer.setSubtreeChecked(to, checked);
-	  
+	
+
 		// Animated Overlay, play it
 		if ( layer instanceof TimeLoopGroundOverlay ) 
 		{
@@ -584,11 +587,33 @@ public class NavigatorView extends ViewPart
 				//overlay.addLoopListener(this);
 				//overlay.play(); 
 
-				Display display = getViewSite().getShell().getDisplay();
+				final Display display = getViewSite().getShell().getDisplay();
 				
 				// Use an eclipse animation job for smoothness
 				// It won't hang the UI
 				AnimationJob job = new AnimationJob(display, overlay, statusLine);
+				
+				// listen for job change events
+				job.addJobChangeListener(new JobChangeAdapter()
+				{
+					@Override
+					public void done(IJobChangeEvent event) 
+					{
+						// Has the job been canceled?
+						if ( !event.getResult().isOK() ) 
+						{
+							logger.debug("Job for layer ID " + to.getID() + " canceled.");
+							
+							display.syncExec(new Runnable() {
+								public void run() 
+								{
+									handleCheckState(false, to, treeViewer);
+								}
+							});
+							
+						}
+					}
+				});
 				
 				// Save the job, so it can be stopped
 				animatedJobs.put(to.getID(), job);
