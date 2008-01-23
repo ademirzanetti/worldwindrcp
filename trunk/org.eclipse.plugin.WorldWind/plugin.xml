@@ -29,6 +29,21 @@
             id="org.eclipse.plugin.worldwind.views.EarthView"
             name="Earth View">
       </view>
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.MarsView"
+            icon="icons/16x16-nasa.png"
+            id="org.eclipse.plugin.worldwind.views.MarsView"
+            name="Mars View">
+      </view>
+      <view
+            category="WWPlugin"
+            class="org.eclipse.plugin.worldwind.views.MoonView"
+            icon="icons/16x16-nasa.png"
+            id="org.eclipse.plugin.worldwind.views.MoonView"
+            name="Moon View">
+      </view>
+      
       <category
             id="WWPlugin"
             name="World Wind">
