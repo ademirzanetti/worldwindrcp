@@ -50,9 +50,10 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 	static final double earthCircum 	= earthRadius * 2.0 * Math.PI;
 	static final double earthHalfCirc 	= earthCircum / 2;
 
-	// Min zoom at which tiles will be rendered
+	// Min/Max zoom at which tiles will be rendered
 	protected int minZoomLevel		= 6;
-
+	protected int maxZoomLevel		= 17;
+	
 	// Default map type for example: h=hybrid, a=aerial, r=road 
 	protected String mapType; 
 	
@@ -165,7 +166,7 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		zoomLevel =  GetZoomLevelByTrueViewRange(trueViewRange.degrees);
 
 		// return if not at the min display zoom level
-		if ( zoomLevel < minZoomLevel) 
+		if ( zoomLevel < minZoomLevel || zoomLevel > maxZoomLevel) 
 			return null;
 		
 		/**
@@ -220,14 +221,15 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
         String url = buildRequestUrl(quadKey, getMapType(), mapExtension);
 
         // render center (eye) tile
-		renderTile(dc, quadKey + mapExtension, url, sector);
-		
+		renderTile(dc, mapType + quadKey + mapExtension, url, sector);
+
 		// Render other tiles outwards in surrounding circles
-		//int j = (int)Math.abs((double)zoomLevel/Math.cos(trueViewRange.degrees));
-		
-		for (int i = 1; i <= zoomLevel; i++) {
-			renderNeighborTiles(tileY, tileX, zoomLevel, dc, i);
-		}
+		renderNeighborTiles(tileY, tileX, zoomLevel, dc, 1);
+		renderNeighborTiles(tileY, tileX, zoomLevel, dc, 2);
+		renderNeighborTiles(tileY, tileX, zoomLevel, dc, 3);
+//		for (int i = 1; i <= zoomLevel; i++) {
+//			renderNeighborTiles(tileY, tileX, zoomLevel, dc, i);
+//		}
 	}
     
 	/**
