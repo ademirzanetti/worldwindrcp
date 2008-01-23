@@ -25,23 +25,23 @@
       <view
             category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.EarthView"
-            icon="icons/16x16-nasa.png"
+            icon="icons/16-earth.png"
             id="org.eclipse.plugin.worldwind.views.EarthView"
-            name="Earth View">
+            name="Earth">
       </view>
       <view
             category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.MarsView"
-            icon="icons/16x16-nasa.png"
+            icon="icons/16-mars.png"
             id="org.eclipse.plugin.worldwind.views.MarsView"
-            name="Mars View">
+            name="Mars">
       </view>
       <view
             category="WWPlugin"
             class="org.eclipse.plugin.worldwind.views.MoonView"
-            icon="icons/16x16-nasa.png"
+            icon="icons/16-moon.png"
             id="org.eclipse.plugin.worldwind.views.MoonView"
-            name="Moon View">
+            name="Moon">
       </view>
       
       <category
@@ -66,7 +66,7 @@
       -->
 		<view
             name="Animation Progress View"
-            icon="icons/16x16-nasa.png"
+            icon="icons/16-earth.png"
             category="org.eclipse.ui"
             class="org.eclipse.ui.ExtensionFactory:progressView"
             id="org.eclipse.ui.views.ProgressView">
@@ -117,7 +117,7 @@
             name="World Wind Geo">
          <property
                name="windowImages"
-               value="icons/16x16-nasa.png,icons/32x32-nasa.png">
+               value="icons/16-earth.png,icons/32-earth.png">
          </property>
          <property
                name="appName"
