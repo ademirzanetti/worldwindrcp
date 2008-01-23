@@ -10,31 +10,21 @@
  *******************************************************************************/
 package org.eclipse.plugin.worldwind.views;
 
+import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.event.SelectEvent;
-import gov.nasa.worldwind.event.SelectListener;
-import gov.nasa.worldwind.examples.BasicDragger;
-import gov.nasa.worldwind.geom.Angle;
-import gov.nasa.worldwind.geom.LatLon;
-import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
-import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
-import gov.nasa.worldwind.pick.PickedObjectList;
-import gov.nasa.worldwind.render.WWIcon;
+import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.Moon.Clementine30Layer;
+import gov.nasa.worldwind.layers.Moon.ShadedElevationLayer;
 import gov.nasa.worldwind.retrieve.RetrievalService;
-import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
-import gov.nasa.worldwind.view.OrbitView;
-import gov.nasa.worldwind.View;
 
 import java.awt.BorderLayout;
 
@@ -44,7 +34,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
-import worldwind.contrib.layers.PlacemarkLayer;
 import worldwind.contrib.layers.PositionLayer;
 
 
@@ -55,7 +44,7 @@ import worldwind.contrib.layers.PositionLayer;
  */
 public class MoonView extends ViewPart
 {
-	private static final Logger logger 		= Logger.getLogger(MoonView.class);
+	//private static final Logger logger 		= Logger.getLogger(MoonView.class);
 	
 	public static final String ID 			= MoonView.class.getName(); 
 	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
@@ -63,6 +52,13 @@ public class MoonView extends ViewPart
 	private HeartBeatProbe probe;
 	private StatusLine statusLine;
 
+    private static final String LAYERS = "gov.nasa.worldwind.layers.Earth.StarsLayer"
+        + ",gov.nasa.worldwind.layers.Moon.Clementine40Layer"
+        + ",gov.nasa.worldwind.layers.Moon.Clementine30Layer"
+        + ",gov.nasa.worldwind.layers.Moon.ShadedElevationLayer"
+        + ",gov.nasa.worldwind.layers.Earth.ScalebarLayer"
+        + ",gov.nasa.worldwind.layers.CompassLayer";
+	
 	/**
 	 * Initialize the default WW layers
 	 */
@@ -130,115 +126,6 @@ public class MoonView extends ViewPart
 		}
 	}
 	
-	/**
-	 * Globe Selection listener
-	 * @author Owner
-	 *
-	 */
-	public class GlobeSelectionListener implements SelectListener 
-	{
-	    private WWIcon lastToolTipIcon = null;
-	    private BasicDragger dragger = null;
-	    private WorldWindowGLCanvas world;
-	    private WWIcon lastPickedIcon;
-		
-		public GlobeSelectionListener(WorldWindowGLCanvas canvas) {
-			dragger = new BasicDragger(canvas);
-			world = canvas;
-		}
-		
-
-	    private void highlight(Object o)
-	    {
-	        if (this.lastPickedIcon == o)
-	            return; // same thing selected
-
-	        if (this.lastPickedIcon != null)
-	        {
-	            this.lastPickedIcon.setHighlighted(false);
-	            this.lastPickedIcon = null;
-	        }
-
-	        if (o != null && o instanceof WWIcon)
-	        {
-	            this.lastPickedIcon = (WWIcon) o;
-	            this.lastPickedIcon.setHighlighted(true);
-	        }
-	    }
-
-	    /**
-	     * Select
-	     */
-	    public void selected(SelectEvent event)
-	    {
-	        if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
-	        {
-	            if (event.hasObjects())
-	            {
-	                if (event.getTopObject() instanceof WorldMapLayer)
-	                {
-	                    // Left click on World Map : iterate view to target position
-	                    Position targetPos 	= event.getTopPickedObject().getPosition();
-	                    OrbitView view 		= (OrbitView)world.getView();
-	                    Globe globe 		= world.getModel().getGlobe();
-	                    
-	                    // Use a PanToIterator
-	                    view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
-	                            view, globe, new LatLon(targetPos.getLatitude(), targetPos.getLongitude()),
-	                            Angle.ZERO, Angle.ZERO, targetPos.getElevation()));
-	                }
-	                else if  (event.getTopObject() instanceof WWIcon ) 
-	                {
-	                	// toggle icon annotation
-	                	PlacemarkLayer.PlacemarkIcon icon = (PlacemarkLayer.PlacemarkIcon)event.getTopObject();
-	                	
-	                	if  ( icon.getAnnotation() != null )
-	                		icon.getAnnotation().getAttributes().setVisible(
-	                				! icon.getAnnotation().getAttributes().isVisible());
-	                	
-	                }
-	            }
-	            else
-	                logger.debug("Single clicked " + "no object");
-	        }
-	        else if (event.getEventAction().equals(SelectEvent.HOVER))
-	        {
-	            if (lastToolTipIcon != null)
-	            {
-	                lastToolTipIcon.setShowToolTip(false);
-	                this.lastToolTipIcon = null;
-	                world.repaint();
-	            }
-
-	            if (event.hasObjects() && !this.dragger.isDragging())
-	            {
-	                if (event.getTopObject() instanceof WWIcon)
-	                {
-	                    this.lastToolTipIcon = (WWIcon) event.getTopObject();
-	                    lastToolTipIcon.setShowToolTip(true);
-	                    world.repaint();
-	                }
-	            }
-	        }
-	        else if (event.getEventAction().equals(SelectEvent.ROLLOVER) && !this.dragger.isDragging())
-	        {
-	            highlight(event.getTopObject());
-	        }
-	        else if (event.getEventAction().equals(SelectEvent.DRAG_END)
-	            || event.getEventAction().equals(SelectEvent.DRAG))
-	        {
-	            // Delegate dragging computations to a dragger.
-	            this.dragger.selected(event);
-	            if (event.getEventAction().equals(SelectEvent.DRAG_END))
-	            {
-	                PickedObjectList pol = world.getObjectsAtCurrentPosition();
-	                if (pol != null)
-	                    highlight(pol.getTopObject());
-	            }
-	        }
-	    }
-	}
-	
 	
 	public MoonView() {
 		
@@ -269,10 +156,6 @@ public class MoonView extends ViewPart
 		// initialize status line
 		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
         
-        
-        GlobeSelectionListener listener1 = new GlobeSelectionListener(world);
-        world.addSelectListener(listener1);
-
         // probe heartbeat
         probe = new HeartBeatProbe(display, statusLine);
         probe.run();
@@ -283,6 +166,9 @@ public class MoonView extends ViewPart
 	 */
 	static void initWorldWindLayerModel () 
 	{
+        Configuration.setValue(AVKey.GLOBE_CLASS_NAME, gov.nasa.worldwind.globes.Moon.class.getName());
+        Configuration.setValue(AVKey.LAYERS_CLASS_NAMES, LAYERS);
+		
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
 
 		// Add Position Layer
@@ -293,16 +179,14 @@ public class MoonView extends ViewPart
         m.setShowTessellationBoundingVolumes(false);
 
         world.setModel(m);
-		
-		// Add Terrain Profiler
-		TerrainProfileLayer tp = new TerrainProfileLayer();
-		
-		tp.setEventSource(world);
-		tp.setStartLatLon(LatLon.fromDegrees(0, -10));
-        tp.setEndLatLon(LatLon.fromDegrees(0, 65));
-        tp.setFollow(TerrainProfileLayer.FOLLOW_CURSOR);
         
-        world.getModel().getLayers().add(tp);
+        // Adjust layers states
+        LayerList layers = world.getModel().getLayers();
+        for (Layer layer : layers)
+        {
+            if(layer instanceof Clementine30Layer || layer instanceof ShadedElevationLayer)
+                layer.setEnabled(false);
+        }
         
 	}
 
@@ -322,18 +206,4 @@ public class MoonView extends ViewPart
 		probe.setDone(true);
 	}
 	
-	public void flyTo (LatLon latlon) 
-	{
-		View view 			= world.getView();
-		Globe globe 		= world.getModel().getGlobe();
-		
-		view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
-        		(OrbitView)view
-        		, globe
-        		, latlon		// bbox
-        		, Angle.ZERO	// Heading
-        		, Angle.ZERO	// Pitch
-        		, 3e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
-        		);
-	}
 }
