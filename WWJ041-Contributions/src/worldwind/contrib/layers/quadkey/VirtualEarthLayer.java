@@ -28,7 +28,7 @@ import gov.nasa.worldwind.render.SurfaceTileRenderer;
  * As the number of pixels differs at each level of detail, so does the number of tiles:
  * 
  * To optimize the indexing and storage of tiles, the two-dimensional tile XY coordinates are combined
- * into one-dimensional strings called quadtree keys, or “quadkeys” for short. Each quadkey uniquely identifies 
+ * into one-dimensional strings called quadtree keys, or "quadkeys" for short. Each quadkey uniquely identifies 
  * a single tile at a particular level of detail.
  * 
  * This layer works by computing the quad key and the lat/lon sector of the eye position tile and the rendering neighbor 
@@ -110,7 +110,7 @@ public class VirtualEarthLayer extends AbstractQuadKeyLayer
 		
 		String tileURL = buildRequestUrl(quadKey, getMapType(), mapExtension);
 		
-		renderTile(dc, quadKey + mapExtension, tileURL, sector);
+		renderTile(dc, mapType + quadKey + mapExtension, tileURL, sector);
 	}
 	
 	/**
