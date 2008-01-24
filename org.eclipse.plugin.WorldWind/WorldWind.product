@@ -24,7 +24,6 @@ plugin_customization.ini</programArgs>
       <vmArgs>-Xmx384m</vmArgs>
       <vmArgsLin>-Djava.library.path=lib/native/linux32</vmArgsLin>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.library.path=lib/native/osx</vmArgsMac>
-      <vmArgsWin>-Djava.library.path=lib/native/win32</vmArgsWin>
    </launcherArgs>
 
    <windowImages i16="icons/16-earth.png" i32="icons/32-earth.png"/>
@@ -83,6 +82,10 @@ plugin_customization.ini</programArgs>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.plugin.WorldWind"/>
       <plugin id="org.eclipse.plugin.WorldWind.Help"/>
+      <plugin id="org.eclipse.plugin.jogl"/>
+      <plugin id="org.eclipse.plugin.jogl.linux32" fragment="true"/>
+      <plugin id="org.eclipse.plugin.jogl.osx" fragment="true"/>
+      <plugin id="org.eclipse.plugin.jogl.win32" fragment="true"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
