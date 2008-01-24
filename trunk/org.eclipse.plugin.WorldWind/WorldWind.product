@@ -22,7 +22,7 @@ Visit http://worldwind.arc.nasa.gov/java/
       <programArgs>-pluginCustomization
 plugin_customization.ini</programArgs>
       <vmArgs>-Xmx384m</vmArgs>
-      <vmArgsLin>-Djava.library.path=lib/native/linux</vmArgsLin>
+      <vmArgsLin>-Djava.library.path=lib/native/linux32</vmArgsLin>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.library.path=lib/native/osx</vmArgsMac>
       <vmArgsWin>-Djava.library.path=lib/native/win32</vmArgsWin>
    </launcherArgs>
@@ -39,7 +39,6 @@ plugin_customization.ini</programArgs>
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
