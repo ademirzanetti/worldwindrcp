@@ -9,12 +9,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.ui,
  org.eclipse.ui.forms,
  org.eclipse.update.core,
- org.eclipse.plugin.WorldWind.Help
+ org.eclipse.plugin.WorldWind.Help,
+ org.eclipse.plugin.jogl
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  config/,
- lib/gluegen-rt.jar,
- lib/jogl.jar,
  lib/worldwind-041.jar,
  lib/wwcontrib-041.jar,
  lib/netcdf/bufr-1.1.00.jar,
