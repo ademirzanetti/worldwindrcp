@@ -42,10 +42,8 @@ public class MoonView extends ViewPart
 	//private static final Logger logger 		= Logger.getLogger(MoonView.class);
 	
 	public static final String ID 			= MoonView.class.getName(); 
-	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
+	private final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
 	
-//	private HeartBeatProbe probe;
-//	private StatusLine statusLine;
 
     private static final String LAYERS = "gov.nasa.worldwind.layers.Earth.StarsLayer"
         + ",gov.nasa.worldwind.layers.Moon.Clementine40Layer"
@@ -54,76 +52,11 @@ public class MoonView extends ViewPart
         + ",gov.nasa.worldwind.layers.Earth.ScalebarLayer"
         + ",gov.nasa.worldwind.layers.CompassLayer";
 	
-	/**
-	 * Initialize the default WW layers
-	 */
-	static {
-		initWorldWindLayerModel();
-	}
-	
-	/*
-	 * Heartbeat Probe: It uses a thread to probe WW for active tasks
-	 * If so it displays the progress monitor in the status line w/ the
-	 * label 'Downloading'
-	 */
-//	private static class HeartBeatProbe 
-//	{
-//		Display display;
-//		StatusLine statusLine;
-//    	final int interval = 1000;
-//		int count = 1;
-//		private boolean done = false;
-//		
-//	    public HeartBeatProbe(final Display display, final StatusLine statusLine) 
-//	    {
-//	    	this.display = display;
-//	    	this.statusLine = statusLine;
-//	    }
-//	    
-//	    /* Probe main task thread */
-//	    void run () 
-//	    {
-//	    	if ( display == null ) return;
-//	    	
-//	    	display.timerExec(interval , new Runnable() {
-//	    		public void run() 
-//	    		{
-//	    			if ( done ) return;
-//	    			
-//	                RetrievalService service = WorldWind.getRetrievalService();
-//
-//	    			// probe heartbeat here
-//	                if (service.hasActiveTasks()) 
-//	                {
-//	        			statusLine.beginTask(
-//	        					Messages.getString("layer.worldview.probe.task.name")
-//	        						, IProgressMonitor.UNKNOWN);
-//	                }
-//	                else {
-//	                	statusLine.taskDone();
-//	                }
-//	                
-//	    			// loop
-//	                if ( ! done ) {
-//	                	if (display != null )
-//	                		display.timerExec(interval, this);
-//	                }
-//	    	    }
-//	    	});
-//		}
-//
-//		public void setDone(boolean done) {
-//			this.done = done;
-//		}
-//
-//		public boolean isDone() {
-//			return done;
-//		}
-//	}
-	
-	
 	public MoonView() {
-		
+		/**
+		 * Initialize the default WW layers
+		 */
+		initWorldWindLayerModel();
 	}
 	
 	/**
@@ -145,21 +78,12 @@ public class MoonView extends ViewPart
         // max parent widget
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        // globe position listener
-        //Display display = getViewSite().getShell().getDisplay();
-
-		// initialize status line
-//		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
-//        
-//        // probe heartbeat
-//        probe = new HeartBeatProbe(display, statusLine);
-//        probe.run();
 	}
 
 	/*
 	 * Initialize WW model with default layers
 	 */
-	static void initWorldWindLayerModel () 
+	private void initWorldWindLayerModel () 
 	{
         Configuration.setValue(AVKey.GLOBE_CLASS_NAME, gov.nasa.worldwind.globes.Moon.class.getName());
         Configuration.setValue(AVKey.LAYERS_CLASS_NAMES, LAYERS);
@@ -191,14 +115,13 @@ public class MoonView extends ViewPart
 	public void setFocus() {
 	}
 	
-	public static void repaint() {
+	public void repaint() {
 		world.repaint();
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-//		probe.setDone(true);
 	}
 	
 }
