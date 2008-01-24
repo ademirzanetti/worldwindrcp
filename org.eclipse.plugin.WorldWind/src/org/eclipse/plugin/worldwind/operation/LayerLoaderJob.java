@@ -59,6 +59,7 @@ public class LayerLoaderJob extends Job
 	public IStatus run(IProgressMonitor monitor) 
 	{
 		try {
+			// Fire status bar progress
 			monitor.beginTask(Messages.getString("remote.layers.load.lbl"), IProgressMonitor.UNKNOWN );
 			
 			display.syncExec(new Runnable() {
@@ -69,18 +70,22 @@ public class LayerLoaderJob extends Job
 				}
 			});
 
+			// Load sat layers
 			TreeParent tp = buildSatLoopLayerList(); 
 
+			// Stop status progress
 			display.syncExec(new Runnable() {
 				public void run() {
-					statusLine.taskDone();
 					statusLine.unlockProgress();
+					statusLine.taskDone();
+					
 				}
 			});
 			monitor.done();
 			
 			if ( ! tp.hasChildren() ) return Status.OK_STATUS;
 
+			// Add Layers to the tree
 			// must clone the tree parent so the children won't be duplicated
 			// when added to the tree
 			final TreeParent parent 	= new TreeParent(tp.getLayer());

@@ -39,7 +39,7 @@ import worldwind.contrib.layers.PositionLayer;
 
 
 /**
- * World Wind Eclipse RCP Earth View
+ * World Wind Mars View
  * @author Vladimir Silva
  *
  */
