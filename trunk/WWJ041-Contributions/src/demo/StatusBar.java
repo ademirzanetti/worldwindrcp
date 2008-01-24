@@ -10,9 +10,16 @@ import gov.nasa.worldwind.*;
 import gov.nasa.worldwind.event.PositionEvent;
 import gov.nasa.worldwind.event.PositionListener;
 import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.layers.AnnotationLayer;
+import gov.nasa.worldwind.render.Annotation;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.GlobeAnnotation;
+import gov.nasa.worldwind.render.ScreenAnnotation;
 import gov.nasa.worldwind.retrieve.RetrievalService;
 
 import javax.swing.*;
+
+import java.awt.Point;
 import java.awt.event.*;
 
 /**
@@ -26,10 +33,25 @@ public class StatusBar extends JPanel implements PositionListener
     private final JLabel lonDisplay = new JLabel("Off globe");
     private final JLabel eleDisplay = new JLabel("");
 
+//    private AnnotationLayer netStatus = new AnnotationLayer();
+//    
+//    private void initAnnotation () 
+//    {
+//    	ScreenAnnotation sa = new ScreenAnnotation("", new Point(10, 10));
+//    	
+//    	sa.getAttributes().setCornerRadius(0);
+//    	sa.getAttributes().setDrawOffset(new Point(55, 20)); // screen point is annotation bottom left corner
+//    	sa.getAttributes().setOpacity(0);
+//    	
+//    	netStatus.addAnnotation(sa);
+//    }
+    
     public StatusBar()
     {
         super(new java.awt.GridLayout(1, 0));
 
+        //initAnnotation();
+        
         final JLabel heartBeat = new JLabel("Downloading");
 
         latDisplay.setHorizontalAlignment(SwingConstants.CENTER);
@@ -71,6 +93,20 @@ public class StatusBar extends JPanel implements PositionListener
                 heartBeat.setText("Downloading " 
                 		+ service.getNumRetrieversPending() + "/"
                 		+ service.getRetrieverPoolSize());
+                
+//                if ( netStatus != null ) 
+//                {
+//                	double opacity = ((double)alpha/255);
+//                
+//                	Annotation sa = netStatus.getAnnotations().iterator().next();
+//                	
+//                	if ( sa != null ) {
+//                		sa.setText("Pending requests " + service.getNumRetrieversPending());
+//                		sa.getAttributes().setOpacity(opacity);
+//                		eventSource.redraw();
+//                	}
+//                }
+                
             }
         });
         downloadTimer.start();
@@ -85,6 +121,7 @@ public class StatusBar extends JPanel implements PositionListener
             newEventSource.addPositionListener(this);
 
         this.eventSource = newEventSource;
+        //eventSource.getModel().getLayers().add(netStatus);
     }
 
     public void moved(PositionEvent event)

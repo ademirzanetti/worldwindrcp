@@ -14,23 +14,34 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 
 import javax.media.opengl.GL;
+import javax.swing.Timer;
+
+import worldwind.contrib.Messages;
+
 import com.sun.opengl.util.j2d.TextRenderer;
 
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.event.PositionEvent;
 import gov.nasa.worldwind.event.PositionListener;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.layers.AnnotationLayer;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.Annotation;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
+import gov.nasa.worldwind.render.ScreenAnnotation;
+import gov.nasa.worldwind.retrieve.RetrievalService;
 
 /**
  * Position Layer based on the ScalebarLayer.
- * By default, it displays the message: Pointer LAT LON Elev ELEVATION
+ * It uses an annotation to let the users know about network pending requests.
+ * By default, it displays the message: Pointer LAT LON ELEVATION EYE-ALTITUDE
  * on the south west side of the view port. 
  * @author Owner
  *
@@ -38,7 +49,7 @@ import gov.nasa.worldwind.render.OrderedRenderable;
 public class PositionLayer extends RenderableLayer
 	implements PositionListener
 {
-	// Positionning constants
+	// Positioning constants
     public final static String NORTHWEST = "gov.nasa.worldwind.ScalebarLayer.NorthWest";
     public final static String SOUTHWEST = "gov.nasa.worldwind.ScalebarLayer.SouthWest";
     public final static String NORTHEAST = "gov.nasa.worldwind.ScalebarLayer.NorthEast";
@@ -52,12 +63,16 @@ public class PositionLayer extends RenderableLayer
 
 	private Vec4 locationCenter 		= null;
 	private TextRenderer textRenderer 	= null;
-	private Font defaultFont 			= Font.decode("Arial-12-PLAIN");
+	private Font defaultFont 			= Font.decode("Arial-12-BOLD");
 
-	private static String pointerMessage;
+	// Position string: Pointer LAT LON ELEVATION EYE-ALTITUDE
+	private String pointerMessage;
 	
-	WorldWindowGLCanvas canvas;
+	private final WorldWindowGLCanvas canvas;
 	
+	// The status of the network is displayed using an annotation on the lower left
+    private AnnotationLayer netStatus = new AnnotationLayer();
+
     // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
     private OrderedLayer orderedLayer = new OrderedLayer();
 
@@ -79,15 +94,82 @@ public class PositionLayer extends RenderableLayer
         }
     }
 	
-	public PositionLayer(WorldWindowGLCanvas canvas) {
-		canvas.addPositionListener(this);
+    /*
+     * Init the net status annotation
+     */
+    private void initAnnotation () 
+    {
+    	ScreenAnnotation sa = new ScreenAnnotation("", new Point(10, 10));
+    	
+    	sa.getAttributes().setCornerRadius(0);
+    	sa.getAttributes().setDrawOffset(new Point(60, 20)); // screen point is annotation bottom left corner
+    	sa.getAttributes().setOpacity(0);
+    	
+    	netStatus.addAnnotation(sa);
+    }
+    
+    /**
+     * Constructor
+     * @param canvas
+     */
+	public PositionLayer(final WorldWindowGLCanvas canvas) 
+	{
 		this.canvas = canvas;
-		setName("Pointer");
+		this.setName("Pointer");
+
+		// listen for position events
+		canvas.addPositionListener(this);
+		
+		// init the network status annotation
+		initAnnotation();
+
+		// "Pending requests"
+		final String netStatusLabel = Messages.getText("layers.position.1");
+		
+		// Network status probe
+        Timer downloadTimer = new Timer(50, new ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent actionEvent)
+            {
+            	if ( netStatus == null ) return;
+            	
+            	Annotation sa = netStatus.getAnnotations().iterator().next();
+            	
+            	if ( sa == null ) return;
+            	
+                int alpha = (int)(sa.getAttributes().getOpacity() * 255);
+                
+                RetrievalService service = WorldWind.getRetrievalService();
+                
+                if (service.hasActiveTasks())
+                {
+                    if (alpha == 255)
+                        alpha = 255;
+                    else
+                        alpha = alpha < 16 ? 16 : Math.min(255, alpha + 20);
+                }
+                else
+                {
+                    alpha = Math.max(0, alpha - 20);
+                }
+                
+            	double opacity = ((double)alpha/255);
+            	
+        		sa.setText(netStatusLabel + " " + service.getNumRetrieversPending());
+        		sa.getAttributes().setOpacity(opacity);
+        		canvas.redraw();
+            }
+        });
+        downloadTimer.start();
+		
 	}
 
 	@Override
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) 
+	{
 		super.setEnabled(enabled);
+		netStatus.setEnabled(enabled);
+		
 		if ( enabled ) canvas.addPositionListener(this);
 		else canvas.removePositionListener(this);
 	}
@@ -197,8 +279,9 @@ public class PositionLayer extends RenderableLayer
 	
 	
 	@Override
-	protected void doRender(DrawContext dc) 
+	public void doRender(DrawContext dc) 
 	{
+		addAnnotation();
 		dc.addOrderedRenderable(orderedLayer);
 	}
 	
@@ -223,6 +306,7 @@ public class PositionLayer extends RenderableLayer
 			attribsPushed = true;
 
 			gl.glDisable(GL.GL_TEXTURE_2D);		// no textures
+			
 			gl.glEnable(GL.GL_BLEND);
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 			gl.glDisable(GL.GL_DEPTH_TEST);
@@ -270,7 +354,7 @@ public class PositionLayer extends RenderableLayer
             gl.glLoadIdentity();
             gl.glDisable(GL.GL_CULL_FACE);
             drawLabel(label, locationSW.add3(
-            		new Vec4(divWidth * scale / 2 + (width - divWidth) / 2
+            		new Vec4(divWidth * scale / 2 + (width - divWidth) / 2 + 5
                     			, height * scale - 10
                     			, 0)));
 			
@@ -290,6 +374,19 @@ public class PositionLayer extends RenderableLayer
 			}
 			if (attribsPushed)
 				gl.glPopAttrib();
+		}
+	}
+
+	/**
+	 * Add the net status annotation to the layer model
+	 */
+	private void addAnnotation () 
+	{
+		if ( canvas.getModel() == null ) return;
+		
+		// Add the anotations layer to the model for rendering
+		if (!canvas.getModel().getLayers().contains(netStatus)) {
+			canvas.getModel().getLayers().add(netStatus);
 		}
 	}
 }
