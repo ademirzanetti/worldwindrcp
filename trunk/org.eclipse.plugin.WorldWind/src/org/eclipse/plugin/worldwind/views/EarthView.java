@@ -14,9 +14,6 @@ import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
-import org.eclipse.plugin.worldwind.Messages;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -31,7 +28,6 @@ import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
 import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
 import gov.nasa.worldwind.pick.PickedObjectList;
 import gov.nasa.worldwind.render.WWIcon;
-import gov.nasa.worldwind.retrieve.RetrievalService;
 import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
 import gov.nasa.worldwind.view.OrbitView;
 import gov.nasa.worldwind.View;
@@ -42,7 +38,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -64,8 +59,8 @@ public class EarthView extends ViewPart
 	public static final String ID 			= EarthView.class.getName(); 
 	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
 	
-	private HeartBeatProbe probe;
-	private StatusLine statusLine;
+//	private HeartBeatProbe probe;
+//	private StatusLine statusLine;
 
 	/**
 	 * Initialize the default WW layers
@@ -79,60 +74,60 @@ public class EarthView extends ViewPart
 	 * If so it displays the progress monitor in the status line w/ the
 	 * label 'Downloading'
 	 */
-	private static class HeartBeatProbe 
-	{
-		Display display;
-		StatusLine statusLine;
-    	final int interval = 1000;
-		int count = 1;
-		private boolean done = false;
-		
-	    public HeartBeatProbe(final Display display, final StatusLine statusLine) 
-	    {
-	    	this.display = display;
-	    	this.statusLine = statusLine;
-	    }
-	    
-	    /* Probe main task thread */
-	    void run () 
-	    {
-	    	if ( display == null ) return;
-	    	
-	    	display.timerExec(interval , new Runnable() {
-	    		public void run() 
-	    		{
-	    			if ( done ) return;
-	    			
-	                RetrievalService service = WorldWind.getRetrievalService();
-
-	    			// probe heartbeat here
-	                if (service.hasActiveTasks()) 
-	                {
-	        			statusLine.beginTask(
-	        					Messages.getString("layer.worldview.probe.task.name")
-	        						, IProgressMonitor.UNKNOWN);
-	                }
-	                else {
-	                	statusLine.taskDone();
-	                }
-	                
-	    			// loop
-	                if ( ! done ) {
-	                	if (display != null )
-	                		display.timerExec(interval, this);
-	                }
-	    	    }
-	    	});
-		}
-
-		public void setDone(boolean done) {
-			this.done = done;
-		}
-
-		public boolean isDone() {
-			return done;
-		}
-	}
+//	private static class HeartBeatProbe 
+//	{
+//		Display display;
+//		StatusLine statusLine;
+//    	final int interval = 1000;
+//		int count = 1;
+//		private boolean done = false;
+//		
+//	    public HeartBeatProbe(final Display display, final StatusLine statusLine) 
+//	    {
+//	    	this.display = display;
+//	    	this.statusLine = statusLine;
+//	    }
+//	    
+//	    /* Probe main task thread */
+//	    void run () 
+//	    {
+//	    	if ( display == null ) return;
+//	    	
+//	    	display.timerExec(interval , new Runnable() {
+//	    		public void run() 
+//	    		{
+//	    			if ( done ) return;
+//	    			
+//	                RetrievalService service = WorldWind.getRetrievalService();
+//
+//	    			// probe heartbeat here
+//	                if (service.hasActiveTasks()) 
+//	                {
+//	        			statusLine.beginTask(
+//	        					Messages.getString("layer.worldview.probe.task.name")
+//	        						, IProgressMonitor.UNKNOWN);
+//	                }
+//	                else {
+//	                	statusLine.taskDone();
+//	                }
+//	                
+//	    			// loop
+//	                if ( ! done ) {
+//	                	if (display != null )
+//	                		display.timerExec(interval, this);
+//	                }
+//	    	    }
+//	    	});
+//		}
+//
+//		public void setDone(boolean done) {
+//			this.done = done;
+//		}
+//
+//		public boolean isDone() {
+//			return done;
+//		}
+//	}
 	
 	/**
 	 * Globe Selection listener
@@ -268,18 +263,17 @@ public class EarthView extends ViewPart
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // globe position listener
-        Display display = getViewSite().getShell().getDisplay();
+//        Display display = getViewSite().getShell().getDisplay();
 
 		// initialize status line
-		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
-        
+//		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
         
         GlobeSelectionListener listener1 = new GlobeSelectionListener(world);
         world.addSelectListener(listener1);
 
         // probe heartbeat
-        probe = new HeartBeatProbe(display, statusLine);
-        probe.run();
+//        probe = new HeartBeatProbe(display, statusLine);
+//        probe.run();
 	}
 
 	/*
@@ -323,7 +317,7 @@ public class EarthView extends ViewPart
 	@Override
 	public void dispose() {
 		super.dispose();
-		probe.setDone(true);
+//		probe.setDone(true);
 	}
 	
 	public void flyTo (LatLon latlon) 
