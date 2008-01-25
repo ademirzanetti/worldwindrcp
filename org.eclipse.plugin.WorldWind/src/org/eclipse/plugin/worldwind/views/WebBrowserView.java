@@ -125,12 +125,24 @@ public class WebBrowserView extends ViewPart
 		sashForm.setOrientation(SWT.HORIZONTAL);
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-	    browser = new Browser(sashForm, SWT.NONE);
+		/*
+		 * Use IE on Win32. MOZIILA in Linux/OSX. See:
+		 * http://www.eclipse.org/swt/faq.php#howusemozilla
+		 * Moz requires XulRunner: http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.8.1.3/contrib/
+		 * XR install: http://developer.mozilla.org/en/docs/XULRunner_1.8.0.1_Release_Notes#Installing_XULRunner 
+		 */
+		final String osName = System.getProperty("os.name");
+		
+		if ( osName != null && osName.indexOf("Windows") != -1)
+			browser = new Browser(sashForm, SWT.NONE);
+		else
+			browser = new Browser(sashForm, SWT.MOZILLA);
+		
 	    browser.setLayoutData(new GridData(GridData.FILL_VERTICAL));
 	    browser.setUrl(Messages.getString("wb.start.url")); 
 
-	    browser.addLocationListener(new LocationListener(){
-
+	    browser.addLocationListener(new LocationListener()
+	    {
 			public void changed(LocationEvent event) {
 				locChanged(event);
 			}
@@ -139,7 +151,6 @@ public class WebBrowserView extends ViewPart
 			{
 				locChanging(event);
 			}
-	    	
 	    });
 	    
 	    // Progress listener
@@ -151,7 +162,6 @@ public class WebBrowserView extends ViewPart
 				}
 			});
 
-	    
 		
 		makeActions();
 		contributeToActionBars();
