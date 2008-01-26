@@ -63,9 +63,9 @@ import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 
 /**
- * Web Browser View: The rationale i=of this view is a built in web browser
- * to trap URL click events, download the HTML using WW and if the mime type
- * is supported, display the output on the Earth View 
+ * Web Browser View: The rationale of this view is a built in web browser
+ * to trap URL click events, download the HTML using WOrldWind and, if the mime type
+ * is KML or OpeNDAP, display the output on the Earth View or  NetCDF view respectively
  * 
  * @author vsilva
  */
