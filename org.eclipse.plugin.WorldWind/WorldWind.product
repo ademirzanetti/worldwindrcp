@@ -25,18 +25,22 @@ plugin_customization.ini</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="icons/16-earth.png" i32="icons/32-earth.png"/>
+   <windowImages i16="icons/16-earth.png" i32="icons/32-earth.png" i128="icons/128-earth.png"/>
 
    <splash
       startupProgressRect="5,275,445,15"
       startupMessageRect="7,255,445,20"
       startupForegroundColor="000000" />
-   <launcher>
+   <launcher name="WorldWindGeo">
+      <linux icon="/org.eclipse.plugin.WorldWind/branding/WorldWindGeo.xpm"/>
+      <macosx icon="/org.eclipse.plugin.WorldWind/branding/WorldWindGeo.icns"/>
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/org.eclipse.plugin.WorldWind/branding/WorldWindGeo.ico"/>
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>

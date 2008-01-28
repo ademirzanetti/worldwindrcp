@@ -116,7 +116,7 @@ public class WebBrowserView extends ViewPart
 		CoolBar coolbar = new CoolBar(parent, SWT.NONE);
 		coolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-	    // Create a coolitem with a URL combo
+	    // Create a cool item with a URL combo
 		CoolItem item = new CoolItem(coolbar, SWT.NONE);
 	    item.setControl(createComboView(coolbar, new GridData(GridData.FILL_HORIZONTAL))); //gridData));
 	    calcSize(item);
@@ -126,9 +126,9 @@ public class WebBrowserView extends ViewPart
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		/*
-		 * Use IE on Win32. MOZIILA in Linux/OSX. See:
+		 * Use IE on Win32. MOZILLA in Linux/OSX. See:
 		 * http://www.eclipse.org/swt/faq.php#howusemozilla
-		 * Moz requires XulRunner: http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.8.1.3/contrib/
+		 * Mozilla requires XulRunner: http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.8.1.3/contrib/
 		 * XR install: http://developer.mozilla.org/en/docs/XULRunner_1.8.0.1_Release_Notes#Installing_XULRunner 
 		 */
 		final String osName = System.getProperty("os.name");

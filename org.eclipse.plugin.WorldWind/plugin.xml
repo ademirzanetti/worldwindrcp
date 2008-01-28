@@ -117,7 +117,7 @@
             name="World Wind Geo">
          <property
                name="windowImages"
-               value="icons/16-earth.png,icons/32-earth.png">
+               value="icons/16-earth.png,icons/32-earth.png,icons/128-earth.png">
          </property>
          <property
                name="appName"
