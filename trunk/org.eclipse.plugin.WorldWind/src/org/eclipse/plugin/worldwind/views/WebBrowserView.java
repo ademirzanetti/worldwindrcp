@@ -33,6 +33,7 @@ import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
@@ -136,7 +137,16 @@ public class WebBrowserView extends ViewPart
 		if ( osName != null && osName.indexOf("Windows") != -1)
 			browser = new Browser(sashForm, SWT.NONE);
 		else
-			browser = new Browser(sashForm, SWT.MOZILLA);
+		{
+			try {
+				browser = new Browser(sashForm, SWT.MOZILLA);
+			} catch (SWTError e) {
+				Messages.showErrorMessage(getViewSite().getShell()
+						, Messages.getString("err.dialog.title")
+						, Messages.getString("wb.1", new Object[] { e } ) );
+				return;
+			}
+		}
 		
 	    browser.setLayoutData(new GridData(GridData.FILL_VERTICAL));
 	    browser.setUrl(Messages.getString("wb.start.url")); 

@@ -60,7 +60,7 @@ public class Check4UpdatesJob extends Job
 		
 		try {
 			logger.debug("Checking 4 updates in " + updateSite);
-
+			
 			// Get remote & local features
 			ISite remoteSite 	 = SiteManager.getSite(new URL(updateSite), monitor);
 			ILocalSite localSite = SiteManager.getLocalSite();
@@ -168,7 +168,7 @@ public class Check4UpdatesJob extends Job
 			}
 		} 
 		catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return Status.CANCEL_STATUS;
 		}
 		return Status.OK_STATUS;
@@ -237,5 +237,18 @@ public class Check4UpdatesJob extends Job
 					, e.getMessage());
 		}
 	}
-	
+	/**
+	 * 		final String updateSite = Messages.getString("upd.site");
+	 * 
+			IUpdateSearchCategory category =       UpdateSearchRequest.createDefaultSiteSearchCategory();    
+			UpdateSearchScope scope = new UpdateSearchScope();    
+			scope.addSearchSite( updateSite, new URL(updateSite), new String[] {});
+			
+			UpdateSearchRequest request =       new UpdateSearchRequest(category, scope);             
+			UpdateJob job = new UpdateJob("My Update Job", request);
+			
+			InstallWizardOperation operation =       new InstallWizardOperation();       
+			operation.run(getViewSite().getShell(), job);		
+
+	 */
 }
