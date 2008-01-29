@@ -35,6 +35,7 @@ import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
+import org.eclipse.plugin.worldwind.operation.Check4UpdatesJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
@@ -213,6 +214,11 @@ public class NavigatorView extends ViewPart
 		
 		// load local layers from cache
 		loadLayers();
+		
+		// check 4 updates
+		Check4UpdatesJob job = new Check4UpdatesJob(getViewSite().getWorkbenchWindow());
+		job.schedule(120000);
+		
 	}
 
 	
