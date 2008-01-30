@@ -39,7 +39,6 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -111,10 +110,11 @@ public class WebBrowserView extends ViewPart
 				saveBookmarks();
 			}
 		});
+	
+		Composite comp = new Composite(parent, SWT.NONE);
+		comp.setLayout(new GridLayout(1, true));
 		
-		parent.setLayout(new GridLayout(1, true));
-		
-		CoolBar coolbar = new CoolBar(parent, SWT.NONE);
+		CoolBar coolbar = new CoolBar(comp, SWT.NONE);
 		coolbar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 	    // Create a cool item with a URL combo
@@ -122,9 +122,6 @@ public class WebBrowserView extends ViewPart
 	    item.setControl(createComboView(coolbar, new GridData(GridData.FILL_HORIZONTAL))); //gridData));
 	    calcSize(item);
 	    
-		SashForm sashForm = new SashForm(parent, SWT.NONE);
-		sashForm.setOrientation(SWT.HORIZONTAL);
-		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		/*
 		 * Use IE on Win32. MOZILLA in Linux/OSX. See:
@@ -132,23 +129,23 @@ public class WebBrowserView extends ViewPart
 		 * Mozilla requires XulRunner: http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.8.1.3/contrib/
 		 * XR install: http://developer.mozilla.org/en/docs/XULRunner_1.8.0.1_Release_Notes#Installing_XULRunner 
 		 */
-		final String osName = System.getProperty("os.name");
+//		final String osName = System.getProperty("os.name");
 		
-		if ( osName != null && osName.indexOf("Windows") != -1)
-			browser = new Browser(sashForm, SWT.NONE);
-		else
-		{
+//		if ( osName != null && osName.indexOf("Windows") != -1)
+//			browser = new Browser(comp, SWT.BORDER);
+//		else
+//		{
 			try {
-				browser = new Browser(sashForm, SWT.MOZILLA);
+				browser = new Browser(comp, SWT.BORDER); //MOZILLA);
 			} catch (SWTError e) {
 				Messages.showErrorMessage(getViewSite().getShell()
 						, Messages.getString("err.dialog.title")
 						, Messages.getString("wb.1", new Object[] { e } ) );
 				return;
 			}
-		}
+//		}
 		
-	    browser.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+	    browser.setLayoutData(new GridData(GridData.FILL_BOTH));
 	    browser.setUrl(Messages.getString("wb.start.url")); 
 
 	    browser.addLocationListener(new LocationListener()
@@ -322,8 +319,6 @@ public class WebBrowserView extends ViewPart
 	{
 		try {
 			// Grab layers view
-//			PlacesView view = (PlacesView)Activator.getView(getViewSite().getWorkbenchWindow()
-//					, PlacesView.ID);
 			NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
 					, NavigatorView.ID);
 			
