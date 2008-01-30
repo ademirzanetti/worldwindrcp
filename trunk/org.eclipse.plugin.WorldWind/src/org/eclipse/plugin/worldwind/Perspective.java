@@ -21,7 +21,7 @@ import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 public class Perspective implements IPerspectiveFactory 
 {
-	/** The standard perspecive used in the application. */
+	/** The standard perspective used in the application. */
     public static final String PERSPECTIVE_ID = Perspective.class.getName();
     
     /** main folder: contains the earth web browser and analytics views */
@@ -43,14 +43,11 @@ public class Perspective implements IPerspectiveFactory
 		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
 		
 		//topLeft.addPlaceholder(LayersView.ID + ":*");
-		//topLeft.addView(PlacesView.ID);
-		//topLeft.addView(GeoSearchView.ID);
 		topLeft.addView(NavigatorView.ID);
 		
 		// Bottom left: Layers view
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.75f,
 		 	   "topLeft");
-//		bottomLeft.addView(LayersView.ID);
 		bottomLeft.addView(ID_PROGRESSVIEW);
 				
 		// TopRight: Earth & web browser
@@ -59,9 +56,6 @@ public class Perspective implements IPerspectiveFactory
 		topRight.addView(WebBrowserView.ID);
 				
 		// These layers cannt be closed
-//		layout.getViewLayout(LayersView.ID).setCloseable(false);
-//		layout.getViewLayout(PlacesView.ID).setCloseable(false);
 		layout.getViewLayout(EarthView.ID).setCloseable(false);
-//		layout.getViewLayout(GeoSearchView.ID).setCloseable(false);
 	}
 }
