@@ -1265,9 +1265,14 @@ public class NavigatorView extends ViewPart
 	private void updateActions ()
 	{
 		TreeObject to = (TreeObject)((IStructuredSelection)layersViewer.getSelection()).getFirstElement();
+
+		if ( to == null ) 
+			return;
+		
+		
 		Layer layer = to.getLayer();
 		
-		// only user defined can be removed
+		// only user defined layers can be removed
 		boolean bool =  myLayers.contains(layer);
 		
 		actionRemoveNode.setEnabled(bool);
