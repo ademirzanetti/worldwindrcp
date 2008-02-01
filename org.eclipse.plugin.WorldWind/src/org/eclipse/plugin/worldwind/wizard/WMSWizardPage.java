@@ -17,6 +17,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -68,15 +69,16 @@ public class WMSWizardPage  extends WizardPage
 	 */
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
-		container.setLayout(new GridLayout(1, true));
+		container.setLayout(new GridLayout(2, false));
 		
-		GridData data = new GridData(GridData.FILL_BOTH);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 2;
 		
 		Label lbl = new Label(container, SWT.NONE);
 		lbl.setText(Messages.getString("wiz.wms.page1.lbl1")); 
-		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		lbl.setLayoutData(data); //new GridData(GridData.FILL_HORIZONTAL));
 		
-		serverCombo = new Combo(container, SWT.NONE);
+		serverCombo = new Combo(container, SWT.READ_ONLY);
 		serverCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		//serverCombo.addListener(SWT.Selection | SWT.DefaultSelection, this);
 
@@ -102,13 +104,30 @@ public class WMSWizardPage  extends WizardPage
 		// init serverCombo data
 		loadServers();
 		
+		// new srv btn
+		Button newSrv = new Button(container, SWT.PUSH);
+		newSrv.setText("New");
+		
+		newSrv.addSelectionListener(new SelectionListener(){
+			public void widgetDefaultSelected(SelectionEvent e) {
+				System.out.println("widgetDefaultSelected");
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("widgetSelected");
+			}
+		});
+	
+		// Layers lbl
 		lbl = new Label(container, SWT.NONE);
 		lbl.setText(Messages.getString("wiz.wms.page1.lbl2")); 
-		lbl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));  
+		lbl.setLayoutData(data); //new GridData(GridData.FILL_HORIZONTAL));  
+		
+		data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan = 2;
 		
 		layerViewer = new TableViewer(container, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		layerViewer.getTable().setLayoutData(data);
-		//layerViewer.getTable().addListener(SWT.Selection, this);
 		
 		layerViewer.addSelectionChangedListener(
 			new ISelectionChangedListener()
@@ -142,10 +161,6 @@ public class WMSWizardPage  extends WizardPage
 			
 			// Save indices to extract Layers from Caps obj later on
 			selectedIndices = indices;
-			
-//			for (int idx : indices) {
-//				logger.debug(capabilities.getLayers().get(idx));
-//			}
 			
 			loadNextPage();
 			setPageComplete(true);

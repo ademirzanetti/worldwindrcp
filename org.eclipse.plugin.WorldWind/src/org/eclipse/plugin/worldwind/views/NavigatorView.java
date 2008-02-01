@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.views;
 
 import java.io.ByteArrayInputStream;
@@ -48,6 +58,8 @@ import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer.LayersLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
@@ -85,6 +97,7 @@ import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.TiledWMSLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.GroundOverlayLoopListener;
 import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
@@ -116,7 +129,7 @@ import worldwind.contrib.parsers.ParserUtils;
  *
  */
 public class NavigatorView extends ViewPart 
-	implements Listener //, GroundOverlayLoopListener
+	implements Listener, GroundOverlayLoopListener 
 {
 	private static final Logger logger = Logger.getLogger(NavigatorView.class);
 	
@@ -686,8 +699,8 @@ public class NavigatorView extends ViewPart
 		{
 			logger.debug("Leaf layer "+ layer.getName());
 			
-//			if ( layer instanceof GroundOverlayLayer)
-//				((GroundOverlayLayer)layer).addOverlayListener(this);
+			if ( layer instanceof GroundOverlayLayer)
+				((GroundOverlayLayer)layer).addOverlayListener(this);
 			
 			// set tree check state
 			to.setEnabled(checked);
@@ -706,19 +719,18 @@ public class NavigatorView extends ViewPart
 	 */
 	private void hookClickAction (final WWTreeViewer treeViewer) 
 	{
+		treeViewer.getTree().addKeyListener(new KeyAdapter(){
+
+
+			public void keyReleased(KeyEvent e) {
+				if ( e.character == SWT.DEL)
+					removeNode();
+			}
+		});
+		
 		//treeViewer.getTree().addSelectionListener(new SelectionListener() 
 		treeViewer.addDoubleClickListener(new IDoubleClickListener()
 		{
-//			public void widgetDefaultSelected(SelectionEvent e) {
-//				//clickAction.run();
-//				flyOnClickAction(treeViewer);
-//			}
-//
-//			public void widgetSelected(SelectionEvent e) {
-//				//clickAction.run();
-//				flyOnClickAction(treeViewer);
-//			}
-
 			public void doubleClick(DoubleClickEvent arg0) {
 				flyOnClickAction(treeViewer);
 			}
@@ -1180,7 +1192,7 @@ public class NavigatorView extends ViewPart
 	/**
 	 * Fires on ground overlay error
 	 */
-	public void onError(GroundOverlayLayer layer, Exception ex) 
+	public void onError(Layer layer, Exception ex) 
 	{
 		final String message = layer.getName() + ": " 
 			+ ex.getClass() + " " + ex.getMessage();
