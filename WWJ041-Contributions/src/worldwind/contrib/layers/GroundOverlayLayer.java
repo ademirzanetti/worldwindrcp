@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Vector;
@@ -42,6 +43,7 @@ import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.TextureTile;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
@@ -77,12 +79,12 @@ public class GroundOverlayLayer extends AbstractLayer
 	private String fileSuffix;
 	
 	// Animation loop status listeners
-    private Vector<GroundOverlayListener> listeners = new Vector<GroundOverlayListener>();
+    private Vector<OverlayListener> listeners = new Vector<OverlayListener>();
 	
 	/** Ground overlay status messages */
-	static public interface GroundOverlayListener
+	static public interface OverlayListener
 	{
-		public void onError ( GroundOverlayLayer layer, Exception ex);
+		public void onError ( Layer layer, Exception ex);
 	}
 	
 	/**
@@ -141,11 +143,11 @@ public class GroundOverlayLayer extends AbstractLayer
 	 * Add an overlay status listener
 	 * @param listener
 	 */
-	public void addOverlayListener( GroundOverlayListener listener){
+	public void addOverlayListener( OverlayListener listener){
 		listeners.add(listener);
 	}
 
-	public void removeOverlayListener( GroundOverlayListener listener){
+	public void removeOverlayListener( OverlayListener listener){
 		listeners.remove(listener);
 	}
 	
@@ -296,9 +298,6 @@ public class GroundOverlayLayer extends AbstractLayer
         			// <ServiceException>MESSAGE</ServiceException>
         			final String xml 		= buf;
         			
-//        			errorMessage			= xml != null && xml.indexOf("<ServiceException>") != -1  
-//        				? xml.substring(xml.indexOf("<ServiceException") + 18, xml.indexOf("</ServiceException>"))
-//        				: xml;
         			errorMessage = ParserUtils.parseServiceExceptionReportXML(
         					new ByteArrayInputStream(xml.getBytes()));
         		}
@@ -313,17 +312,30 @@ public class GroundOverlayLayer extends AbstractLayer
         	if ( errorMessage != null ) 
                 throw new IOException("Download failed: " + errorMessage );
         	
+        	// Verify file
+        	if ( outFile.exists()) {
+        		logger.debug("Verifying " + outFile + " size");
+        		
+        		long size = (new RandomAccessFile(outFile, "r")).length();
+        		
+        		logger.debug("Size of " + outFile + " : " + size);
+        		
+        		if ( size == 0 ) 
+        			throw new IOException("Download of " + getName() + " failed: Invalid file size.");
+        		
+        	}
 		} 
     	catch ( Exception e) 
     	{
     		// remove file from disk
             if ( outFile != null && outFile.exists()) 
             {
-            	logger.error("Download failed: " 
-            			+ e.getMessage() 
-            			+ ". Deleting cache file " + outFile);
+            	logger.error(e.getMessage() );
             	
-            	outFile.delete();
+            	if ( outFile != null && outFile.exists() ) {
+            		logger.error("Deleting cache file " + outFile);
+            		outFile.delete();
+            	}
             }
             throw new Exception(e);
     	}
@@ -564,9 +576,9 @@ public class GroundOverlayLayer extends AbstractLayer
 	 */
 	private void onError (GroundOverlayLayer layer, Exception ex) 
 	{
-		logger.debug("# of overlay listeners:" + listeners.size());
+		logger.debug("Number of overlay listeners:" + listeners.size());
 		
-		for (GroundOverlayListener listener : listeners) {
+		for (OverlayListener listener : listeners) {
 			listener.onError(layer, ex);
 		}
 	}

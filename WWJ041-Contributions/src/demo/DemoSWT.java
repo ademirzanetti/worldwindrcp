@@ -1,44 +1,26 @@
 package demo;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 
-import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.event.SelectEvent;
-import gov.nasa.worldwind.event.SelectListener;
-import gov.nasa.worldwind.examples.BasicDragger;
 import gov.nasa.worldwind.geom.Angle;
-import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Sector;
-import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.layers.AbstractLayer;
-import gov.nasa.worldwind.layers.CompassLayer;
+
 import gov.nasa.worldwind.layers.IconLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.layers.Earth.BMNGSurfaceLayer;
-import gov.nasa.worldwind.layers.Earth.EarthNASAPlaceNameLayer;
-import gov.nasa.worldwind.layers.Earth.LandsatI3;
-import gov.nasa.worldwind.layers.Earth.USGSDigitalOrtho;
-import gov.nasa.worldwind.layers.Earth.USGSUrbanAreaOrtho;
-import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
-import gov.nasa.worldwind.pick.PickedObjectList;
-import gov.nasa.worldwind.render.UserFacingIcon;
 import gov.nasa.worldwind.render.WWIcon;
 import gov.nasa.worldwind.util.JOGLVersionInfo;
-import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
-import gov.nasa.worldwind.view.OrbitView;
 
 
 import org.apache.log4j.Logger;
@@ -1149,7 +1131,7 @@ public class DemoSWT
 	}
 
 
-	public void onError(GroundOverlayLayer layer, Exception ex) {
+	public void onError(Layer layer, Exception ex) {
 		System.err.println("Error " + layer.getName() + " " + ex.getMessage());
 	}
 }

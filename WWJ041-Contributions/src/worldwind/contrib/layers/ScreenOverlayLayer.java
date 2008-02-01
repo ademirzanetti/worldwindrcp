@@ -16,12 +16,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
 import worldwind.contrib.Messages;
+import worldwind.contrib.layers.GroundOverlayLayer.OverlayListener;
 
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureCoords;
@@ -77,6 +79,9 @@ public class ScreenOverlayLayer extends AbstractLayer
 
     // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
     private OrderedIcon orderedIcon = new OrderedIcon();
+
+    // status listeners
+    private Vector<GroundOverlayLayer.OverlayListener> listeners = new Vector<OverlayListener>();
 
     private class OrderedIcon implements OrderedRenderable
     {
@@ -145,6 +150,14 @@ public class ScreenOverlayLayer extends AbstractLayer
 
     }
 
+    /**
+	 * Add an overlay status listener
+	 * @param listener
+	 */
+	public void addOverlayListener( OverlayListener listener){
+		listeners.add(listener);
+	}
+    
     @Override
     protected void doRender(DrawContext dc) {
     	dc.addOrderedRenderable(orderedIcon);
@@ -222,7 +235,8 @@ public class ScreenOverlayLayer extends AbstractLayer
             dc.drawUnitQuad(texCoords);
         }
         catch (Exception e) {
-        	logger.error(e.getMessage());
+        	//logger.error(e.getMessage());
+        	Error(this, e);
         }
         finally
         {
@@ -537,5 +551,15 @@ public class ScreenOverlayLayer extends AbstractLayer
     }
     
     
-	
+    /*
+	 * Notify listeners of a Layer error
+	 */
+	private void Error (ScreenOverlayLayer layer, Exception ex) 
+	{
+		logger.debug("# of overlay listeners:" + listeners.size());
+		
+		for (OverlayListener listener : listeners) {
+			listener.onError(layer, ex);
+		}
+	}	
 }

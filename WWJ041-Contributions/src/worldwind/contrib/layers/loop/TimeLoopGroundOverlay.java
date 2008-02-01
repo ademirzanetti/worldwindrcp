@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import worldwind.contrib.Messages;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.ScreenOverlayLayer;
-import worldwind.contrib.layers.GroundOverlayLayer.GroundOverlayListener;
+import worldwind.contrib.layers.GroundOverlayLayer.OverlayListener;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.SimpleKMLParser;
 import worldwind.contrib.parsers.SimpleKMLParser.KMLDocument;
@@ -44,7 +44,7 @@ import gov.nasa.worldwind.util.Logging;
  *
  */
 public class TimeLoopGroundOverlay extends RenderableLayer 
-	implements GroundOverlayListener
+	implements OverlayListener
 {
 	private static final Logger logger 				= Logger.getLogger(TimeLoopGroundOverlay.class);
 	private CopyOnWriteArrayList<GroundOverlayLayer> overlays 	= new CopyOnWriteArrayList<GroundOverlayLayer>();    
@@ -69,7 +69,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
      *
      */
     static public interface GroundOverlayLoopListener
-    	extends GroundOverlayListener
+    	extends OverlayListener
     {
     	void statusChanged(final int current, final int total, final GroundOverlayLayer layer);
     }
@@ -497,7 +497,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	/**
 	 * Fires when an error occurs in the child ground overlay
 	 */
-	public void onError(GroundOverlayLayer layer, Exception ex) 
+	public void onError(Layer layer, Exception ex) 
 	{
 		// notify listeners
     	for (GroundOverlayLoopListener listener : listeners) {
