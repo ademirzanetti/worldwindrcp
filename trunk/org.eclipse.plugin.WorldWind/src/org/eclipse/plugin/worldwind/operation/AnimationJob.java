@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.plugin.worldwind.operation;
 
+import gov.nasa.worldwind.layers.Layer;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +24,7 @@ import org.eclipse.swt.widgets.Display;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.ScreenOverlayLayer;
-import worldwind.contrib.layers.GroundOverlayLayer.GroundOverlayListener;
+import worldwind.contrib.layers.GroundOverlayLayer.OverlayListener;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 /**
@@ -33,7 +35,7 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
  *
  */
 public class AnimationJob extends Job
-	implements GroundOverlayListener
+	implements OverlayListener
 {
 	private static final Logger logger	= Logger.getLogger(AnimationJob.class);
 	
@@ -204,7 +206,7 @@ public class AnimationJob extends Job
 	/**
 	 * Fires on ground overlay error
 	 */
-	public void onError(GroundOverlayLayer layer, Exception ex) 
+	public void onError(Layer layer, Exception ex) 
 	{
 		ex.printStackTrace();
 		
