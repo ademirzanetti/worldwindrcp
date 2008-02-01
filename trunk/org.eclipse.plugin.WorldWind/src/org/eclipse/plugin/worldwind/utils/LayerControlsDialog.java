@@ -86,7 +86,8 @@ public class LayerControlsDialog extends Dialog
 
 		Scale opacity = new Scale (container, SWT.NONE);
 		opacity.addListener(SWT.Selection, this);
-		opacity.setSize (200, 64);
+		//opacity.setSize (200, 64);
+		opacity.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		opacity.setMaximum (100);
 		opacity.setIncrement(10);		
 		opacity.setPageIncrement (10);
@@ -100,7 +101,8 @@ public class LayerControlsDialog extends Dialog
 			l4.setText(Messages.getString("lyr.ctl.3"));
 	
 			Scale speed = new Scale (container, SWT.NONE);
-			speed.setSize (200, 64);
+			//speed.setSize (200, 64);
+			speed.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			speed.setMaximum (100);
 			speed.setIncrement (10);
 			speed.setPageIncrement (10);

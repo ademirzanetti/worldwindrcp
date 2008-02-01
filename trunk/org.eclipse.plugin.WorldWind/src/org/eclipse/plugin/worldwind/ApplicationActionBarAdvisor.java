@@ -45,8 +45,8 @@ import org.eclipse.plugin.worldwind.actions.WMSWizardAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
 import org.eclipse.plugin.worldwind.utils.CacheManagerDialog;
+import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.NetCDFView;
-import org.eclipse.plugin.worldwind.views.StatusLine;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 

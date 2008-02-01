@@ -49,6 +49,7 @@ import org.eclipse.plugin.worldwind.operation.Check4UpdatesJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
+import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.utils.YGeoSearch;
 import org.eclipse.plugin.worldwind.utils.YGeoSearch.YResult;
 import org.eclipse.plugin.worldwind.views.tree.TreeObject;
@@ -582,7 +583,6 @@ public class NavigatorView extends ViewPart
 		if ( layer.getName().equalsIgnoreCase(Messages.getString("remote.layers.tree.lbl")))
 		{
 			Messages.showErrorMessage(getViewSite().getShell()
-					, Messages.getString("err.dialog.title")
 					, Messages.getString("err.msg.realtime.sat", new Object[] { layer.getName()} ));
 
 			treeViewer.setChecked(to, false);
@@ -845,7 +845,7 @@ public class NavigatorView extends ViewPart
 						kmzFile.delete();
 					
 					Messages.showErrorMessage(getViewSite().getShell()
-							, Messages.getString("err.dialog.title")
+							//, Messages.getString("err.dialog.title")
 							, "Error saving " + layer + ": " + e.getMessage() );
 				}
 			}

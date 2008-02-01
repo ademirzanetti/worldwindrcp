@@ -233,7 +233,6 @@ public class Check4UpdatesJob extends Job
 			}
 		} catch (Exception e) {
 			Messages.showErrorMessage(display.getActiveShell()
-					, Messages.getString("err.dialog.title")
 					, e.getMessage());
 		}
 	}
