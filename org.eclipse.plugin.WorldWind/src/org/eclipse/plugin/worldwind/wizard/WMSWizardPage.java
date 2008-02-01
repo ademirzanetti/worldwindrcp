@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.wizard;
 
 import java.net.URL;
@@ -5,6 +15,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -12,7 +23,9 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.WMSParseOperation;
+import org.eclipse.plugin.worldwind.utils.NewRemoteServerDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -74,6 +87,7 @@ public class WMSWizardPage  extends WizardPage
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		
+	
 		Label lbl = new Label(container, SWT.NONE);
 		lbl.setText(Messages.getString("wiz.wms.page1.lbl1")); 
 		lbl.setLayoutData(data); //new GridData(GridData.FILL_HORIZONTAL));
@@ -108,13 +122,31 @@ public class WMSWizardPage  extends WizardPage
 		Button newSrv = new Button(container, SWT.PUSH);
 		newSrv.setText("New");
 		
-		newSrv.addSelectionListener(new SelectionListener(){
-			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println("widgetDefaultSelected");
-			}
+		newSrv.addSelectionListener(new SelectionAdapter()
+		{
+			public void widgetSelected(SelectionEvent e) 
+			{
+				// Get Server name, WMS Caps URL from user
+				NewRemoteServerDialog dialog = new NewRemoteServerDialog(getShell());
+				
+				final int rc = dialog.open();
+				
+				if ( rc == Dialog.OK ) 
+				{
+					try {
+						String name = dialog.getName();
+						String url 	= dialog.getUrl();
 
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("widgetSelected");
+						// Add WMS caps to combo box
+						ParserUtils.PublicWMSServer wms = new ParserUtils.PublicWMSServer(name, new URL(url));
+						
+						serverCombo.add(name, 0);
+						servers.add(0, wms);
+					} 
+					catch (Exception ex) {
+						Messages.showErrorMessage(getShell(), ex.getMessage());
+					}
+				}
 			}
 		});
 	

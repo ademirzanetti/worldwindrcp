@@ -57,6 +57,7 @@ import org.eclipse.ui.part.*;
 
 import org.eclipse.plugin.worldwind.actions.OpenViewAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
+import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 import worldwind.contrib.parsers.KMLSource;
@@ -139,7 +140,6 @@ public class WebBrowserView extends ViewPart
 				browser = new Browser(comp, SWT.BORDER); //MOZILLA);
 			} catch (SWTError e) {
 				Messages.showErrorMessage(getViewSite().getShell()
-						, Messages.getString("err.dialog.title")
 						, Messages.getString("wb.1", new Object[] { e } ) );
 				return;
 			}

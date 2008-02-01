@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.EarthView;
-import org.eclipse.plugin.worldwind.views.StatusLine;
 import org.eclipse.swt.widgets.Display;
 
 import worldwind.contrib.layers.GroundOverlayLayer;

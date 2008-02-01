@@ -8,7 +8,7 @@
  * Contributors:
  *     Vladimir Silva - initial API and implementation
  *******************************************************************************/
-package org.eclipse.plugin.worldwind.views;
+package org.eclipse.plugin.worldwind.utils;
 
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.resource.ImageDescriptor;

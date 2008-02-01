@@ -58,8 +58,8 @@ public class Messages
 		MessageDialog.openInformation(shell, title, message);
 	}
 	
-	public static void showErrorMessage(Shell shell, String title, String message) {
-		MessageDialog.openError(shell, title, message);
+	public static void showErrorMessage(Shell shell, String message) {
+		MessageDialog.openError(shell, getString("err.dialog.title"), message);
 	}
 	
 	/**

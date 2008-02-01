@@ -90,7 +90,6 @@ public class WeatherWizard extends Wizard
 		catch (Exception e) {
 			//e.printStackTrace();
 			Messages.showErrorMessage(window.getShell()
-					, Messages.getString("wiz.err.dlg.title")
 					, e.getClass() + ": " +  e.getMessage());
 			return false;
 		}

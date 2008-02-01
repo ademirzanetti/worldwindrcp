@@ -37,9 +37,7 @@ public class WMSWizardAction extends Action {
 			dialog.open();
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
 			Messages.showErrorMessage(window.getShell()
-					, Messages.getString("wiz.err.dlg.title")
 					, Messages.getString("wiz.wms.err.text", new Object[] {e.getMessage()}
 					));
 		}

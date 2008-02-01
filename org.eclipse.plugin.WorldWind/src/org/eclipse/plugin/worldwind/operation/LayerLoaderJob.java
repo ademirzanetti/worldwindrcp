@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
-import org.eclipse.plugin.worldwind.views.StatusLine;
+import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
 import org.eclipse.plugin.worldwind.views.tree.TreeObject;
 import org.eclipse.plugin.worldwind.views.tree.TreeParent;
