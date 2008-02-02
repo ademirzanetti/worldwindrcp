@@ -46,7 +46,7 @@ public class NewRemoteServerDialog extends Dialog
         super.configureShell(shell);
         
         // set title
-        shell.setText(Messages.getString("CacheManagerDialog.0")); //$NON-NLS-1$
+        shell.setText("New Remote Server");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class NewRemoteServerDialog extends Dialog
     }
     
     protected Point getInitialSize() { 
-        return new Point(500, 150); 
+        return new Point(450, 130); 
     }
     
 }
