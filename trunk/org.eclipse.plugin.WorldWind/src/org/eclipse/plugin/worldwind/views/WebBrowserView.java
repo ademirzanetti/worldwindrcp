@@ -536,7 +536,10 @@ public class WebBrowserView extends ViewPart
 			RandomAccessFile raf = new RandomAccessFile(file,"r");
 			
 			byte[] bytes = new byte[(int)raf.length()];
+			
 			raf.readFully(bytes);
+			raf.close();
+			
 			return new String(bytes).split(Messages.NL);
 		} 
 		catch (Exception e) {
