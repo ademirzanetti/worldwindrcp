@@ -41,7 +41,6 @@ import org.eclipse.plugin.worldwind.actions.ICommandIds;
 import org.eclipse.plugin.worldwind.actions.OpenFileAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction;
 import org.eclipse.plugin.worldwind.actions.ShowPerspectiveAction;
-import org.eclipse.plugin.worldwind.actions.WMSWizardAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
 import org.eclipse.plugin.worldwind.utils.CacheManagerDialog;
@@ -64,7 +63,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 	// File Menu Actions
 	private OpenFileAction openFileAction;
-	private WMSWizardAction wmsWizardAction;
+//	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
 //	private OpenWebBrowserAction openWebBrowser;
 	private OpenViewAction openWebBrowser;
@@ -107,8 +106,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		openFileAction = new OpenFileAction(Messages.getString("file.open.tooltip"), window);
 		register(openFileAction);
 		
-		wmsWizardAction = new WMSWizardAction(Messages.getString("wms.wiz.tooltip"), window);
-		register(wmsWizardAction);
+//		wmsWizardAction = new WMSWizardAction(Messages.getString("wms.wiz.tooltip"), window);
+//		register(wmsWizardAction);
 		
 		weatherWizardAction = new WeatherWizardAction(Messages.getString("weather.wiz.tooltip"), window);
 		register(weatherWizardAction);
@@ -197,7 +196,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		fileMenu.add(openFileAction);
 		fileMenu.add(openDataSet);
 		fileMenu.add(weatherWizardAction);
-		fileMenu.add(wmsWizardAction);
+//		fileMenu.add(wmsWizardAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(openWebBrowser);
 	    fileMenu.add(new Separator());
@@ -258,7 +257,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
         
         toolbar.add(weatherWizardAction);
-        toolbar.add(wmsWizardAction);
+//        toolbar.add(wmsWizardAction);
         toolbar.add(openWebBrowser);
 	}
 	

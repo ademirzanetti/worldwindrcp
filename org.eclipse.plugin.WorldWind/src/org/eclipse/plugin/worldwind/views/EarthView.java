@@ -57,7 +57,7 @@ public class EarthView extends ViewPart
 	private static final Logger logger 		= Logger.getLogger(EarthView.class);
 	
 	public static final String ID 			= EarthView.class.getName(); 
-	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
+	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas();
 	
 //	private HeartBeatProbe probe;
 //	private StatusLine statusLine;

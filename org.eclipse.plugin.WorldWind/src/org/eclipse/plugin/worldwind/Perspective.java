@@ -17,6 +17,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import org.eclipse.plugin.worldwind.views.EarthView;
 import org.eclipse.plugin.worldwind.views.NavigatorView;
+import org.eclipse.plugin.worldwind.views.WMSView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
 public class Perspective implements IPerspectiveFactory 
@@ -42,8 +43,9 @@ public class Perspective implements IPerspectiveFactory
 		// TopLeft: Places & GeoSearch
 		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
 		
-		//topLeft.addPlaceholder(LayersView.ID + ":*");
+		topLeft.addPlaceholder(NavigatorView.ID + ":*");
 		topLeft.addView(NavigatorView.ID);
+		topLeft.addView(WMSView.ID);
 		
 		// Bottom left: Layers view
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.75f,
