@@ -1158,7 +1158,7 @@ public class NavigatorView extends ViewPart
 				addGroundOverlay((GroundOverlayLayer)layer, enabled);
 				
 				// for caching
-				myLayers.add(layer);
+				//myLayers.add(layer);
 			}
 		}
 		// regular layer (Not a Ground Overlay or Time Loop) - don't save
