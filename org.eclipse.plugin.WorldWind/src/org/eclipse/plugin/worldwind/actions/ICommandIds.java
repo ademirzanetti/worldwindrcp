@@ -10,7 +10,7 @@ package org.eclipse.plugin.worldwind.actions;
 public interface ICommandIds {
 
     public static final String CMD_OPEN_FILE = "org.eclipse.plugin.worldwind.OpenFile";
-    public static final String CMD_WMS_WIZARD = "org.eclipse.plugin.worldwind.WMSWizard";
+    //public static final String CMD_WMS_WIZARD = "org.eclipse.plugin.worldwind.WMSWizard";
     public static final String CMD_WEATHER_WIZARD = "org.eclipse.plugin.worldwind.WeatherWizard";
     
     public static final String CMD_OPEN_WEB_BROWSER = "org.eclipse.plugin.worldwind.Open.WebBrowser";

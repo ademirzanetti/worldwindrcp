@@ -106,7 +106,7 @@
       </view>
       
       <view
-            name="WMS Viewer"
+            name="Web Map Service (WMS) Viewer"
             category="WWPlugin"
             icon="icons/16x16-wms.png"
             class="org.eclipse.plugin.worldwind.views.WMSView"
@@ -185,12 +185,14 @@
             categoryId="ww.commands"
             id="org.eclipse.plugin.worldwind.WeatherWizard">
       </command>
+      <!--
       <command
             name="Open WMS Wizard"
             description="Open the WMS Wizard"
             categoryId="ww.commands"
             id="org.eclipse.plugin.worldwind.WMSWizard">
       </command>
+      -->
       <command
             name="Open Web Browser"
             description="Open Web Browser"
@@ -215,15 +217,17 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+1">
       </key>
+      <!--
       <key
             commandId="org.eclipse.plugin.worldwind.WMSWizard"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+2">
       </key>
+      -->
       <key
             commandId="org.eclipse.plugin.worldwind.Open.WebBrowser"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+3">
+            sequence="CTRL+2">
       </key>
    </extension>
 

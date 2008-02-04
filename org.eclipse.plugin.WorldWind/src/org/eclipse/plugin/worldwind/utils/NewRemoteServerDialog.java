@@ -28,6 +28,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * Remote server Name and URL input dialog (Used to get a new WMS Server URL)
+ * @author vsilva
+ *
+ */
 public class NewRemoteServerDialog extends Dialog
 {
 	private Text server;

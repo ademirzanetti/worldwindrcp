@@ -22,6 +22,15 @@ import worldwind.contrib.layers.loop.HTTPLoopFileLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.parsers.ParserUtils;
 
+/**
+ * Navy Research Labs near real time weather access wizard:
+ * see http://www.nrlmry.navy.mil/sat_products.html
+ * 
+ * This data uses the NRL XML file from WW .NET
+ * 
+ * @author vsilva
+ *
+ */
 public class WeatherWizard extends Wizard 
 {
 	private static final Logger logger = Logger.getLogger(WeatherWizard.class);
