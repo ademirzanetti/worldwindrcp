@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
@@ -49,9 +49,9 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
 /**
- * A ground overlay layer, based on the GroundOverlay concept from KML. 
+ * A WWJ ground overlay layer, based on the GroundOverlay concept from KML. 
  * Renders a URL representing an surface image on a given lat/lon box (Sector).
- * This layer is used to convert KML's GroundOverlays into WW layers
+ * This layer is used to convert KML's GroundOverlays into WWJ layers
  * @author Vladimir Silva
  *
  */
@@ -79,7 +79,8 @@ public class GroundOverlayLayer extends AbstractLayer
 	private String fileSuffix;
 	
 	// Animation loop status listeners
-    private Vector<OverlayListener> listeners = new Vector<OverlayListener>();
+    private CopyOnWriteArrayList<OverlayListener> listeners 
+    	= new CopyOnWriteArrayList<OverlayListener>();
 	
 	/** Ground overlay status messages */
 	static public interface OverlayListener
@@ -195,6 +196,11 @@ public class GroundOverlayLayer extends AbstractLayer
         
         		if ( ! fetchOverlay() ) {
         			logger.error("Synch fetch for " + textureURL + " FAILED");
+        			
+        			// tile fetch failed, delete from cache. Tile will be re fetched on
+        			// the next call.
+        			deleteFromCache();
+        			
         			//onError(this, new IOException("Synch fetch for " + textureURL + " FAILED"));
         			return;
         		}
