@@ -98,7 +98,7 @@ import worldwind.contrib.LayerUtils;
 import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.layers.TiledWMSLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.GroundOverlayLoopListener;
+import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.OverlayLoopListener;
 import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
@@ -130,7 +130,7 @@ import worldwind.contrib.parsers.ParserUtils;
  *
  */
 public class NavigatorView extends ViewPart 
-	implements Listener, GroundOverlayLoopListener 
+	implements Listener, OverlayLoopListener 
 {
 	private static final Logger logger = Logger.getLogger(NavigatorView.class);
 	

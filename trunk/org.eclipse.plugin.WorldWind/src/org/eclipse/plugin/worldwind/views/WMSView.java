@@ -134,7 +134,7 @@ public class WMSView extends ViewPart
 		= new Hashtable<String, WMS_Capabilities>();
 
 	// bbox/ date labels (may be hidden dynamically) 
-	private Label l1, l2, l3,l4, l5;
+	private Label l3,l4;
 
 	private boolean showDates;
 
@@ -145,7 +145,7 @@ public class WMSView extends ViewPart
 		toolkit 		= new FormToolkit(parent.getDisplay());
 		form 			= toolkit.createScrolledForm(parent);
 
-		form.setText("WMS Viewer");
+		form.setText(Messages.getString("WMSView.0")); //$NON-NLS-1$
 		toolkit.decorateFormHeading(form.getForm());
 		
 		// initialize status line
@@ -160,17 +160,19 @@ public class WMSView extends ViewPart
 		int expanded 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED;
 		int collapsed 	=  Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE;
 		
-		layers 	= createLayersSection("Layers", null, expanded, 2);
+		// Layers section
+		layers 	= createLayersSection(Messages.getString("WMSView.1"), null, expanded, 2); //$NON-NLS-1$
 		
-		createCoverageSection("Coverage", null, collapsed, 2);
+		// coverage
+		createCoverageSection(Messages.getString("WMSView.2"), null, collapsed, 2); //$NON-NLS-1$
 		
 		// status message
-		statusMessage = toolkit.createLabel(form.getBody(), "", SWT.NONE);
+		statusMessage = toolkit.createLabel(form.getBody(), "", SWT.NONE); //$NON-NLS-1$
 		statusMessage.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 2));
 		
-		// plot btn
-		submit = toolkit.createButton(form.getBody(), "Submit", SWT.NONE);
-		submit.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 1));
+		// submit btn
+		submit = toolkit.createButton(form.getBody(), Messages.getString("WMSView.4"), SWT.NONE); //$NON-NLS-1$
+		//submit.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 1));
 		submit.addListener(SWT.Selection, this);
 		
 		// set flat look
@@ -213,7 +215,7 @@ public class WMSView extends ViewPart
 		td.colspan 		= 2;
 
 		// lbl cmbServers
-		Label l1 		= toolkit.createLabel(client, "Servers");
+		Label l1 		= toolkit.createLabel(client, Messages.getString("WMSView.5")); //$NON-NLS-1$
 		l1.setLayoutData(td);
 
 		cmbServers			= new Combo(client, SWT.READ_ONLY);
@@ -221,13 +223,13 @@ public class WMSView extends ViewPart
 		cmbServers.addListener(SWT.Selection, this);
 		
 		// new srv btn
-		newSrv	= toolkit.createButton(client, "New", SWT.PUSH);
+		newSrv	= toolkit.createButton(client, Messages.getString("WMSView.6"), SWT.PUSH); //$NON-NLS-1$
 		newSrv.addListener(SWT.Selection, this);
 
 		td 				= new TableWrapData(TableWrapData.FILL_GRAB);
 		td.colspan 		= 2;
 		
-		Label l2 		= toolkit.createLabel(client, "Layers");
+		Label l2 		= toolkit.createLabel(client, Messages.getString("WMSView.7")); //$NON-NLS-1$
 		l2.setLayoutData(td);
 		
 		td 				= new TableWrapData(TableWrapData.FILL_GRAB);
@@ -267,33 +269,42 @@ public class WMSView extends ViewPart
 		
 		TableWrapLayout layout = new TableWrapLayout();
 		layout.numColumns = 3;
-
+		layout.makeColumnsEqualWidth = true;
+		
 		sectionClient.setLayout(layout); 
 		
 		// Lat
-		l1 = toolkit.createLabel(sectionClient, "Latitude", SWT.NONE); 
+		toolkit.createLabel(sectionClient, Messages.getString("WMSView.8"), SWT.NONE);  //$NON-NLS-1$
 		
-		latMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		latMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		latMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		latMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		latMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		latMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		// Lon
-		l2 = toolkit.createLabel(sectionClient, "Longitude", SWT.NONE);  
+		toolkit.createLabel(sectionClient, Messages.getString("WMSView.11"), SWT.NONE);   //$NON-NLS-1$
 		
-		lonMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		lonMin = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		lonMin.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		lonMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY);
+		lonMax = toolkit.createText(sectionClient, "", SWT.FILL | SWT.READ_ONLY); //$NON-NLS-1$
 		lonMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 
-		TableWrapData td = new TableWrapData(TableWrapData.LEFT);
+		TableWrapData td; // = new TableWrapData(TableWrapData.LEFT);
 
+		// formats: lbl + combo
+		toolkit.createLabel(sectionClient, Messages.getString("WMSView.14"), SWT.NONE);   //$NON-NLS-1$
+
+		td = new TableWrapData(TableWrapData.LEFT);
+		td.colspan = 2;
+		
+		formats = new Combo(sectionClient, SWT.READ_ONLY);
+		formats.setLayoutData(td);
+		
 		// tmin
-		l3 = toolkit.createLabel(sectionClient, "Start time", SWT.NONE);  
-		//l4.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		l3 = toolkit.createLabel(sectionClient, Messages.getString("WMSView.15"), SWT.NONE);   //$NON-NLS-1$
 		
 		tmin = new Combo(sectionClient, SWT.BORDER);
 		
@@ -305,7 +316,7 @@ public class WMSView extends ViewPart
 		tmin.addListener(SWT.DefaultSelection, this);
 		
 		// tmax
-		l4 = toolkit.createLabel(sectionClient, "End time", SWT.NONE);  
+		l4 = toolkit.createLabel(sectionClient, Messages.getString("WMSView.16"), SWT.NONE);   //$NON-NLS-1$
 		
 		tmax = new Combo(sectionClient, SWT.BORDER);
 		
@@ -317,14 +328,6 @@ public class WMSView extends ViewPart
 		tmax.addListener(SWT.DefaultSelection, this);
 
 
-		// formats: lbl + combo
-		l5 = toolkit.createLabel(sectionClient, "Format", SWT.NONE);  
-
-		td = new TableWrapData(TableWrapData.LEFT);
-		td.colspan = 2;
-		
-		formats = new Combo(sectionClient, SWT.READ_ONLY);
-		formats.setLayoutData(td);
 
 		section.setClient(sectionClient);
 	}
@@ -420,7 +423,7 @@ public class WMSView extends ViewPart
 	private void initialize() throws Exception
 	{
 		// load public cmbServers from config folder
-		String list = Messages.getString("wiz.wms.servers.local.list");
+		String list = Messages.getString("wiz.wms.servers.local.list"); //$NON-NLS-1$
 		
 	    InputStream buffer  = new BufferedInputStream(Messages.getInputStream(ParserUtils.class, list));   
 	    OutputStream os = new ByteArrayOutputStream();
@@ -443,15 +446,15 @@ public class WMSView extends ViewPart
 		try {
 			if ( bookmarks != null) 
 			{
-				logger.debug("Loading " + bookmarks.length + " WMS srvs from bookmarks.");
+				logger.debug("Loading " + bookmarks.length + " WMS srvs from bookmarks."); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				for (String bm : bookmarks) {
-					final String[] tmp = bm.split("\\|"); // field sep (|)
+					final String[] tmp = bm.split("\\|"); // field sep (|) //$NON-NLS-1$
 					
 					final String name 	= tmp[0];
 					final String url 	= tmp[1];
 
-					logger.debug("Adding WMS bookmark: " + name + " " + url);
+					logger.debug("Adding WMS bookmark: " + name + " " + url); //$NON-NLS-1$ //$NON-NLS-2$
 					ParserUtils.PublicWMSServer wms = new ParserUtils.PublicWMSServer(name, new URL(url));
 
 					// Add to the WMS servers vector
@@ -490,12 +493,12 @@ public class WMSView extends ViewPart
 					showDates = true;
 					
 					// Comma sep string of ISO dates for this layer time span
-					logger.debug("Building ISO time list for " + layer.ISOTimeSpan);
+					logger.debug("Building ISO time list for " + layer.ISOTimeSpan); //$NON-NLS-1$
 						
 					final String csvDates = WMS_Capabilities.buildWMSTimeList(layer.ISOTimeSpan);
 					
 					// split csv string to generate dates
-					dates =  csvDates.split(",");
+					dates =  csvDates.split(","); //$NON-NLS-1$
 				}
 				
 				// Layer formats
@@ -503,10 +506,10 @@ public class WMSView extends ViewPart
 				
 				capabilities.getMapRequest().formats.toArray(formats);
 				
-				logger.debug("Using WMS layer " 
-						+ layer.Name + " " + ((dates != null) ? dates.length: 0) + " time steps "
-						+ " formats size=" + formats.length 
-						+ " Show dates=" + showDates);
+				logger.debug("Using WMS layer "  //$NON-NLS-1$
+						+ layer.Name + " " + ((dates != null) ? dates.length: 0) + " time steps " //$NON-NLS-1$ //$NON-NLS-2$
+						+ " formats size=" + formats.length  //$NON-NLS-1$
+						+ " Show dates=" + showDates); //$NON-NLS-1$
 				
 				loadCoverage(showDates
 						, layer.bbox.isValid() 	// show latlon
@@ -534,7 +537,7 @@ public class WMSView extends ViewPart
 			// Load from public list
 			url = servers.get(idx).capabilitiesURL;
 
-			logger.debug("Server=" + server + " idx=" + idx + " url:" + url);
+			logger.debug("Server=" + server + " idx=" + idx + " url:" + url); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			if ( capabilitiesCache.containsKey(url.toString())) 
 			{
@@ -578,13 +581,13 @@ public class WMSView extends ViewPart
 			final WMS_Capabilities.Service service = capabilities.getService();
 			
 			String name = (service.Title != null )
-				? service.Name + ": " + service.Title
+				? service.Name + ": " + service.Title //$NON-NLS-1$
 				: service.Name;
 			
-			name += " has " 
-				+ capabilities.getLayers().size() + "/"
+			name += Messages.getString("WMSView.34")  //$NON-NLS-1$
+				+ capabilities.getLayers().size() + "/" //$NON-NLS-1$
 				+ capabilities.getTotalLayers() 
-				+ " renderable layers. ";
+				+ Messages.getString("WMSView.36"); //$NON-NLS-1$
 				
 			
 			setStatusMessage(name);
@@ -667,14 +670,14 @@ public class WMSView extends ViewPart
 		l3.setVisible(showDates);
 		l4.setVisible(showDates);
 		
-		// bbox
-		latMax.setVisible(showLatLon); latMin.setVisible(showLatLon);
-		lonMax.setVisible(showLatLon); lonMin.setVisible(showLatLon);
-		l1.setVisible(showLatLon); l2.setVisible(showLatLon);
+		// bbox always visible
+//		latMax.setVisible(showLatLon); latMin.setVisible(showLatLon);
+//		lonMax.setVisible(showLatLon); lonMin.setVisible(showLatLon);
+//		l1.setVisible(showLatLon); l2.setVisible(showLatLon);
 		
-		// formats
-		formats.setVisible(showFormats);
-		l5.setVisible(showLatLon);
+		// formats always visible
+//		formats.setVisible(showFormats);
+//		l5.setVisible(showLatLon);
 	}
 	
 	/*
@@ -698,7 +701,7 @@ public class WMSView extends ViewPart
 				// Add WMS caps to combo box
 				ParserUtils.PublicWMSServer wms = new ParserUtils.PublicWMSServer(name, new URL(url));
 				
-				logger.debug("Adding user defined WMS: " + name + " Url=" + url);
+				logger.debug("Adding user defined WMS: " + name + " Url=" + url); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				cmbServers.add(name, 0);
 				servers.add(0, wms);
@@ -730,16 +733,16 @@ public class WMSView extends ViewPart
 			final String format = formats.getText();
 
 			if ( format == null || format.length() == 0 ) {
-				Messages.showErrorMessage(getViewSite().getShell(), "Select a coverage format");
+				Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.64")); //$NON-NLS-1$
 				return false;
 			}
 			
 			// User selected layers
 			WMS_Capabilities.Layer[] selectedLayers = getSelectedLayers(capabilities, indices);
 			
-			logger.debug("WMS Capabilities ver=" + capabilities.getVersion());
-			logger.debug("# of selected layers=" + indices.length 
-					+ " selected fmt=" + format + " selected layer incides=" + indices );
+			logger.debug("WMS Capabilities ver=" + capabilities.getVersion()); //$NON-NLS-1$
+			logger.debug("# of selected layers=" + indices.length  //$NON-NLS-1$
+					+ " selected fmt=" + format + " selected layer incides=" + indices ); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			/**
 			 * WMS Caps > 1.1.0 < 1.3.0 map to TiledWMSLayes
@@ -761,9 +764,9 @@ public class WMSView extends ViewPart
 			/* WMS Caps version 1.3.0 map to AnimatedGrounOverlays.  */
 			else {
 				// Use GroundOverlay or AnimatedGroundOverlay
-				logger.debug("WMS version=" + capabilities.getVersion() 
-						+ " Show dates=" + showDates 
-						+ " dates size=" + tmin.getItems().length);
+				logger.debug("WMS version=" + capabilities.getVersion()  //$NON-NLS-1$
+						+ " Show dates=" + showDates  //$NON-NLS-1$
+						+ " dates size=" + tmin.getItems().length); //$NON-NLS-1$
 				
 				boolean noTimeSteps = tmin.getItems().length == 1;
 				
@@ -780,11 +783,11 @@ public class WMSView extends ViewPart
 						for (GroundOverlayLayer groundOverlay : ovs) 
 						{
 							String newURL = groundOverlay.getTextureURL().toString()
-								+ "&time=" + tmin.getText() 
-								+ "/" + tmax.getText();
+								+ "&time=" + tmin.getText()  //$NON-NLS-1$
+								+ "/" + tmax.getText(); //$NON-NLS-1$
 							
-							logger.debug("Too many time steps for "
-									+ groundOverlay + " using new url " + newURL);
+							logger.debug("Too many time steps for " //$NON-NLS-1$
+									+ groundOverlay + " using new url " + newURL); //$NON-NLS-1$
 							
 							groundOverlay.setTextureURL(new URL(newURL));
 						}
@@ -802,7 +805,7 @@ public class WMSView extends ViewPart
 						for (GroundOverlayLayer groundOverlay : ovs) 
 						{
 							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
-							logger.debug("Adding kml " + kml.getDocument().getName());
+							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
 							
 							view.addKMLSource(kml, false);
 						}
@@ -819,11 +822,11 @@ public class WMSView extends ViewPart
 
 					
 					if ( dates == null) {
-						Messages.showErrorMessage(getViewSite().getShell(), "Select a coverage time span.");
+						Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.63")); //$NON-NLS-1$
 						return false;
 					}
 
-					logger.debug("User selected dates size=" + dates.length);
+					logger.debug("User selected dates size=" + dates.length); //$NON-NLS-1$
 					
 					TimeLoopGroundOverlay[] loopLayers = new TimeLoopGroundOverlay[selectedLayers.length];
 					
@@ -834,7 +837,7 @@ public class WMSView extends ViewPart
 									, dates
 									, format);
 						
-						logger.debug("Adding loop layer: " + loopLayers[i]);
+						logger.debug("Adding loop layer: " + loopLayers[i]); //$NON-NLS-1$
 					}
 					
 					view.addOverlays(loopLayers, false);
@@ -890,18 +893,18 @@ public class WMSView extends ViewPart
 	 */
 	private void saveServer (String name, String wmsUrl) {
 		try {
-			URL url 	= WorldWind.getDataFileCache().findFile("wms-bookmarks.txt", false);
+			URL url 	= WorldWind.getDataFileCache().findFile("wms-bookmarks.txt", false); //$NON-NLS-1$
 			File file	= null;
 			
 			if ( url == null)
-				file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt");
+				file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
 			else
 				file = new File(url.toURI());
 					
 			FileWriter fw = new FileWriter(file, true);
 			
-			logger.debug("Saving wms: " + name + " Url=" + wmsUrl + " to " + file);
-			fw.write(name + "|" + wmsUrl + Messages.NL );
+			logger.debug("Saving wms: " + name + " Url=" + wmsUrl + " to " + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			fw.write(name + "|" + wmsUrl + Messages.NL ); //$NON-NLS-1$
 			
 			fw.close();
 		} 
@@ -915,8 +918,8 @@ public class WMSView extends ViewPart
 	 */
 	private String[] loadBookmarks() {
 		try {
-			File file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt");
-			RandomAccessFile raf = new RandomAccessFile(file,"r");
+			File file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			RandomAccessFile raf = new RandomAccessFile(file,"r"); //$NON-NLS-1$
 			
 			byte[] bytes = new byte[(int)raf.length()];
 			raf.readFully(bytes);
