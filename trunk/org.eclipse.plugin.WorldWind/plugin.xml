@@ -65,7 +65,7 @@
       </view>
       -->
 		<view
-            name="Animation Progress View"
+            name="Job Progress View"
             icon="icons/16-earth.png"
             category="org.eclipse.ui"
             class="org.eclipse.ui.ExtensionFactory:progressView"

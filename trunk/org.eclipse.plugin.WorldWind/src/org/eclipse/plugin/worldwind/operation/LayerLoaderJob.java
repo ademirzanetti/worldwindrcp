@@ -33,9 +33,9 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 
 /**
- * An eclipse job to load remote real time satellite data sets from
- * the NAVY Labs & NOAA GOES. The datasets are images siting on a HTTP
- * server with a date encoded in the name, and change constantly.
+ * An eclipse job to load remote real time satellite data sets from the NAVY Labs 
+ * & NOAA GOES. The datasets are images siting on a HTTP server with a date encoded 
+ * in the name, and change constantly.
  * @author vsilva
  *
  */
@@ -62,28 +62,28 @@ public class LayerLoaderJob extends Job
 			// Fire status bar progress
 			monitor.beginTask(Messages.getString("remote.layers.load.lbl"), IProgressMonitor.UNKNOWN );
 			
-			display.syncExec(new Runnable() {
-				public void run() {
-					statusLine.beginTask(Messages.getString("remote.layers.load.lbl")
-							, IProgressMonitor.UNKNOWN);
-					statusLine.lockProgress();
-				}
-			});
+//			display.syncExec(new Runnable() {
+//				public void run() {
+//					statusLine.beginTask(Messages.getString("remote.layers.load.lbl")
+//							, IProgressMonitor.UNKNOWN);
+//					statusLine.lockProgress();
+//				}
+//			});
 
 			// Load sat layers
-			TreeParent tp = buildSatLoopLayerList(); 
+			TreeParent tp = buildSatLoopLayerList( monitor ); 
 
 			// Stop status progress
-			display.syncExec(new Runnable() {
-				public void run() {
-					statusLine.unlockProgress();
-					statusLine.taskDone();
-					
-				}
-			});
+//			display.syncExec(new Runnable() {
+//				public void run() {
+//					statusLine.unlockProgress();
+//					statusLine.taskDone();
+//					
+//				}
+//			});
 			monitor.done();
 			
-			if ( ! tp.hasChildren() ) return Status.OK_STATUS;
+			if ( tp == null || ! tp.hasChildren() ) return Status.OK_STATUS;
 
 			// Add Layers to the tree
 			// must clone the tree parent so the children won't be duplicated
@@ -126,7 +126,7 @@ public class LayerLoaderJob extends Job
 	 * All data is in real time. So it should not be cached
 	 * @return
 	 */
-    private TreeParent buildSatLoopLayerList() 
+    private TreeParent buildSatLoopLayerList( IProgressMonitor monitor) 
     	throws FileNotFoundException
     {
 		/*
@@ -151,6 +151,11 @@ public class LayerLoaderJob extends Job
         	final TreeParent tp = new TreeParent(layer, null);
         	
         	top.addChild(tp);
+        	
+        	if ( monitor.isCanceled() ) {
+        		monitor.done();
+        		return null;
+        	}
         	
         	// Add frames from each overlay
         	for ( GroundOverlayLayer go : ((TimeLoopGroundOverlay)layer).getOverlays() )

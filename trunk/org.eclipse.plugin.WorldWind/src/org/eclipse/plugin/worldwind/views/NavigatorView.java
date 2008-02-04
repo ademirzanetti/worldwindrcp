@@ -284,8 +284,8 @@ public class NavigatorView extends ViewPart
 				, statusLine );
 		
 		job.setProperty(IProgressConstants.ICON_PROPERTY, Activator.ICON_NOAA);
-		job.setUser(false);
-		job.schedule();
+		//job.setUser(false);
+		job.schedule(5000);
 	}
 	
 	/**
