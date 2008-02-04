@@ -1,5 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.wizard;
-
 
 import gov.nasa.worldwind.geom.Sector;
 
@@ -17,7 +26,11 @@ import org.eclipse.swt.widgets.Text;
 
 import worldwind.contrib.parsers.WMS_Capabilities;
 
-
+/**
+ * Coverage selection wizard page: BBOX, time span (if applicable), and format
+ * @author vsilva
+ *
+ */
 public class DimSelectionPage extends WizardPage implements Listener 
 {
 	// Date combos

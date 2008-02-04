@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2006 Vladimir Silva and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vladimir Silva - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.plugin.worldwind.actions;
 
 
@@ -27,12 +37,6 @@ public class WeatherWizardAction extends Action
 	@Override
 	public void run() 
 	{
-		// The WW GL canvas is required
-//		WorldWindowGLCanvas world = EarthView.world;
-
-		// this cannot happen!
-//		if ( world == null ) return;
-		
 		WeatherWizard wiz = new WeatherWizard(window); //, world);
 		WizardDialog dialog = new WizardDialog(window.getShell(), wiz);
 		dialog.open();
