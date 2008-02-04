@@ -1216,14 +1216,14 @@ public class NavigatorView extends ViewPart
 	{
 		if ( getViewSite() == null || getViewSite().getShell() == null ) return;
 		
-		Display display = getViewSite().getShell().getDisplay();
-		
-        display.syncExec(new Runnable() {
-        	public void run() {
-        		String message = layer + " ("  + current + "/" + total + ")" ;
-        		statusLine.setLoopStatusMessage(message);
-        	}
-        });
+//		Display display = getViewSite().getShell().getDisplay();
+//		
+//        display.syncExec(new Runnable() {
+//        	public void run() {
+//        		String message = layer + " ("  + current + "/" + total + ")" ;
+//        		statusLine.setLoopStatusMessage(message);
+//        	}
+//        });
 	}
 
 	/******************************************************
