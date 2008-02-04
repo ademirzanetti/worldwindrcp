@@ -166,7 +166,7 @@ public class LayerControlsDialog extends Dialog
     } 
     
     protected Point getInitialSize() { 
-        return new Point(250, 200); 
+        return new Point(280, 200); 
     }
 
 
