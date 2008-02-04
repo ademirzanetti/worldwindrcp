@@ -46,7 +46,7 @@ public class NewRemoteServerDialog extends Dialog
         super.configureShell(shell);
         
         // set title
-        shell.setText("New Remote Server");
+        shell.setText(Messages.getString("NewRemoteServerDialog.0")); //$NON-NLS-1$
     }
 
     @Override
@@ -57,13 +57,13 @@ public class NewRemoteServerDialog extends Dialog
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		Label l1 = new Label(container, SWT.NONE);
-		l1.setText("Name");
+		l1.setText(Messages.getString("NewRemoteServerDialog.1")); //$NON-NLS-1$
 		
 		server = new Text(container, SWT.BORDER);
 		server.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		Label l2 = new Label(container, SWT.NONE);
-		l2.setText("URL");
+		l2.setText(Messages.getString("NewRemoteServerDialog.2")); //$NON-NLS-1$
 		
 		url = new Text (container, SWT.BORDER);
 		url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -85,12 +85,12 @@ public class NewRemoteServerDialog extends Dialog
 					name 	= server.getText();
 					Url 	= url.getText();
 
-					if (name == null || Url == null || !Url.startsWith("http"))
-						throw new IOException("Server name and valid URL are required.");
+					if (name == null || Url == null || !Url.startsWith("http")) //$NON-NLS-1$
+						throw new IOException(Messages.getString("NewRemoteServerDialog.4")); //$NON-NLS-1$
 					
 					// add Capabilities request (if missing)
-					if ( Url.indexOf("?") == -1 )
-						Url += "?service=WMS&request=GetCapabilities";
+					if ( Url.indexOf("?") == -1 ) //$NON-NLS-1$
+						Url += "?service=WMS&request=GetCapabilities"; //$NON-NLS-1$
 					
 					close();
 				} 
