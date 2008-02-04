@@ -64,7 +64,7 @@ import worldwind.contrib.layers.PositionLayer;
 import worldwind.contrib.layers.ScreenOverlayLayer;
 import worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.GroundOverlayLoopListener;
+import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.OverlayLoopListener;
 import worldwind.contrib.layers.quadkey.GoogleEarthLayer;
 import worldwind.contrib.layers.quadkey.GoogleRoadsLayer;
 import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
@@ -76,7 +76,7 @@ import worldwind.contrib.parsers.WMS_Capabilities;
 
 
 public class DemoSWT 
-	implements GroundOverlayLoopListener
+	implements OverlayLoopListener
 {
 	private static final Logger logger = Logger.getLogger(DemoSWT.class);
 	
