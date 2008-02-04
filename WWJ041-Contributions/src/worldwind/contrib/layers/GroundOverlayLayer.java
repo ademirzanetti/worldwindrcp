@@ -181,7 +181,11 @@ public class GroundOverlayLayer extends AbstractLayer
         	if ( url != null  ) 
         	{
         		logger.debug("Loading texture from disk: " + url );
-        		loadTexture(dc.getTextureCache(), url); 
+        		
+        		if ( !loadTexture(dc.getTextureCache(), url) ) {
+        			logger.debug("Load failed...abort render.");
+        			return; 
+        		}
         	}
         	else {
         		// not in disk, load from remote URL
@@ -247,7 +251,7 @@ public class GroundOverlayLayer extends AbstractLayer
         }
         catch (Exception e) {
         	// notify listeners of error
-        	//onError(this, e);
+        	onError(this, e);
         	return false;
         }
        

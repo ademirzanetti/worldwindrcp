@@ -54,7 +54,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
     private WorldWindowGLCanvas canvas 	= null;
     
 	// Animation loop status listeners
-    private CopyOnWriteArrayList<GroundOverlayLoopListener> listeners = new CopyOnWriteArrayList<GroundOverlayLoopListener>(); 
+    private CopyOnWriteArrayList<OverlayLoopListener> listeners = new CopyOnWriteArrayList<OverlayLoopListener>(); 
     	
     // Legend
     private ScreenOverlayLayer legend;
@@ -68,7 +68,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
      * @author vsilva
      *
      */
-    static public interface GroundOverlayLoopListener
+    static public interface OverlayLoopListener
     	extends OverlayListener
     {
     	void statusChanged(final int current, final int total, final GroundOverlayLayer layer);
@@ -99,7 +99,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 
     	// For loop status updates
     	//private Vector<GroundOverlayLoopListener> listeners;
-    	private CopyOnWriteArrayList<GroundOverlayLoopListener> listeners;
+    	private CopyOnWriteArrayList<OverlayLoopListener> listeners;
     	
     	public Worker(CopyOnWriteArrayList<GroundOverlayLayer> overlays, WorldWindowGLCanvas canvas) {
     		this.overlays = overlays;
@@ -107,19 +107,19 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		}
     	
     	/* Remove a loop status listener */
-    	void removeListener( GroundOverlayLoopListener listener){
+    	void removeListener( OverlayLoopListener listener){
     		listeners.remove(listener);
     	}
     	
     	//void setLoopListeners (Vector<GroundOverlayLoopListener> listeners) {
-    	void setLoopListeners (CopyOnWriteArrayList<GroundOverlayLoopListener> listeners) {
+    	void setLoopListeners (CopyOnWriteArrayList<OverlayLoopListener> listeners) {
     		this.listeners = listeners;
     	}
     	
     	/* notify listeners of a loop update */
     	void statusChanged (int current, int total, GroundOverlayLayer layer) 
     	{
-    		Iterator<GroundOverlayLoopListener> iter = listeners.iterator();
+    		Iterator<OverlayLoopListener> iter = listeners.iterator();
     		
     		while ( iter.hasNext()) {
     			iter.next().statusChanged(current, total , layer );
@@ -408,11 +408,11 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	}
 
 	/* Loop listeners */
-	public void addLoopListener( GroundOverlayLoopListener listener){
+	public void addLoopListener( OverlayLoopListener listener){
 		listeners.add(listener);
 	}
 
-	public void removeLoopListener( GroundOverlayLoopListener listener){
+	public void removeLoopListener( OverlayLoopListener listener){
 		listeners.remove(listener);
 		if ( animator != null)
 			animator.removeListener(listener);
@@ -500,7 +500,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	public void onError(Layer layer, Exception ex) 
 	{
 		// notify listeners
-    	for (GroundOverlayLoopListener listener : listeners) {
+    	for (OverlayLoopListener listener : listeners) {
 			listener.onError(layer, ex);
 		}
 	}
