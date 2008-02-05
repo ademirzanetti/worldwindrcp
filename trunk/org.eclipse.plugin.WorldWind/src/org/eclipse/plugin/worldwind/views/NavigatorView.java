@@ -45,7 +45,7 @@ import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
-import org.eclipse.plugin.worldwind.operation.Check4UpdatesJob;
+import org.eclipse.plugin.worldwind.operation.UpdatesCheckJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
@@ -221,7 +221,6 @@ public class NavigatorView extends ViewPart
 		// create UI elements
 		searchViewer 	= createSearchSection(Messages.getString("view.navigator.places"), null, collapsed, 2);
 		
-		//myPlacesViewer 	= createTreeSection("My Places", null, expanded, 2, 150);
 		layersViewer 	= createTreeSection(Messages.getString("view.navigator.layers"), null, expanded, 2, 300);
 
 		initLayers();	
@@ -230,9 +229,8 @@ public class NavigatorView extends ViewPart
 		loadLayers();
 		
 		// check 4 updates
-		Check4UpdatesJob job = new Check4UpdatesJob(getViewSite().getWorkbenchWindow());
+		UpdatesCheckJob job = new UpdatesCheckJob(getViewSite().getWorkbenchWindow());
 		job.schedule(120000);
-		
 	}
 
 	

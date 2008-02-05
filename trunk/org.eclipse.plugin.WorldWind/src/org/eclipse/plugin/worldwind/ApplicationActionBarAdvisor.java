@@ -65,13 +65,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private OpenFileAction openFileAction;
 //	private WMSWizardAction wmsWizardAction;
 	private WeatherWizardAction weatherWizardAction;
-//	private OpenWebBrowserAction openWebBrowser;
 	private OpenViewAction openWebBrowser;
 	private OpenViewAction openDataSet;
 	
 	private IWorkbenchAction exitAction;
 
 	private Action cacheManagerAction;
+//	private Action updatesCheckAction;
 	
 	// Help Menu actions
 	private IWorkbenchAction aboutAction;
@@ -105,9 +105,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// File Menu
 		openFileAction = new OpenFileAction(Messages.getString("file.open.tooltip"), window);
 		register(openFileAction);
-		
-//		wmsWizardAction = new WMSWizardAction(Messages.getString("wms.wiz.tooltip"), window);
-//		register(wmsWizardAction);
 		
 		weatherWizardAction = new WeatherWizardAction(Messages.getString("weather.wiz.tooltip"), window);
 		register(weatherWizardAction);
@@ -172,6 +169,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		};
 		cacheManagerAction.setText(Messages.getString("menu.cache.name"));
 		
+		// check for updates
+//		updatesCheckAction = new Action(){ 
+//			public void run() {
+//				updatesCheck(window.getShell());
+//			}
+//		};
+//		updatesCheckAction.setText(Messages.getString("menu.upd.name"));
+		
 		// Help menu
 		aboutAction = ActionFactory.ABOUT.create(window);
 		register(aboutAction);
@@ -196,9 +201,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		fileMenu.add(openFileAction);
 		fileMenu.add(openDataSet);
 		fileMenu.add(weatherWizardAction);
-//		fileMenu.add(wmsWizardAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(openWebBrowser);
+//		fileMenu.add(updatesCheckAction);
 	    fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
 
@@ -268,4 +273,29 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	public static StatusLine getDefaultStatusLine() {
 		return statusLine;
 	}
+	
+	/**
+	 * 
+	 * @param shell
+	 */
+//	@SuppressWarnings("restriction")
+//	public void updatesCheck (Shell shell) {
+//		try {
+//			final String updateSite 		= Messages.getString("upd.site");
+//			
+//			IUpdateSearchCategory category 	= UpdateSearchRequest.createDefaultSiteSearchCategory();    
+//			UpdateSearchScope scope 		= new UpdateSearchScope();    
+//			scope.addSearchSite( updateSite, new URL(updateSite), new String[] {});
+//			
+//			UpdateSearchRequest request = new UpdateSearchRequest(category, scope);             
+//			UpdateJob job 				= new UpdateJob("Updates Check", request);
+//			
+//			InstallWizardOperation operation =       new InstallWizardOperation();       
+//			operation.run(shell, job);		
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
 }

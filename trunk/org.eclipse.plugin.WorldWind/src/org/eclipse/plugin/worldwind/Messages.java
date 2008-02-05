@@ -54,8 +54,8 @@ public class Messages
 		}
 	}
 
-	public static void showInfoMessage(Shell shell, String title, String message) {
-		MessageDialog.openInformation(shell, title, message);
+	public static void showInfoMessage(Shell shell, String message) {
+		MessageDialog.openInformation(shell, getString("info.dialog.title"), message);
 	}
 	
 	public static void showErrorMessage(Shell shell, String message) {
