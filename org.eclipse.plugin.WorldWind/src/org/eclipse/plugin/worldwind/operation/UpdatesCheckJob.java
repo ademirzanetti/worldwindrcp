@@ -46,14 +46,14 @@ import org.eclipse.update.operations.OperationsManager;
  * @author Owner
  *
  */
-public class Check4UpdatesJob extends Job
+public class UpdatesCheckJob extends Job
 {
-	private static final Logger logger	= Logger.getLogger(Check4UpdatesJob.class);
+	private static final Logger logger	= Logger.getLogger(UpdatesCheckJob.class);
 	
 	private Display display;
 	private IWorkbenchWindow window;
 	
-	public Check4UpdatesJob(IWorkbenchWindow window) { 
+	public UpdatesCheckJob(IWorkbenchWindow window) { 
 		super("Check for updates");
 		this.window 	= window;
 		this.display	= window.getShell().getDisplay();
@@ -123,7 +123,7 @@ public class Check4UpdatesJob extends Job
 						
 						// install new features
 						if ( install ) 
-							fireUpdateJob(installOps); //installFeatures(installOps, monitor);  
+							fireUpdateJob(installOps,  monitor);   
 						
 					}
 				});
@@ -171,7 +171,7 @@ public class Check4UpdatesJob extends Job
 						
 						// Update features
 						if ( update ) {
-							fireUpdateJob(installOps);//installFeatures(installOps, monitor); 
+							fireUpdateJob(installOps, monitor); 
 						}
 					}
 				});	
@@ -189,7 +189,8 @@ public class Check4UpdatesJob extends Job
 	 * prevent the UI from freezing
 	 * @param installOps
 	 */
-	void fireUpdateJob (final List<IInstallFeatureOperation> installOps) 
+	void fireUpdateJob (final List<IInstallFeatureOperation> installOps
+			, IProgressMonitor monitor) 
 	{
 		// show progress view
 		try {
@@ -201,25 +202,28 @@ public class Check4UpdatesJob extends Job
 	        protected IStatus run(IProgressMonitor monitor) {
 	        	installFeatures(installOps, monitor);
 	        	
-//	        	setProperty(IProgressConstants.ACTION_PROPERTY, 
-//	                    getCompletedAction());
-	        	
 	        	return Status.OK_STATUS;
 	        }
 		};
 		job.setUser(false);
 	    job.schedule();
+//	    job.addJobChangeListener(new JobChangeAdapter(){
+//			public void done(IJobChangeEvent e) {
+//				try {
+//					if ( e.getResult().isOK() )
+//						Messages.showInfoMessage(display.getActiveShell()
+//								, "Installation complete. Restart the workbench for changes to take effect.");
+//					else
+//						Messages.showErrorMessage(display.getActiveShell()
+//								, "Installation failed: " + e.getResult().getMessage());
+//				} 
+//				catch (Exception ex) {
+//					ex.printStackTrace();
+//				}
+//			}
+//	    });
 	}
 
-//	protected Action getCompletedAction() {
-//		return new Action("Installation complete") {
-//			public void run() {
-//				MessageDialog.openInformation(display.getActiveShell()
-//						, Messages.getText("info.dialog.title")
-//						, "Installation complete. Restart the workbench for changes to take effect.");
-//			}
-//		};
-//	}	
 	
 	/**
 	 * Install features
@@ -246,18 +250,4 @@ public class Check4UpdatesJob extends Job
 					, e.getMessage());
 		}
 	}
-	/**
-	 * 		final String updateSite = Messages.getString("upd.site");
-	 * 
-			IUpdateSearchCategory category =       UpdateSearchRequest.createDefaultSiteSearchCategory();    
-			UpdateSearchScope scope = new UpdateSearchScope();    
-			scope.addSearchSite( updateSite, new URL(updateSite), new String[] {});
-			
-			UpdateSearchRequest request =       new UpdateSearchRequest(category, scope);             
-			UpdateJob job = new UpdateJob("My Update Job", request);
-			
-			InstallWizardOperation operation =       new InstallWizardOperation();       
-			operation.run(getViewSite().getShell(), job);		
-
-	 */
 }
