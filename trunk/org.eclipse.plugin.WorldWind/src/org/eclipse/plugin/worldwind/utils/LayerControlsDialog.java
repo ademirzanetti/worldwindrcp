@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point; 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -86,21 +85,25 @@ public class LayerControlsDialog extends Dialog
 		
     	logger.debug(layer.toString());
 
-    	// Layer
+    	// Layer label
 		Label l1 = new Label(container, SWT.NONE);
 		l1.setText(Messages.getString("lyr.ctl.1"));
 		
-		// Layer name
-		Label l2 = new Label(container, SWT.NONE);
+		// Layer name (with wrapping for long names)
+		GridData gd 	= new GridData(GridData.FILL_BOTH);
+		gd.widthHint 	= 150;
+		
+		Label l2 = new Label(container, SWT.WRAP | SWT.LEFT);
 		l2.setText(layer.getName());
-
-		// Opacity
+		l2.setLayoutData(gd);
+		
+		// Opacity label
 		Label l3 = new Label(container, SWT.NONE);
 		l3.setText(Messages.getString("lyr.ctl.2"));
 
+		// Opacity scale
 		Scale opacity = new Scale (container, SWT.NONE);
 		opacity.addListener(SWT.Selection, this);
-		//opacity.setSize (200, 64);
 		opacity.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		opacity.setMaximum (100);
 		opacity.setIncrement(10);		
@@ -115,7 +118,6 @@ public class LayerControlsDialog extends Dialog
 			l4.setText(Messages.getString("lyr.ctl.3"));
 	
 			Scale speed = new Scale (container, SWT.NONE);
-			//speed.setSize (200, 64);
 			speed.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			speed.setMaximum (100);
 			speed.setIncrement (10);
@@ -133,7 +135,7 @@ public class LayerControlsDialog extends Dialog
 		{
 			VirtualEarthLayer msVe = (VirtualEarthLayer)layer;
 			
-			GridData gd = new GridData(GridData.FILL_BOTH);
+			gd = new GridData(GridData.FILL_BOTH);
 			gd.horizontalSpan = 2;
 			gd.grabExcessHorizontalSpace = true;
 			
@@ -179,9 +181,9 @@ public class LayerControlsDialog extends Dialog
             IDialogConstants.CANCEL_LABEL, false); 
     } 
     
-    protected Point getInitialSize() { 
-        return new Point(280, 200); 
-    }
+//    protected Point getInitialSize() { 
+//        return new Point(280, 200); 
+//    }
 
 
 	public void handleEvent(Event event) 
