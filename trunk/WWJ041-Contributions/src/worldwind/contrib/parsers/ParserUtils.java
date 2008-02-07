@@ -420,17 +420,24 @@ public class ParserUtils
     			? format 
     			: capabilities.getMapRequest().formats.firstElement();
     		
+    		// CRS cannot be null
+    		final String CRS = layer.CRS != null  ? layer.CRS : layer.SRS;
+    		
+    		if ( CRS == null )
+    			throw new IllegalArgumentException("No Coordinate Reference System for " + layer.Name);
+    		
     		overlays[i] =  new TiledWMSLayer(new TiledWMSLayerDescriptor(
     				capabilities.getMapRequest().Url.toString() //  GetMapURL.toString()
     				, layer.Name		// wms layer name
     				, layer.Title		// title
-    				, layer.CRS			// CRS
+    				, CRS				// CRS
     				, layer.style.Name	// style name
     				, bbox				// lat/lon box
     				, null				// time: null for wms 1.1.0
     				, fmt 				// img fmt: image/png,...
     				, 13				// # of levels
-    				, 512, 512			// tile w,h
+    				, layer.fixedWidth != 0 ? layer.fixedWidth : 512 	// width
+    				, layer.fixedHeight!= 0 ? layer.fixedHeight : 512	// tile w,h
     				, capabilities.getVersion().toString()
     				, "Earth/" + cacheLoc	// WW cache location
     				));

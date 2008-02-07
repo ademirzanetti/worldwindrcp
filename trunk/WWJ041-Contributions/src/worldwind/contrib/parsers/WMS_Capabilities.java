@@ -72,7 +72,7 @@ public class WMS_Capabilities
 		public String Name;
 		public String Title;
 		String Abstract;
-		public String CRS;
+		public String CRS, SRS;
 		public BBox bbox;			// Lat/lon box
 		public String ISOTimeSpan; 	// Time Span: t1/t2/period | CSV list of t1/t2/period 
 		public URL DataURL;			// Docs ur
@@ -129,6 +129,7 @@ public class WMS_Capabilities
 			url += "&height=" + fixedHeight;
 			
 			url += (CRS != null) ? "&crs=" + CRS : "";
+			url += (SRS != null) ? "&srs=" + SRS : "";
 			
 			// Style is required
 			url += (style.isValid()) ? "&" + style.asWMS() : "";
@@ -147,7 +148,8 @@ public class WMS_Capabilities
 			return "Name: " + Name + "\nTitle: " + Title
 			+ "\nAbs Len: " + ((Abstract!= null) ? Abstract.length() : 0)
 			+ "\nTime Span: " + ISOTimeSpan
-			+ "\nCRS: " + CRS
+			+ ( CRS != null ? "\nCRS: " + CRS : "")
+			+ ( SRS != null ? "\nSRS: " + SRS : "")
 			+ "\nBBox: " + bbox
 			+ "\nStyle: " + style
 			+ "\nData URL: " + DataURL
