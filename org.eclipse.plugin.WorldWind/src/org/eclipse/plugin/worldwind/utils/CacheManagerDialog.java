@@ -118,8 +118,8 @@ public class CacheManagerDialog extends Dialog
 	}
 	
 	/*
-	 * Load table with All directory names/sizes within a location.
-	 * 2 levels bellow root cache location only!
+	 * Load table with all directory and file names/sizes within a location.
+	 * MAX_DEPTH levels below the root cache location only.
 	 */
 	private static final int MAX_DEPTH = 2;
 	private int depth = 0;
@@ -133,11 +133,14 @@ public class CacheManagerDialog extends Dialog
     	
 		for (int i = 0; i < filelist.length; i++) 
 		{
-			if ( filelist[i].isDirectory() && depth < MAX_DEPTH) {
+			//if ( filelist[i].isDirectory() && depth < MAX_DEPTH) {
+			if ( depth < MAX_DEPTH) {
 				viewer.add(filelist[i] + " - ("  //$NON-NLS-1$
 					+ nf.format((double)(getFileSize(filelist[i])/1e6)) 
 					+ " MB)" ); //$NON-NLS-1$
-				depth++;
+				
+				//depth++;
+				if ( filelist[i].isDirectory() ) depth++;
 				loadTable(filelist[i]);
 			}
 		}
