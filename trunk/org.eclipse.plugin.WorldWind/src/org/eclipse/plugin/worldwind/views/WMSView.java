@@ -166,6 +166,9 @@ public class WMSView extends ViewPart
 		// coverage
 		createCoverageSection(Messages.getString("WMSView.2"), null, collapsed, 2); //$NON-NLS-1$
 		
+		// display options
+		createOptionsSection("Display Options", null, collapsed, 2);
+		
 		// status message
 		statusMessage = toolkit.createLabel(form.getBody(), "", SWT.NONE); //$NON-NLS-1$
 		statusMessage.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 2));
@@ -330,6 +333,23 @@ public class WMSView extends ViewPart
 
 
 		section.setClient(sectionClient);
+	}
+	
+	private void createOptionsSection(String title
+			, String description
+			, int style, int colSpan) 
+	{
+		Section section 		= createSection(title, description, style, colSpan);
+		Composite sectionClient = toolkit.createComposite(section);
+		
+		sectionClient.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		toolkit.paintBordersFor(sectionClient);
+		
+		TableWrapLayout layout = new TableWrapLayout();
+		layout.numColumns = 2;
+		layout.makeColumnsEqualWidth = true;
+		
+		sectionClient.setLayout(layout); 
 	}
 	
 	/*
