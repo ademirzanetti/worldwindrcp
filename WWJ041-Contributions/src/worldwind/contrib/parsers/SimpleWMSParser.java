@@ -221,11 +221,16 @@ public class SimpleWMSParser extends DefaultHandler
 			}
 			
 			/* Proj ID */
-		    if ( name.equalsIgnoreCase("CRS" ) || name.equalsIgnoreCase("SRS" ) ) {
+		    if ( name.equalsIgnoreCase("CRS" ) ) { // || name.equalsIgnoreCase("SRS" ) ) {
 		    	putReqElemAtDepth("crs", getContents());
 		    	layer.CRS = getContents();
 		    }
 
+		    if ( name.equalsIgnoreCase("SRS" )) { // || name.equalsIgnoreCase("SRS" ) ) {
+		    	putReqElemAtDepth("srs", getContents());
+		    	layer.SRS = getContents();
+		    }
+		    
 		    /* ISO Time span */
 			if ( (name.equals("Dimension") || name.equals("Extent")) && inTimeDim ) {
 				layer.ISOTimeSpan = getContents();  
@@ -296,6 +301,8 @@ public class SimpleWMSParser extends DefaultHandler
 					
 					if ( props.getProperty("crs") != null)
 						layer.CRS 		= props.getProperty("crs");
+					if ( props.getProperty("srs") != null)
+						layer.SRS 		= props.getProperty("srs");
 					if ( props.getProperty("east") != null)
 						layer.bbox.east = props.getProperty("east");
 					if ( props.getProperty("west") != null)
@@ -400,7 +407,9 @@ public class SimpleWMSParser extends DefaultHandler
 		for (Iterator<Layer> iterator = layers.iterator(); iterator.hasNext();) 
 		{
 			Layer l = iterator.next();
-			if ( l.Name == null || !l.bbox.isValid() || l.CRS == null ) {
+
+			// valid layers must have a name, bbox and CRS or SRS
+			if ( l.Name == null || !l.bbox.isValid() || (l.CRS == null && l.SRS == null) ) {
 				logger.debug("Removing layer " + l.Name + ". Missing name, bbox or CRS.");
 				iterator.remove();
 			}
@@ -417,14 +426,18 @@ public class SimpleWMSParser extends DefaultHandler
 	}
 	
 	/* test only */
-	/* 
+	/*
 	public static void main(String[] args) {
 		try {
 			SimpleWMSParser parser = new SimpleWMSParser();
 			
 			//String file = "src/demo/xml/svs.gsfc.nasa.gov_cgi-bin_wms.xml";
 			//String file = "src/demo/xml/worldwind21.arc.nasa.gov_geoserver_wms.xml";
-			URL url = new URL("http://gisdata.usgs.net/servlet/com.esri.wms.Esrimap?REQUEST=GetCapabilities&SERVICE=wms");
+			//URL url = new URL("http://gisdata.usgs.net/servlet/com.esri.wms.Esrimap?REQUEST=GetCapabilities&SERVICE=wms");
+			//URL url = new URL("http://webapps.datafed.net/ogc_EPA.wsfl?service=WMS&request=GetCapabilities&version=1.1.1");
+			//URL url = new URL("http://mapserver.flightgear.org/cgi-bin/landcover?service=WMS&request=GetCapabilities");
+			URL url = new URL("http://svs.gsfc.nasa.gov/cgi-bin/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities");
+			
 			//URL url = new URL("http://gds.rtpnc.epa.gov/wms/rsig.xml");
 			//URL url = new URL("http://neowms.sci.gsfc.nasa.gov/wms/wms?service=WMS&request=GetCapabilities");
 			
