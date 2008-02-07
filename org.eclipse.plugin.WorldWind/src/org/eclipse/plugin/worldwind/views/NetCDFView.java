@@ -557,7 +557,8 @@ public class NetCDFView extends ViewPart
 				NavigatorView view = (NavigatorView)Activator.getView(getViewSite().getWorkbenchWindow()
 						, NavigatorView.ID);
 				
-				view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
+				//view.addOverlays(new TimeLoopGroundOverlay[] { loop }, false);
+				view.addLayers(new TimeLoopGroundOverlay[] { loop }, false);
 			}
 		});
 	}

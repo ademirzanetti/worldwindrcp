@@ -53,9 +53,9 @@ import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
  * @author Owner
  *
  */
-public class WWTreeViewer extends CheckboxTreeViewer
+public class LayersTreeViewer extends CheckboxTreeViewer
 {
-	private static final Logger logger = Logger.getLogger(WWTreeViewer.class);
+	private static final Logger logger = Logger.getLogger(LayersTreeViewer.class);
 	
 	// Nodes checked by default
 	private Vector<TreeObject> checkedTreeNodes = new Vector<TreeObject>();
@@ -160,11 +160,11 @@ public class WWTreeViewer extends CheckboxTreeViewer
 		
 	}
 	
-	public WWTreeViewer(Composite parent, int style) {
+	public LayersTreeViewer(Composite parent, int style) {
 		super(parent, style);
 	}
 
-	public WWTreeViewer(Tree tree) {
+	public LayersTreeViewer(Tree tree) {
 		super(tree);
 	}
 	
