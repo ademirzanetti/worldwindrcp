@@ -54,8 +54,8 @@ import org.eclipse.plugin.worldwind.utils.YGeoSearch;
 import org.eclipse.plugin.worldwind.utils.YGeoSearch.YResult;
 import org.eclipse.plugin.worldwind.views.tree.TreeObject;
 import org.eclipse.plugin.worldwind.views.tree.TreeParent;
-import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
-import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer.LayersLabelProvider;
+import org.eclipse.plugin.worldwind.views.tree.LayersTreeViewer;
+import org.eclipse.plugin.worldwind.views.tree.LayersTreeViewer.LayersLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -147,7 +147,7 @@ public class NavigatorView extends ViewPart
 	private LayerList myLayers = new LayerList();
 	
 	// Layers tree has: WWJ built in layers + real time sat
-	private WWTreeViewer layersViewer;
+	private LayersTreeViewer layersViewer;
 	
 	// Yahoo location search table
 	private TableViewer searchViewer;
@@ -234,8 +234,9 @@ public class NavigatorView extends ViewPart
 	}
 
 	
-	/*
-	 * Initialize layers tree w/ WW built in layers and realtime sat
+	/**
+	 * Initialize the layers tree with WWJ built in layers and some 
+	 * real-time satellite layers from the Navy Labs
 	 */
 	private void initLayers()
 	{
@@ -249,7 +250,7 @@ public class NavigatorView extends ViewPart
 		labelProvider.setTipSupport(tipSupport);
 
 		// Init weather w/ WW built in layers
-		layersViewer.setContentProvider(new WWTreeViewer.LayersContentProvider());
+		layersViewer.setContentProvider(new LayersTreeViewer.LayersContentProvider());
 		layersViewer.setLabelProvider(labelProvider);
 		layersViewer.initialize();
 		
@@ -263,7 +264,7 @@ public class NavigatorView extends ViewPart
 	    	  TreeObject to = (TreeObject)event.getElement();
 	    	  
 	    	  // handle state
-	    	  handleCheckState(checked, to, (WWTreeViewer)event.getSource());
+	    	  handleCheckState(checked, to, (LayersTreeViewer)event.getSource());
 	      }
 	    });
 		
@@ -293,7 +294,7 @@ public class NavigatorView extends ViewPart
 	 * @param style
 	 * @return
 	 */
-	private WWTreeViewer createTreeSection(String title
+	private LayersTreeViewer createTreeSection(String title
 			, String description
 			, int style
 			, int colSpan
@@ -324,7 +325,7 @@ public class NavigatorView extends ViewPart
 		
 		section.setClient(sectionClient);
 		
-		return 	new WWTreeViewer(tree);
+		return 	new LayersTreeViewer(tree);
 	}
 	
 	/**
@@ -473,7 +474,7 @@ public class NavigatorView extends ViewPart
 	 */
 	public void addLayer (Layer layer, Image icon, boolean enabled) {
 		layer.setEnabled(enabled);
-		//myPlacesViewer.addTreeObject(new TreeParent(layer, icon	)
+		
 		TreeParent parent = new TreeParent(layer, icon);
 		
 		layersViewer.addTreeObject( parent
@@ -492,7 +493,7 @@ public class NavigatorView extends ViewPart
 	 */
 	public void addKMLSource (KMLSource kml,  boolean enabled) 
 	{
-		WWTreeViewer nodeViewer = layersViewer; // myPlacesViewer;
+		LayersTreeViewer nodeViewer = layersViewer; // myPlacesViewer;
 		
 		String displayName 		= kml.getDocument().getName();
 		LayerList list 			= kml.toLayerList();
@@ -519,7 +520,7 @@ public class NavigatorView extends ViewPart
 		{
 			final Layer child = list.iterator().next();
 			
-			nodeViewer.addTreeObject(new TreeParent(child, WWTreeViewer.guessIcon(child.getName()))
+			nodeViewer.addTreeObject(new TreeParent(child, LayersTreeViewer.guessIcon(child.getName()))
 					, null
 					, true
 					, enabled);
@@ -536,7 +537,7 @@ public class NavigatorView extends ViewPart
 			layer.setValue("KMLSOURCE", kml.toKML());
 
 			TreeParent top = new TreeParent(layer
-					, WWTreeViewer.guessIcon(displayName)
+					, LayersTreeViewer.guessIcon(displayName)
 					);
 			
 			// Add list layers to children (of top)
@@ -553,7 +554,7 @@ public class NavigatorView extends ViewPart
 				 
 				 child.setEnabled(enabled);
 				 children[i++] = new TreeObject(child
-						 , WWTreeViewer.guessIcon(child.getName())
+						 , LayersTreeViewer.guessIcon(child.getName())
 						 );
 				 
 			}
@@ -567,7 +568,7 @@ public class NavigatorView extends ViewPart
 	/*
 	 * Process a check state event
 	 */
-	private void handleCheckState (boolean checked, final TreeObject to, final WWTreeViewer treeViewer)
+	private void handleCheckState (boolean checked, final TreeObject to, final LayersTreeViewer treeViewer)
 	{
 		to.setEnabled(checked);
 
@@ -715,7 +716,7 @@ public class NavigatorView extends ViewPart
 	/**
 	 * On click move globe to the centroid of the BBOX dataset
 	 */
-	private void hookClickAction (final WWTreeViewer treeViewer) 
+	private void hookClickAction (final LayersTreeViewer treeViewer) 
 	{
 		treeViewer.getTree().addKeyListener(new KeyAdapter(){
 
@@ -738,7 +739,7 @@ public class NavigatorView extends ViewPart
 	/**
 	 * Fly to a tree layer center on click.
 	 */
-	private void flyOnClickAction (WWTreeViewer treeViewer)  
+	private void flyOnClickAction (LayersTreeViewer treeViewer)  
 	{
 			ISelection selection = treeViewer.getSelection();
 			Object obj = ((IStructuredSelection)selection).getFirstElement();
@@ -798,7 +799,7 @@ public class NavigatorView extends ViewPart
 		actionSaveLayer = new Action() {
 			public void run() 
 			{
-				final WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
+				final LayersTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
 				
 				if ( nodeViewer == null ) return;
 				
@@ -919,7 +920,7 @@ public class NavigatorView extends ViewPart
 	 */
 	private void showLayerControls() 
 	{
-		WWTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
+		LayersTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
 		
 		if ( nodeViewer == null ) return;
 		
@@ -1098,9 +1099,10 @@ public class NavigatorView extends ViewPart
 	}
 	
 	/**
-	 * Add a tiled WMS (usually 1.1.x - no time dimension) layer to the view
+	 * Add an array of {@link TiledWMSLayer} usually WMS 1.1.x with no time dimension
+	 * to the view
 	 * @param parentName Name of the tree parent node
-	 * @param layers Tiles WMS layers
+	 * @param layers Tiled WMS layers
 	 */
 	public void addTiledWMSLayers( String parentName, TiledWMSLayer[] layers, boolean enabled) 
 	{
@@ -1109,7 +1111,7 @@ public class NavigatorView extends ViewPart
 		
 		// Parent
 		TreeParent parent = new TreeParent (top
-				, WWTreeViewer.guessIcon(parentName) );
+				, LayersTreeViewer.guessIcon(parentName) );
 		
 		// Children
 		TreeObject[] children = new TreeObject[layers.length];
@@ -1121,49 +1123,73 @@ public class NavigatorView extends ViewPart
 			children[i] = new TreeObject( layers[i] , null);
 		}
 		
-		// Add to view
-		//myPlacesViewer.addTreeObject(parent, children, true, enabled);
+		// Add to the view
 		layersViewer.addTreeObject(parent, children, true, enabled);
 		
 	}
 	
 	/**
-	 * Add a World Wind Layer to the view 
+	 * Add an array World Wind {@link Layer} to the view 
 	 */
-	public void addOverlays (Layer[] layers, boolean enabled) 
+	public void addLayers (Layer[] layers, boolean enabled) 
 	{
 		if ( layers == null ) return;
 		
-		Layer first = layers[0];
-		
-		// Time Loop layer
-		if ( first instanceof TimeLoopGroundOverlay) 
+		for (Layer layer : layers) 
 		{
-			//myPlacesViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
-			layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
-			
-			// for caching
-			for (Layer layer : layers) {
-				myLayers.add(layer);
-			}
-			
-			return;
-		}
-		// Ground overlays
-		else if ( first instanceof GroundOverlayLayer) 
-		{
-			for (Layer layer : layers) {
-				addGroundOverlay((GroundOverlayLayer)layer, enabled);
+			// Time Loop layer
+			if ( layer instanceof TimeLoopGroundOverlay) 
+			{
+				layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
 				
 				// for caching
-				//myLayers.add(layer);
+					myLayers.add(layer);
+				
+				return;
+			}
+			// Ground overlays
+			else if ( layer instanceof GroundOverlayLayer) 
+			{
+					addGroundOverlay((GroundOverlayLayer)layer, enabled);
+			}
+			// regular layer (Not a Ground Overlay or Time Loop)
+			else {
+				addLayer(layer, null, true);
+				//statusLine.setErrorMessage("Invalid layer type: " + layer.getClass().getName());
 			}
 		}
-		// regular layer (Not a Ground Overlay or Time Loop) - don't save
-		else {
-			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
-		}
 	}
+	
+//	public void addOverlays (Layer[] layers, boolean enabled) 
+//	{
+//		if ( layers == null ) return;
+//		
+//		Layer first = layers[0];
+//		
+//		// Time Loop layer
+//		if ( first instanceof TimeLoopGroundOverlay) 
+//		{
+//			layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
+//			
+//			// for caching
+//			for (Layer layer : layers) {
+//				myLayers.add(layer);
+//			}
+//			
+//			return;
+//		}
+//		// Ground overlays
+//		else if ( first instanceof GroundOverlayLayer) 
+//		{
+//			for (Layer layer : layers) {
+//				addGroundOverlay((GroundOverlayLayer)layer, enabled);
+//			}
+//		}
+//		// regular layer (Not a Ground Overlay or Time Loop) - don't save
+//		else {
+//			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
+//		}
+//	}
 	
 	/**
 	 * Add a {@link GroundOverlayLayer} to the View tree
@@ -1173,10 +1199,10 @@ public class NavigatorView extends ViewPart
 	{
 		TreeParent parent = 
 			new TreeParent(overlay
-					, WWTreeViewer.guessIcon(overlay.getName())
+					, LayersTreeViewer.guessIcon(overlay.getName())
 		            );
 		
-		//myPlacesViewer.addTreeObject(parent, null, true, enabled);
+		
 		layersViewer.addTreeObject(parent, null, true, enabled);
 		
 		// Add to my layers so it will be saved
@@ -1231,7 +1257,8 @@ public class NavigatorView extends ViewPart
 	/*
 	 * Create a PopUp or context menu
 	 */
-	private void hookContextMenu() {
+	private void hookContextMenu() 
+	{
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {

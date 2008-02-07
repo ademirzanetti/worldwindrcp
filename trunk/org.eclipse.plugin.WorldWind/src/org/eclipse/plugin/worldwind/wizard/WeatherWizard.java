@@ -85,7 +85,6 @@ public class WeatherWizard extends Wizard
 				logger.debug("# of dataset frames=" +( (HTTPLoopFileLayer)layer).getFrames().size() );
 				
 				// build only the latest MAX_FRAMES overlays
-				//((HTTPLoopFileLayer)layer).buildOverlays(HTTPSatLoopLayerList.MAX_FRAMES);
 				((HTTPLoopFileLayer)layer).buildOverlays(i, j);
 				
 				addLayers(layer, view);
@@ -96,8 +95,8 @@ public class WeatherWizard extends Wizard
 			
 			return true;
 		} 
-		catch (Exception e) {
-			//e.printStackTrace();
+		catch (Exception e) 
+		{
 			Messages.showErrorMessage(window.getShell()
 					, e.getClass() + ": " +  e.getMessage());
 			return false;
@@ -109,7 +108,8 @@ public class WeatherWizard extends Wizard
 	 */
 	private void addLayers(TimeLoopGroundOverlay layer , NavigatorView view) 
 	{
-		view.addOverlays(new TimeLoopGroundOverlay[]{layer}, false);
+		//view.addOverlays(new TimeLoopGroundOverlay[]{layer}, false);
+		view.addLayers(new TimeLoopGroundOverlay[]{layer}, false);
 	}
 	
 }

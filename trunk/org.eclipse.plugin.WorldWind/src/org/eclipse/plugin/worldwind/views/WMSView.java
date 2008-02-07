@@ -511,6 +511,8 @@ public class WMSView extends ViewPart
 						+ " formats size=" + formats.length  //$NON-NLS-1$
 						+ " Show dates=" + showDates); //$NON-NLS-1$
 				
+				setStatusMessage("Using " + layer.Name + " with " + ((dates != null) ? dates.length: 0) + " time steps " );
+				
 				loadCoverage(showDates
 						, layer.bbox.isValid() 	// show latlon
 						, dates					// time steps
@@ -747,7 +749,8 @@ public class WMSView extends ViewPart
 			/**
 			 * WMS Caps > 1.1.0 < 1.3.0 map to TiledWMSLayes
 			 */
-			if ( capabilities.getVersion().mid < 3) 
+			//if ( selectedLayers[0].ISOTimeSpan == null )  
+			if ( capabilities.getVersion().mid < 3)
 			{
 				// Convert WMS Caps layers to TiledWMSLayer
 				TiledWMSLayer[] wwLayers = 
@@ -762,7 +765,8 @@ public class WMSView extends ViewPart
 				view.addTiledWMSLayers(nodeName, wwLayers, false);
 			}
 			/* WMS Caps version 1.3.0 map to AnimatedGrounOverlays.  */
-			else {
+			else 
+			{
 				// Use GroundOverlay or AnimatedGroundOverlay
 				logger.debug("WMS version=" + capabilities.getVersion()  //$NON-NLS-1$
 						+ " Show dates=" + showDates  //$NON-NLS-1$
@@ -812,7 +816,8 @@ public class WMSView extends ViewPart
 					}
 					else {
 						// add to the layers view
-						view.addOverlays(ovs, false);
+						//view.addOverlays(ovs, false);
+						view.addLayers(ovs, false);
 					}
 				}
 				// Convert selected layers to TimeLoopGroundOverlay 
@@ -840,7 +845,8 @@ public class WMSView extends ViewPart
 						logger.debug("Adding loop layer: " + loopLayers[i]); //$NON-NLS-1$
 					}
 					
-					view.addOverlays(loopLayers, false);
+					//view.addOverlays(loopLayers, false);
+					view.addLayers(loopLayers, false);
 				}
 			}
 			

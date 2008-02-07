@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.utils.StatusLine;
-import org.eclipse.plugin.worldwind.views.tree.WWTreeViewer;
+import org.eclipse.plugin.worldwind.views.tree.LayersTreeViewer;
 import org.eclipse.plugin.worldwind.views.tree.TreeObject;
 import org.eclipse.plugin.worldwind.views.tree.TreeParent;
 import org.eclipse.swt.widgets.Display;
@@ -42,12 +42,12 @@ import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 public class LayerLoaderJob extends Job 
 {
 
-	WWTreeViewer treeViewer;
+	LayersTreeViewer treeViewer;
 	Display display;
 	StatusLine statusLine;
 	
 	public LayerLoaderJob(Display display
-			, WWTreeViewer treeViewer
+			, LayersTreeViewer treeViewer
 			, StatusLine statusLine) 
 	{ 
 		super(Messages.getString("remote.layers.load.lbl"));
