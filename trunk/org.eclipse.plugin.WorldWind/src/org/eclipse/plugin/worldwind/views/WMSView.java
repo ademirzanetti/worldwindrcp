@@ -362,7 +362,7 @@ public class WMSView extends ViewPart
 
 		// Use a tiles layer?
 		chkUseTiles = toolkit.createButton(parent
-				, "Request images as tiles (versus a single image overlay)"
+				, "Tile images (versus a single image overlay)"
 				, SWT.CHECK | SWT.WRAP);
 		
 		td = new TableWrapData(TableWrapData.LEFT);
