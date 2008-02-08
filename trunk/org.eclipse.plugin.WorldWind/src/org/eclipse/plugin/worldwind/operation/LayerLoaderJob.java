@@ -115,7 +115,6 @@ public class LayerLoaderJob extends Job
 				}
 			});
 			return new Status(Status.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
-			//return Status.CANCEL_STATUS;
 		}
 	}
 	

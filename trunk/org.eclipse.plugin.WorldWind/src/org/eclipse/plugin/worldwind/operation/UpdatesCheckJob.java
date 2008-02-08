@@ -207,21 +207,6 @@ public class UpdatesCheckJob extends Job
 		};
 		job.setUser(false);
 	    job.schedule();
-//	    job.addJobChangeListener(new JobChangeAdapter(){
-//			public void done(IJobChangeEvent e) {
-//				try {
-//					if ( e.getResult().isOK() )
-//						Messages.showInfoMessage(display.getActiveShell()
-//								, "Installation complete. Restart the workbench for changes to take effect.");
-//					else
-//						Messages.showErrorMessage(display.getActiveShell()
-//								, "Installation failed: " + e.getResult().getMessage());
-//				} 
-//				catch (Exception ex) {
-//					ex.printStackTrace();
-//				}
-//			}
-//	    });
 	}
 
 	

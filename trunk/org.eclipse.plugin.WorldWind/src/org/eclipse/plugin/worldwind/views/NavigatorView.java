@@ -844,7 +844,6 @@ public class NavigatorView extends ViewPart
 						kmzFile.delete();
 					
 					Messages.showErrorMessage(getViewSite().getShell()
-							//, Messages.getString("err.dialog.title")
 							, "Error saving " + layer + ": " + e.getMessage() );
 				}
 			}
@@ -910,7 +909,7 @@ public class NavigatorView extends ViewPart
 			}
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			logger.error(e.getMessage());
 		}
 	}
@@ -920,7 +919,7 @@ public class NavigatorView extends ViewPart
 	 */
 	private void showLayerControls() 
 	{
-		LayersTreeViewer nodeViewer = layersViewer; // getSelectedViewer();
+		LayersTreeViewer nodeViewer = layersViewer; 
 		
 		if ( nodeViewer == null ) return;
 		
