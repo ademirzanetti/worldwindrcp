@@ -138,6 +138,9 @@ public class WMSView extends ViewPart
 
 	private boolean showDates;
 
+	// Request WWJ TiledWMSLayers or GroundOverlays?
+	private Button chkUseTiles;
+	
 	@Override
 	public void createPartControl(Composite parent) 
 	{
@@ -175,7 +178,6 @@ public class WMSView extends ViewPart
 		
 		// submit btn
 		submit = toolkit.createButton(form.getBody(), Messages.getString("WMSView.4"), SWT.NONE); //$NON-NLS-1$
-		//submit.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 1));
 		submit.addListener(SWT.Selection, this);
 		
 		// set flat look
@@ -295,17 +297,8 @@ public class WMSView extends ViewPart
 		lonMax.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 
-		TableWrapData td; // = new TableWrapData(TableWrapData.LEFT);
+		TableWrapData td; 
 
-		// formats: lbl + combo
-		toolkit.createLabel(sectionClient, Messages.getString("WMSView.14"), SWT.NONE);   //$NON-NLS-1$
-
-		td = new TableWrapData(TableWrapData.LEFT);
-		td.colspan = 2;
-		
-		formats = new Combo(sectionClient, SWT.READ_ONLY);
-		formats.setLayoutData(td);
-		
 		// tmin
 		l3 = toolkit.createLabel(sectionClient, Messages.getString("WMSView.15"), SWT.NONE);   //$NON-NLS-1$
 		
@@ -335,21 +328,48 @@ public class WMSView extends ViewPart
 		section.setClient(sectionClient);
 	}
 	
+	/**
+	 * Display options section
+	 * @param title
+	 * @param description
+	 * @param style
+	 * @param colSpan
+	 */
 	private void createOptionsSection(String title
 			, String description
 			, int style, int colSpan) 
 	{
-		Section section 		= createSection(title, description, style, colSpan);
-		Composite sectionClient = toolkit.createComposite(section);
+		Section section 	= createSection(title, description, style, colSpan);
+		Composite parent	= toolkit.createComposite(section);
 		
-		sectionClient.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		toolkit.paintBordersFor(sectionClient);
+		parent.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		toolkit.paintBordersFor(parent);
 		
 		TableWrapLayout layout = new TableWrapLayout();
 		layout.numColumns = 2;
 		layout.makeColumnsEqualWidth = true;
 		
-		sectionClient.setLayout(layout); 
+		parent.setLayout(layout);
+
+		// formats: A lbl + combo
+		toolkit.createLabel(parent, "formats", SWT.NONE);   //$NON-NLS-1$
+
+		TableWrapData td = new TableWrapData(TableWrapData.LEFT);
+		//td.colspan = 2;
+		
+		formats = new Combo(parent, SWT.READ_ONLY);
+		formats.setLayoutData(td);
+
+		// Use a tiles layer?
+		chkUseTiles = toolkit.createButton(parent
+				, "Request images as tiles (versus a single image overlay)"
+				, SWT.CHECK | SWT.WRAP);
+		
+		td = new TableWrapData(TableWrapData.LEFT);
+		td.colspan = 2;
+		chkUseTiles.setLayoutData(td);
+		
+		section.setClient(parent);
 	}
 	
 	/*
@@ -538,6 +558,9 @@ public class WMSView extends ViewPart
 						, dates					// time steps
 						, layer.bbox			// bbox
 						, formats);
+				
+				// Use a TiledWMSLayer if the 1st layer has no time span
+				chkUseTiles.setSelection(layer.ISOTimeSpan == null);
 			}
 			
 		} catch (Exception e) {
@@ -603,7 +626,7 @@ public class WMSView extends ViewPart
 			final WMS_Capabilities.Service service = capabilities.getService();
 			
 			String name = (service.Title != null )
-				? service.Name + ": " + service.Title //$NON-NLS-1$
+				? service.Title + " " + service.Name + " " + capabilities.getVersion() //$NON-NLS-1$
 				: service.Name;
 			
 			name += Messages.getString("WMSView.34")  //$NON-NLS-1$
@@ -759,7 +782,7 @@ public class WMSView extends ViewPart
 				return false;
 			}
 			
-			// User selected layers
+			// User selected WMS layers
 			WMS_Capabilities.Layer[] selectedLayers = getSelectedLayers(capabilities, indices);
 			
 			logger.debug("WMS Capabilities ver=" + capabilities.getVersion()); //$NON-NLS-1$
@@ -767,10 +790,10 @@ public class WMSView extends ViewPart
 					+ " selected fmt=" + format + " selected layer incides=" + indices ); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			/**
-			 * WMS Caps > 1.1.0 < 1.3.0 map to TiledWMSLayes
+			 * Use TiledWMSLayes, commonly for WMS Caps < 1.3.0 
 			 */
-			//if ( selectedLayers[0].ISOTimeSpan == null )  
-			if ( capabilities.getVersion().mid < 3)
+			if ( chkUseTiles.getSelection() )  
+			//if ( capabilities.getVersion().mid < 3)
 			{
 				// Convert WMS Caps layers to TiledWMSLayer
 				TiledWMSLayer[] wwLayers = 
@@ -780,78 +803,119 @@ public class WMSView extends ViewPart
 				String nodeName = (capabilities.getService().Title != null )
 					? capabilities.getService().Title
 					: capabilities.getService().Name;
-					
+				
+				logger.debug("Using tiled WMS layers. Parent node name=" 
+						+ nodeName + " Num layers=" + wwLayers.length);
+				
 				// All layers are disabled by default
 				view.addTiledWMSLayers(nodeName, wwLayers, false);
 			}
-			/* WMS Caps version 1.3.0 map to AnimatedGrounOverlays.  */
+			/**
+			 *  Use ground overlays: TimeLoopGrounOverlays | GroundOverlay.  
+			 */
 			else 
 			{
 				// Use GroundOverlay or AnimatedGroundOverlay
-				logger.debug("WMS version=" + capabilities.getVersion()  //$NON-NLS-1$
+				logger.debug("Using Overlays. WMS version=" + capabilities.getVersion()  //$NON-NLS-1$
 						+ " Show dates=" + showDates  //$NON-NLS-1$
 						+ " dates size=" + tmin.getItems().length); //$NON-NLS-1$
 				
-				boolean noTimeSteps = tmin.getItems().length == 1;
+				//boolean noTimeSteps = tmin.getItems().length == 1;
+				boolean isKML 		= format.equals(SimpleHTTPClient.CT_KML) 
+										|| format.equals(SimpleHTTPClient.CT_KMZ);
+
+				if ( isKML) 
+				{
+					logger.debug("KML detected.");
+					
+					GroundOverlayLayer[] ovs = 
+						ParserUtils.newGroundOverlay(selectedLayers, format);
+					
+					// Pre-fetch overlays
+					getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
+					
+					for (GroundOverlayLayer groundOverlay : ovs) 
+					{
+						String newURL = groundOverlay.getTextureURL().toString()
+							+ "&time=" + tmin.getText()  //$NON-NLS-1$
+							+ "/" + tmax.getText(); 	//$NON-NLS-1$
+						
+						logger.debug("Changing URL for " //$NON-NLS-1$
+								+ groundOverlay + " to " + newURL); //$NON-NLS-1$
+						
+						groundOverlay.setTextureURL(new URL(newURL));
+						
+						KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
+						
+						logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
+						view.addKMLSource(kml, false);
+					}
+				}
 				
 				// Use GroundOverlayLayer: Each GroundOverlay is a different layer
-				if ( !showDates || ( showDates && noTimeSteps))  
+				else if ( !showDates ) //|| ( showDates && noTimeSteps))  
 				{
+					logger.debug("Using GroundOverlays.");
 					
 					GroundOverlayLayer[] ovs = 
 						ParserUtils.newGroundOverlay(selectedLayers, format);
 					
 					// Loop Overlay w/ too many time steps
 					// Append "&time=T1/T2/PERIOD" to texture URL
-					if ( showDates  ) {
-						for (GroundOverlayLayer groundOverlay : ovs) 
-						{
-							String newURL = groundOverlay.getTextureURL().toString()
-								+ "&time=" + tmin.getText()  //$NON-NLS-1$
-								+ "/" + tmax.getText(); //$NON-NLS-1$
-							
-							logger.debug("Too many time steps for " //$NON-NLS-1$
-									+ groundOverlay + " using new url " + newURL); //$NON-NLS-1$
-							
-							groundOverlay.setTextureURL(new URL(newURL));
-						}
-					}
+//					if ( isKML) { // showDates  ) {
+//						// Pre-fetch overlays
+//						getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
+//						
+//						for (GroundOverlayLayer groundOverlay : ovs) 
+//						{
+//							String newURL = groundOverlay.getTextureURL().toString()
+//								+ "&time=" + tmin.getText()  //$NON-NLS-1$
+//								+ "/" + tmax.getText(); 	//$NON-NLS-1$
+//							
+//							logger.debug("Using KML for " //$NON-NLS-1$
+//									+ groundOverlay + " New url " + newURL); //$NON-NLS-1$
+//							
+//							groundOverlay.setTextureURL(new URL(newURL));
+//							
+//							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
+//							
+//							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
+//							view.addKMLSource(kml, false);
+//						}
+//					}
 					
 					// Fetch ground overlays to WW cache.
 					// This is to speed up response time
-					getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
+					//getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
 					
 					// KML/KMZ?
-					if ( format.equals(SimpleHTTPClient.CT_KML) 
-							|| format.equals(SimpleHTTPClient.CT_KMZ)) 
-					{
-						// process each overlay as a KML object
-						for (GroundOverlayLayer groundOverlay : ovs) 
-						{
-							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
-							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
-							
-							view.addKMLSource(kml, false);
-						}
-					}
-					else {
+//					if ( isKML ) 
+//					{
+//						// process each overlay as a KML object
+//						for (GroundOverlayLayer groundOverlay : ovs) 
+//						{
+//							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
+//							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
+//							
+//							view.addKMLSource(kml, false);
+//						}
+//					}
+//					else {
 						// add to the layers view
-						//view.addOverlays(ovs, false);
 						view.addLayers(ovs, false);
-					}
+//					}
 				}
-				// Convert selected layers to TimeLoopGroundOverlay 
+				// Convert selected layers to TimeLoopGroundOverlay(s) 
 				else {
 					// dates[] should be the same for all layers
 					String[] dates = getSelectedTimes();
 
-					
 					if ( dates == null) {
 						Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.63")); //$NON-NLS-1$
 						return false;
 					}
 
-					logger.debug("User selected dates size=" + dates.length); //$NON-NLS-1$
+					logger.debug("Using TimeLoopOverlays. Dates size=" + dates.length); //$NON-NLS-1$
 					
 					TimeLoopGroundOverlay[] loopLayers = new TimeLoopGroundOverlay[selectedLayers.length];
 					
@@ -865,7 +929,6 @@ public class WMSView extends ViewPart
 						logger.debug("Adding loop layer: " + loopLayers[i]); //$NON-NLS-1$
 					}
 					
-					//view.addOverlays(loopLayers, false);
 					view.addLayers(loopLayers, false);
 				}
 			}
@@ -883,20 +946,48 @@ public class WMSView extends ViewPart
 	}
 	
 	/**
-	 * Get selected time span values
+	 * Get selected time span values. If a layer has more than 20K time steps,
+	 * then only the last date will be inserted (allowing for manual user input).
+	 * Otherwise a time span can be selected
 	 * @return Array of string, each value represents a date/time value from
 	 * 			the layer time span.
 	 */
-	private String[] getSelectedTimes () {
-		int i = tmin.getSelectionIndex();
-		int j = tmax.getSelectionIndex();
+	private String[] getSelectedTimes () 
+	{
+		String[] times;
+		
+		// Manual input for the time span? (Happens if more then 20K time steps)
+		if ( tmin.getItems().length == 1 ) 
+		{
+			String isoTime 	= capabilities.getLayers().get(selectedIndices[0]).ISOTimeSpan;
+			String[] tmp 	= isoTime.split("/");
+			String period 	= (tmp != null && tmp.length == 3 ) ? tmp[2] : null;
+			
+			logger.debug("Manual input for time span? Layer iso time=" + isoTime + " Period=" +period);
 
-		if ( i < 0 || j < 0 ) return null;
-		
-		String[] times = new String[j - i + 1];
-		
-		for (int k = 0; k < times.length; k++) {
-			times[k] = tmin.getItem(i + k);
+			if ( period != null) {
+				String iso = tmin.getText() + "/" + tmax.getText() + "/" + period;
+				try {
+					return WMS_Capabilities.buildWMSTimeList(iso).split(",");
+				} catch (Exception e) {
+					return new String[] { tmin.getText(), tmax.getText() };
+				}
+			}
+			else
+				return new String[] { tmin.getText(), tmax.getText() };
+		}
+		// Select a time span
+		else {
+			int i = tmin.getSelectionIndex();
+			int j = tmax.getSelectionIndex();
+	
+			if ( i < 0 || j < 0 ) return null;
+			
+			times = new String[j - i + 1];
+			
+			for (int k = 0; k < times.length; k++) {
+				times[k] = tmin.getItem(i + k);
+			}
 		}
 		return times;
 	}
