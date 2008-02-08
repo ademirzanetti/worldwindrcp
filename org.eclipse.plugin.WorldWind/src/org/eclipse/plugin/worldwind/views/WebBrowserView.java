@@ -235,9 +235,6 @@ public class WebBrowserView extends ViewPart
 	 */
 	private void handleDODSLocation(String location) {
 		try {
-			//"org.eclipse.plugin.analytics.views.VerdiModels3View";
-			//final String VERDI_VIEW_ID = "org.eclipse.plugin.analytics.views.VerdiModels3View.ID";
-
 			// Clean up URL: remove any .info|.das|.dds|.html
 			location = location.replaceAll("\\.info|\\.das|\\.dds|\\.html", "");
 //			
@@ -250,12 +247,6 @@ public class WebBrowserView extends ViewPart
 //				location += ".dods";
 //			}
 
-			// Show the Verdi view 
-			//getViewSite().getWorkbenchWindow().getActivePage().showView(VERDI_VIEW_ID);
-			
-			// Get it
-//			IViewPart view = Activator.getView(getViewSite().getWorkbenchWindow()
-//					, VERDI_VIEW_ID);
 			
 			logger.debug("Opening remote DODS url " + location);
 
@@ -268,16 +259,6 @@ public class WebBrowserView extends ViewPart
 			action.setNetCDFUri(location);
 			action.run();
 			
-			// load remote data set
-//			if ( view == null ) {
-//				MessageDialog.openError(getViewSite().getShell()
-//						, Activator.PLUGIN_ID
-//						, "Unable to load Verdi view"); //$NON-NLS-1$
-//				return;
-//			}
-			
-			// load remote dataset
-			//((org.eclipse.plugin.analytics.views.VerdiModels3View)view).addDatasetFromUrl(location);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();

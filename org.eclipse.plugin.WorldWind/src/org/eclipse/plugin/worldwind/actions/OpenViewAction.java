@@ -123,12 +123,11 @@ public class OpenViewAction extends Action
 			dialog.setFilterNames(filterNames);
 			
 			path 		= dialog.open();
-			//String fileName		= dialog.getFileName();
     	}
 
     	logger.debug("NetCDF Uri:" + path);
     	
-		if ( path == null ) return; //|| fileName == null) return;
+		if ( path == null ) return; 
 		
 		NetCDFView view;
 		

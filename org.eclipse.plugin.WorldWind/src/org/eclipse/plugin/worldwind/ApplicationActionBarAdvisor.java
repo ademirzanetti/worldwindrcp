@@ -273,29 +273,4 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	public static StatusLine getDefaultStatusLine() {
 		return statusLine;
 	}
-	
-	/**
-	 * 
-	 * @param shell
-	 */
-//	@SuppressWarnings("restriction")
-//	public void updatesCheck (Shell shell) {
-//		try {
-//			final String updateSite 		= Messages.getString("upd.site");
-//			
-//			IUpdateSearchCategory category 	= UpdateSearchRequest.createDefaultSiteSearchCategory();    
-//			UpdateSearchScope scope 		= new UpdateSearchScope();    
-//			scope.addSearchSite( updateSite, new URL(updateSite), new String[] {});
-//			
-//			UpdateSearchRequest request = new UpdateSearchRequest(category, scope);             
-//			UpdateJob job 				= new UpdateJob("Updates Check", request);
-//			
-//			InstallWizardOperation operation =       new InstallWizardOperation();       
-//			operation.run(shell, job);		
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 }

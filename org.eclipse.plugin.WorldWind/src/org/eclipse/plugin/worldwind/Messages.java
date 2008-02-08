@@ -19,6 +19,9 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -87,4 +90,18 @@ public class Messages
 		return is;
 	}
 	
+    /**
+     * Dialog to display fatal errors
+     * @param shell
+     * @param message
+     * @param e
+     */
+    public static void FatalErrorDialog (Shell shell, String message, Exception e)
+    {
+    	IStatus status = new Status(Status.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
+    	ErrorDialog.openError(shell 
+    			, getString("err.dialog.title")
+    			, message
+    			, status);
+    }
 }

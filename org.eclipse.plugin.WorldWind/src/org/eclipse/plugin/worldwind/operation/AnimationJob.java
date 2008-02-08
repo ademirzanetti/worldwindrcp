@@ -108,41 +108,10 @@ public class AnimationJob extends Job
 					final String message =  overlays.get(i).getName() 
 						+ " ("  + (i+1) + "/" + size + ")" ;
 	
-//					final boolean frameInCache = layer.isFrameinCache(i);
-					
 					monitor.beginTask(message, IProgressMonitor.UNKNOWN );
-/*					
-					if ( display != null && !display.isDisposed() ) {
-						display.syncExec(new Runnable() {
-							public void run() 
-							{
-								// show a frame update message
-								statusLine.setLoopStatusMessage(layer.getName() + ":" + message);
-								
-								// if not in cache show a progress bar
-								if ( ! frameInCache ) {
-									statusLine.beginTask("Fetching " + message, IProgressMonitor.UNKNOWN);
-									statusLine.lockProgress();
-								}
-							}
-						});
-					}
-*/
 					
 					// fetch & show frame
 					layer.showFrame(i);
-					
-//					if ( display != null && !display.isDisposed() ) {
-//						display.syncExec(new Runnable() {
-//							public void run() 
-//							{
-//								// Reset the PB
-//								if ( frameInCache ) return;
-//								statusLine.taskDone();
-//								statusLine.unlockProgress();
-//							}
-//						});
-//					}
 					
 					// repaint globe
 					EarthView.repaint();

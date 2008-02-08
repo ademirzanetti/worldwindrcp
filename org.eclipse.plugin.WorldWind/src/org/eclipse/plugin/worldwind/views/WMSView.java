@@ -769,7 +769,7 @@ public class WMSView extends ViewPart
 		try {
 			// Grab layers view
 			IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
-			NavigatorView view = (NavigatorView)Activator.getView(window, NavigatorView.ID); 
+			NavigatorView view 		= (NavigatorView)Activator.getView(window, NavigatorView.ID); 
 					
 			// selected layer indices
 			int[] indices 	= selectedIndices;
@@ -938,9 +938,11 @@ public class WMSView extends ViewPart
 			
 			return true;
 		} 
-		catch (Exception e) {
-			e.printStackTrace();
-			setStatusMessage(e.getMessage());
+		catch (Exception e) 
+		{
+			Messages.FatalErrorDialog(getViewSite().getShell()
+					, "Error processing layers from " + capabilities.getService().Title
+					, e);
 			return false;
 		}
 	}
