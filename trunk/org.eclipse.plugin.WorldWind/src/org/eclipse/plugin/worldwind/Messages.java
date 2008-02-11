@@ -29,6 +29,12 @@ import org.eclipse.swt.widgets.Shell;
 public class Messages 
 {
 	private static final String BUNDLE_NAME = Messages.class.getName();
+
+	/**
+	 * OS support
+	 */
+    public static final String OS_NAME = System.getProperty("os.name");
+    public static final String OS_ARCH = System.getProperty("os.arch");
 	
 	static public String NL = System.getProperty("line.separator");
 
@@ -104,4 +110,14 @@ public class Messages
     			, message
     			, status);
     }
+    
+    
+    public static boolean isWindows () {
+    	return OS_NAME.startsWith("Windows");
+    }
+    
+    public static boolean isMacOSX () {
+    	return OS_NAME.toLowerCase().startsWith("mac os x");
+    }
+    
 }
