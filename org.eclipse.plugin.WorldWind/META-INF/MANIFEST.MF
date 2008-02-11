@@ -59,4 +59,4 @@ Export-Package: gov.nasa.worldwind,
  worldwind.contrib.layers.loop,
  worldwind.contrib.layers.quadkey,
  worldwind.contrib.parsers
-Bundle-Vendor: WorldWind Geo
+Bundle-Vendor: World Wind Geo

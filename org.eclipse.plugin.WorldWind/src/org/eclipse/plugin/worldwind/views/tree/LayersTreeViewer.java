@@ -13,6 +13,7 @@ package org.eclipse.plugin.worldwind.views.tree;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.layers.Earth.BMNGOneImage;
 import gov.nasa.worldwind.layers.Earth.BMNGSurfaceLayer;
 import gov.nasa.worldwind.layers.Earth.LandsatI3;
 import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
@@ -403,7 +404,7 @@ public class LayersTreeViewer extends CheckboxTreeViewer
 	    return top;
 	}
 	
-	/*
+	/**
 	 * Add layers from the WW model to the tree. 
 	 * These are built-in (cannot be removed) and enabled by default
 	 */
@@ -428,11 +429,36 @@ public class LayersTreeViewer extends CheckboxTreeViewer
 					);
 			
 			parent.addChild(to);
+
+			checkNode(to, true);
 			
-			// These layers use compressed textures which won't work in most
-			// Linux/Old PCs thus are disabled by default
-			if ( layer instanceof BMNGSurfaceLayer
-					|| layer instanceof USGSDigitalOrtho 
+			/**
+			 * Turn off BM One image on Win/Mac 
+			 */
+			if ( layer instanceof BMNGOneImage ) {
+				if ( Messages.isWindows() || Messages.isMacOSX()) {
+					layer.setEnabled(false);
+					checkNode(to, false);
+				}
+				continue;
+			}
+			
+			/**
+			 * Turn off BMNG on Linux (No support for compressed textures by default) 
+			 */
+			if ( layer instanceof BMNGSurfaceLayer ) {
+				if ( !Messages.isWindows() && !Messages.isMacOSX()) {
+					layer.setEnabled(false);
+					checkNode(to, false);
+				}
+				continue;
+			}
+			
+			/**
+			 * These layers use compressed textures which will crash old linuxes.
+			 * Thus disabled by default
+			 */
+			if ( layer instanceof USGSDigitalOrtho 
 					|| layer instanceof LandsatI3
 					|| layer instanceof USGSUrbanAreaOrtho
 					|| layer instanceof USGSTopographicMaps
@@ -442,8 +468,8 @@ public class LayersTreeViewer extends CheckboxTreeViewer
 				layer.setEnabled(false);
 				checkNode(to, false);
 			}
-			else
-				checkNode(to, true);
+//			else
+//				checkNode(to, true);
 		}
 		
 		// self + children
