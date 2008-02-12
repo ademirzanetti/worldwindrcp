@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISharedImages;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.NASAWMSLayerList;
 import worldwind.contrib.layers.ScreenOverlayLayer;
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
@@ -189,7 +188,8 @@ public class LayersTreeViewer extends CheckboxTreeViewer
 
 		// Add layers
 		invisibleRoot.addChild(buildDefaultWorldWindLayers());
-		invisibleRoot.addChild(buildNASAWMSLayers());
+		// NASA WMS Server http://worldwind21.arc.nasa.gov/ off line since Feb 2008
+		// invisibleRoot.addChild(buildNASAWMSLayers());
 		invisibleRoot.addChild(buildOtherLayers());
 		
 		return invisibleRoot;
@@ -351,34 +351,34 @@ public class LayersTreeViewer extends CheckboxTreeViewer
 		}		
 	}
 	
-	/*
+	/**
 	 * Build Layers from NASA's WMS Server
 	 */
-	private TreeParent buildNASAWMSLayers()
-	{
-		NASAWMSLayerList nasaWmsLayerList = new NASAWMSLayerList();
-    	nasaWmsLayerList.setAllEnabled(false);
-		
-		// NASA WMS Layers nasaWmsLayerList. Must be added to the model
-		RenderableLayer topLayer = new RenderableLayer();
-		topLayer.setName( Messages.getString("layer.nasa.wms.name"));
-		
-		TreeParent top = new TreeParent(topLayer, Activator.ICON_NASA);
-		
-	    for (Layer layer : nasaWmsLayerList)
-	    {
-	    	// Must add layer to both tree & world wind model
-	    	EarthView.world.getModel().getLayers().add(layer);
-	    	
-	    	final TreeObject to = new TreeObject(layer, guessIcon(layer.getName()));
-	    	
-	    	top.addChild(to);
-	    }
-	    
-	    // self + children
-	    top.setRemovable(false);
-	    return top;
-	}
+//	private TreeParent buildNASAWMSLayers()
+//	{
+//		NASAWMSLayerList nasaWmsLayerList = new NASAWMSLayerList();
+//    	nasaWmsLayerList.setAllEnabled(false);
+//		
+//		// NASA WMS Layers nasaWmsLayerList. Must be added to the model
+//		RenderableLayer topLayer = new RenderableLayer();
+//		topLayer.setName( Messages.getString("layer.nasa.wms.name"));
+//		
+//		TreeParent top = new TreeParent(topLayer, Activator.ICON_NASA);
+//		
+//	    for (Layer layer : nasaWmsLayerList)
+//	    {
+//	    	// Must add layer to both tree & world wind model
+//	    	EarthView.world.getModel().getLayers().add(layer);
+//	    	
+//	    	final TreeObject to = new TreeObject(layer, guessIcon(layer.getName()));
+//	    	
+//	    	top.addChild(to);
+//	    }
+//	    
+//	    // self + children
+//	    top.setRemovable(false);
+//	    return top;
+//	}
 	
 	/*
 	 * Others such as MS Virtual Earth (disabled by default)
