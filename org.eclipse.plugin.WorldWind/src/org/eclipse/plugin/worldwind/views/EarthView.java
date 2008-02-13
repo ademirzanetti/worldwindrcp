@@ -59,8 +59,6 @@ public class EarthView extends ViewPart
 	public static final String ID 			= EarthView.class.getName(); 
 	public static final WorldWindowGLCanvas world = new WorldWindowGLCanvas();
 	
-//	private HeartBeatProbe probe;
-//	private StatusLine statusLine;
 
 	/**
 	 * Initialize the default WW layers
@@ -69,65 +67,6 @@ public class EarthView extends ViewPart
 		initWorldWindLayerModel();
 	}
 	
-	/*
-	 * Heartbeat Probe: It uses a thread to probe WW for active tasks
-	 * If so it displays the progress monitor in the status line w/ the
-	 * label 'Downloading'
-	 */
-//	private static class HeartBeatProbe 
-//	{
-//		Display display;
-//		StatusLine statusLine;
-//    	final int interval = 1000;
-//		int count = 1;
-//		private boolean done = false;
-//		
-//	    public HeartBeatProbe(final Display display, final StatusLine statusLine) 
-//	    {
-//	    	this.display = display;
-//	    	this.statusLine = statusLine;
-//	    }
-//	    
-//	    /* Probe main task thread */
-//	    void run () 
-//	    {
-//	    	if ( display == null ) return;
-//	    	
-//	    	display.timerExec(interval , new Runnable() {
-//	    		public void run() 
-//	    		{
-//	    			if ( done ) return;
-//	    			
-//	                RetrievalService service = WorldWind.getRetrievalService();
-//
-//	    			// probe heartbeat here
-//	                if (service.hasActiveTasks()) 
-//	                {
-//	        			statusLine.beginTask(
-//	        					Messages.getString("layer.worldview.probe.task.name")
-//	        						, IProgressMonitor.UNKNOWN);
-//	                }
-//	                else {
-//	                	statusLine.taskDone();
-//	                }
-//	                
-//	    			// loop
-//	                if ( ! done ) {
-//	                	if (display != null )
-//	                		display.timerExec(interval, this);
-//	                }
-//	    	    }
-//	    	});
-//		}
-//
-//		public void setDone(boolean done) {
-//			this.done = done;
-//		}
-//
-//		public boolean isDone() {
-//			return done;
-//		}
-//	}
 	
 	/**
 	 * Globe Selection listener
@@ -262,18 +201,10 @@ public class EarthView extends ViewPart
         // max parent widget
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        // globe position listener
-//        Display display = getViewSite().getShell().getDisplay();
-
-		// initialize status line
-//		statusLine = ApplicationActionBarAdvisor.getDefaultStatusLine(); 
         
         GlobeSelectionListener listener1 = new GlobeSelectionListener(world);
         world.addSelectListener(listener1);
 
-        // probe heartbeat
-//        probe = new HeartBeatProbe(display, statusLine);
-//        probe.run();
 	}
 
 	/*

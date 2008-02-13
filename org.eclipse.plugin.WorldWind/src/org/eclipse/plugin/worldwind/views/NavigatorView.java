@@ -1142,53 +1142,22 @@ public class NavigatorView extends ViewPart
 				layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
 				
 				// for caching
-					myLayers.add(layer);
+				myLayers.add(layer);
 				
 				return;
 			}
 			// Ground overlays
 			else if ( layer instanceof GroundOverlayLayer) 
 			{
-					addGroundOverlay((GroundOverlayLayer)layer, enabled);
+				addGroundOverlay((GroundOverlayLayer)layer, enabled);
 			}
 			// regular layer (Not a Ground Overlay or Time Loop)
 			else {
 				addLayer(layer, null, true);
-				//statusLine.setErrorMessage("Invalid layer type: " + layer.getClass().getName());
 			}
 		}
 	}
 	
-//	public void addOverlays (Layer[] layers, boolean enabled) 
-//	{
-//		if ( layers == null ) return;
-//		
-//		Layer first = layers[0];
-//		
-//		// Time Loop layer
-//		if ( first instanceof TimeLoopGroundOverlay) 
-//		{
-//			layersViewer.addTimeLoopGroundOverlays( (TimeLoopGroundOverlay[])layers);
-//			
-//			// for caching
-//			for (Layer layer : layers) {
-//				myLayers.add(layer);
-//			}
-//			
-//			return;
-//		}
-//		// Ground overlays
-//		else if ( first instanceof GroundOverlayLayer) 
-//		{
-//			for (Layer layer : layers) {
-//				addGroundOverlay((GroundOverlayLayer)layer, enabled);
-//			}
-//		}
-//		// regular layer (Not a Ground Overlay or Time Loop) - don't save
-//		else {
-//			statusLine.setErrorMessage("Invalid layer type: " + first.getClass().getName());
-//		}
-//	}
 	
 	/**
 	 * Add a {@link GroundOverlayLayer} to the View tree
