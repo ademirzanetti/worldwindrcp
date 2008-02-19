@@ -4,9 +4,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WWJ041-Contributions"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WWJavaSDK-041"/>
-	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
-	<classpathentry kind="lib" path="lib/jogl.jar"/>
 	<classpathentry kind="lib" path="config"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FengGUI"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jogl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
