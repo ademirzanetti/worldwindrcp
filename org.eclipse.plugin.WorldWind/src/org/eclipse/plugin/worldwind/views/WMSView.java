@@ -946,6 +946,8 @@ public class WMSView extends ViewPart
 		} 
 		catch (Exception e) 
 		{
+			e.printStackTrace();
+			
 			Messages.FatalErrorDialog(getViewSite().getShell()
 					, "Error processing layers from " + capabilities.getService().Title
 					, e);
