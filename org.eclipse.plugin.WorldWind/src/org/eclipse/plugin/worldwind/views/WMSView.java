@@ -828,12 +828,11 @@ public class WMSView extends ViewPart
 				{
 					logger.debug("KML detected.");
 					
+					// Build overlay fro selected layers
 					GroundOverlayLayer[] ovs = 
 						ParserUtils.newGroundOverlay(selectedLayers, format);
-					
-					// Pre-fetch overlays
-					getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
-					
+
+					// Reformat single file GroundOverlay URLs with ...&time=T1/T2
 					for (GroundOverlayLayer groundOverlay : ovs) 
 					{
 						String newURL = groundOverlay.getTextureURL().toString()
@@ -844,7 +843,14 @@ public class WMSView extends ViewPart
 								+ groundOverlay + " to " + newURL); //$NON-NLS-1$
 						
 						groundOverlay.setTextureURL(new URL(newURL));
-						
+					}
+					
+					// Pre-fetch overlays
+					getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
+					
+					for (GroundOverlayLayer groundOverlay : ovs) 
+					{
+						// this will download the KML from the URL and parse it
 						KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
 						
 						logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
