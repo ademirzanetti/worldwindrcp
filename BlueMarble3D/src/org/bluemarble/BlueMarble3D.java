@@ -1,4 +1,4 @@
-package org.bm3d;
+package org.bluemarble;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
-import org.bm3d.gui.WWJFengModel;
+import org.bluemarble.gui.BlueMarbleModel;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -24,7 +24,7 @@ import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
 public class BlueMarble3D extends JFrame
 {
 	private static final long serialVersionUID 	= 4176551277009947767L;
-	private static final String APP_NAME 		= "Blue Marble 3D";
+	public static final String APP_NAME 		= "Blue Marble 3D";
 	
 	// for full screen mode
 	private final GraphicsEnvironment env 	= GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -57,7 +57,7 @@ public class BlueMarble3D extends JFrame
         wwd.setPreferredSize( getPreferredSize());
         
         // Create the default model as described in the current worldwind properties.
-        this.wwd.setModel(new WWJFengModel(wwd)); //, display));
+        this.wwd.setModel(new BlueMarbleModel(wwd)); //, display));
 
         
         // Hook Listeners
@@ -78,14 +78,14 @@ public class BlueMarble3D extends JFrame
         setUndecorated(isFullScreen);
         setResizable(!isFullScreen);
 
-//        if (isFullScreen) {
-//            device.setFullScreenWindow(this);
-//            validate();
-//        }
-//        else {
+        if (isFullScreen) {
+            device.setFullScreenWindow(this);
+            validate();
+        }
+        else {
 			pack();
 			setVisible(true);			
-//         }
+         }
 	}
 	
 	/**
@@ -96,10 +96,15 @@ public class BlueMarble3D extends JFrame
         // Setup a select listener for the worldmap click-and-go feature
         this.wwd.addSelectListener(new ClickAndGoSelectListener(wwd, WorldMapLayer.class));
         
-        // Key listener: F2 = Quit
+        // Key listener
         this.wwd.addKeyListener(new KeyAdapter()
         {
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(KeyEvent e) 
+			{
+				// Repaint UI for widgets that use key strokes
+				wwd.redraw();
+				
+				// F2 = Quit
 				if ( e.getKeyCode() == KeyEvent.VK_F2) {
 					quit();
 				}
@@ -110,7 +115,7 @@ public class BlueMarble3D extends JFrame
 	/**
 	 * Quit application
 	 */
-	private void quit () {
+	public static void quit () {
 		System.exit(0);
 	}
 	
