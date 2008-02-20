@@ -130,6 +130,8 @@ public class KMLSource
 		SimpleKMLParser p 	= new SimpleKMLParser();
 		KMLDocument doc 	= null;
 		
+		logger.debug("File: " + file + " Content type=" + contentType);
+		
 		// unzip kmz
 		if ( contentType.equals(SimpleHTTPClient.CT_KMZ))  
 		{
