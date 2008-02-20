@@ -16,7 +16,8 @@
 
 		<Color value="white" name="windowTitleColor"/>
 		<Color rgba="0, 0, 0, 60" name="windowBackgroundColor"/>
-
+		<Color rgba="100, 100, 100, 60" name="widgetBackgroundColor"/>
+		
 		<Font name="windowTitleFont">
 			<create fontName="Serif" type="bold" size="14" antialiasing="false"/>
 		</Font>
@@ -30,7 +31,8 @@
 		<Texture name="QtCurveBlack" filename="pixmaps.png"/>
 		
 		<PlainBackground name="brightBackground">
-			<Color value="white"/>
+			<!-- <Color value="white"/> -->
+			<Color ref="widgetBackgroundColor"/>
 		</PlainBackground>
 		
 		<PixmapBorder name="scrollButtonBorder">
@@ -248,21 +250,21 @@
 			<PixmapBorder ref="buttonBorder"/>
 			
 			<GradientBackground label="default">
-				<TopLeftColor rgba="249, 247, 242, 255"/>
-				<TopRightColor rgba="249, 247, 242, 255"/>
-				<BottomLeftColor rgba="233, 217, 198, 255"/>
-				<BottomRightColor rgba="233, 217, 198, 255"/>
+				<TopLeftColor rgba="29, 27, 22, 127"/>
+				<TopRightColor rgba="29, 27, 22, 127"/>
+				<BottomLeftColor rgba="23, 21, 18, 127"/>
+				<BottomRightColor rgba="23, 21, 18, 127"/>
 			</GradientBackground>
 			
 			<PlainBackground label="mouseHover">
-				<Color value="white"/>
+				<Color rgba="100, 100, 100, 200"/>
 			</PlainBackground>
 			
 			<GradientBackground label="pressed">
-				<TopLeftColor rgba="233, 217, 198, 255"/>
-				<TopRightColor rgba="233, 217, 198, 255"/>
-				<BottomLeftColor rgba="249, 247, 242, 255"/>
-				<BottomRightColor rgba="249, 247, 242, 255"/>
+				<TopLeftColor rgba="23, 27, 18, 127"/>
+				<TopRightColor rgba="23, 27, 18, 127"/>
+				<BottomLeftColor rgba="20, 24, 10, 127"/>
+				<BottomRightColor rgba="20, 24, 10, 127"/>
 			</GradientBackground>	
          </decorators>
          <Color ref="textColor"/>
