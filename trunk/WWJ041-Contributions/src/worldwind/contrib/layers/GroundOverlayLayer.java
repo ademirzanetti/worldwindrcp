@@ -272,9 +272,9 @@ public class GroundOverlayLayer extends AbstractLayer
     }
 
     /**
-     * Download a remote resource
-     * @param resourceURL remote url
-     * @param outFile file to save the resource to
+     * Download a remote resource into a {@link File}
+     * @param resourceURL remote {@link URL}
+     * @param outFile {@link File} to save the resource to
      */
     private void downloadResource(URL resourceURL, final File outFile) throws Exception 
     {
@@ -292,13 +292,19 @@ public class GroundOverlayLayer extends AbstractLayer
             		+ " status=" + respCode 
             		+ " ct=" + client.getContentType());
         	
-        	// check response content type (http status 200)
-        	if ( contentType != null && contentType.indexOf("image") == -1 ) 
+        	// Check response content type (http status 200)
+            // Valid content types are: Image or KML/KMZ
+            boolean isValid = contentType != null 
+            	&& ( contentType.indexOf("image") != -1 || contentType.indexOf("vnd.google-earth") != -1);
+
+            logger.debug("response content type=" + contentType + " valid=" + isValid);
+            
+        	if ( ! isValid )  
         	{
         		// Invalid CT (not an image)
         		final String buf =  new String(Messages.readFile(outFile));
         		
-        		logger.debug("Invalid resp content type " + contentType + " buffer " + buf);
+        		logger.debug("Invalid resp content type " + contentType ) ; // + " buffer " + buf);
         		
         		// XML error response 
         		if ( contentType.equalsIgnoreCase("application/vnd.ogc.se_xml")
