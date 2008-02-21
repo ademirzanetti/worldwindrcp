@@ -102,18 +102,20 @@ public class KMLSource
 			// file couldn't be created. Perhaps URL contains a query string?
 			// Use a generic name
 			file = WorldWind.getDataFileCache().newFile("download-" + System.currentTimeMillis());
-			logger.debug(fileName + " couldn't be created in cache. Using " + file);
+			logger.debug("File with name " + fileName + " couldn't be created in cache. Using " + file);
 		}
 		
 		logger.debug("Downloading " + url + " to " + file);
-		
-		client.doGet( new FileOutputStream( file ));
 
 		try {
+			// fetch doc url
+			client.doGet( new FileOutputStream( file ));
+			
+			// parse it
 			process(file, client.getContentType());
 		} 
 		catch (Exception e) {
-			throw new IOException(e.getMessage());
+			throw e;
 		}
 		finally {
 			// done w/ file, remove
@@ -133,8 +135,10 @@ public class KMLSource
 		logger.debug("File: " + file + " Content type=" + contentType);
 		
 		// unzip kmz
-		if ( contentType.equals(SimpleHTTPClient.CT_KMZ))  
+		if ( contentType.indexOf(SimpleHTTPClient.CT_KMZ) != -1)  
 		{
+			logger.debug("Processing file as KMZ.");
+			
 			final String docName = unZip(file);
 			
 			if ( docName == null)
@@ -142,7 +146,10 @@ public class KMLSource
 			
 			doc = p.parse(docName, new FileInputStream(WorldWind.getDataFileCache().newFile(docName)));
 		}
-		else {
+		else 
+		{
+			logger.debug("Processing file as KML.");
+			
 			doc = p.parse(file.getName(), new java.io.FileInputStream(file));
 		}
 		
@@ -553,13 +560,14 @@ public class KMLSource
 	}
 	
 /*  
-	// test only
+	// Use for test only
 	public static void main(String[] args) {
 		try {
 			//String url = "http://services.google.com/earth/kmz/cumbria_waymarking_n.kmz";
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/wms?request=WMS2KML&tmin_idx=0&tmax_idx=5&layer=3169_21478";
 			//String url = "http://gds.rtpnc.epa.gov:9090/geo/kml?mode=netlink";
-			String url = "http://code.google.com/apis/kml/documentation/KML_Samples.kml";
+			//String url = "http://code.google.com/apis/kml/documentation/KML_Samples.kml";
+			String url = "http://maple.rtpnc.epa.gov/cgi-bin/rsig2dviz?service=WMS&request=GetMap&version=1.3.0&layers=modis.mod4.optical_depth_land_and_ocean&bbox=-180,-90,180,90&width=1024&height=512&crs=CRS:84&styles=maplines&format=application/vnd.google-earth.kmz&time=2001-01-01T00:00:00Z/2001-01-01T00:00:00Z";
 			//String file = "src/demo/xml/KML_Samples.kml";
 			//String file = "src/demo/xml/rsig2dviz-1.kmz";
 			//String file = "c:/tmp/CCTM_J3a_b313.12km.200109.kml";

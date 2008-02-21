@@ -594,7 +594,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		// hide all
 		setAllEnabled(false);
 		
-		if ( layer.fetchOverlay() )
+		if ( layer.fetchOverlay (false) )
 			layer.setEnabled(true);
 		else
 			logger.error("Showing frame "  +  index + " name=" + layer.getName() + " FAILED.");

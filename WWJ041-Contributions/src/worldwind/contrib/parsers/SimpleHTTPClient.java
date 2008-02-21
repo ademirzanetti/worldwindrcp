@@ -21,8 +21,12 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class SimpleHTTPClient 
 {
+	private static final Logger logger = Logger.getLogger(SimpleHTTPClient.class);
+	
 	public static final String CT_KMZ = "application/vnd.google-earth.kmz";
 	public static final String CT_KML = "application/vnd.google-earth.kml+xml";
 	
@@ -49,6 +53,9 @@ public class SimpleHTTPClient
 	{
 	    uc = (HttpURLConnection)url.openConnection();
 	    
+	    logger.debug("Connect timeout=" + uc.getConnectTimeout() 
+	    		+ " read timeout=" + uc.getReadTimeout() + " u=" + url);
+	    
 	    InputStream buffer  = new BufferedInputStream(uc.getInputStream());   
 	    
 	    int c;
@@ -57,9 +64,13 @@ public class SimpleHTTPClient
 	    {
 	      os.write(c);
 	    } 
+	    
 	    os.close();
+	    
 	    headers = uc.getHeaderFields();
 	    status = uc.getResponseCode();
+	    
+		logger.debug("HTTP status=" + status);
 	}
 
     /**
