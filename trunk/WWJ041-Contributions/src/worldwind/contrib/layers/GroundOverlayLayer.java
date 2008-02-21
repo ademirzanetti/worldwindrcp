@@ -194,8 +194,8 @@ public class GroundOverlayLayer extends AbstractLayer
         				+ textureURL  
         				+ " key=" + tileKey); 
         
-        		if ( ! fetchOverlay() ) {
-        			logger.error("Synch fetch for " + textureURL + " FAILED");
+        		if ( ! fetchOverlay(false) ) {
+        			logger.error("ASynch fetch for " + textureURL + " FAILED");
         			
         			// tile fetch failed, delete from cache. Tile will be re fetched on
         			// the next call.
@@ -517,7 +517,7 @@ public class GroundOverlayLayer extends AbstractLayer
 	 * Fetch overlay URL into WW cache using the asynch task service
 	 * to improve GUI response & prevent the globe from freezing
 	 */
-	public boolean fetchOverlay() 
+	public boolean fetchOverlay(boolean synchronous) 
 	{
 		try 
 		{
@@ -535,23 +535,26 @@ public class GroundOverlayLayer extends AbstractLayer
 				// if remote url http://
 				if  ( textureURL.toString().startsWith("http")) 
 				{
-					//logger.debug("Synchronously fetching "+ textureURL+ " into " + file);
-					//downloadResource(textureURL, file);
+					if( synchronous ) {
+						logger.debug("Not in cache. Synchronously fetching "+ textureURL+ " into " + file);
+						downloadResource(textureURL, file);
+					}
+					else {
+						logger.debug("Not in cache. Asynch fetch for " + textureURL);
 					
-					logger.debug("Sending load request for " + textureURL);
-					
-					// Use the WW task service to load the URL asynchronously
-					WorldWind.getTaskService().addTask(new Runnable() 
-					{
-						public void run() {
-							try {
-								downloadResource(textureURL, file);
-							} 
-							catch (Exception e) {
-								onError(GroundOverlayLayer.this, e);
+						// Use the WW task service to load the URL asynchronously
+						WorldWind.getTaskService().addTask(new Runnable() 
+						{
+							public void run() {
+								try {
+									downloadResource(textureURL, file);
+								} 
+								catch (Exception e) {
+									onError(GroundOverlayLayer.this, e);
+								}
 							}
-						}
-					});					
+						});
+					}
 				}
 				// Local path or file:/ URL
 				else 
@@ -578,6 +581,9 @@ public class GroundOverlayLayer extends AbstractLayer
 					}
 				}
 			}
+			else
+				logger.debug("Tile " + tileKey + " already in WW cache");
+			
 			return true;
 		}
 		catch (Exception ex) {
