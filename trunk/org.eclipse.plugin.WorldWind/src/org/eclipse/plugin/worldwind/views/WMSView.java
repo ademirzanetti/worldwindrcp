@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -761,10 +762,121 @@ public class WMSView extends ViewPart
 	}
 	
 	/**
+	 * Tiled WMS 
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleTiledWMS (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorView view )
+	{
+		// Convert WMS Caps layers to TiledWMSLayer
+		TiledWMSLayer[] wwLayers = 
+			ParserUtils.newWMSTiledLayer(selectedLayers, format);
+		
+		// Add to Layers View
+		String nodeName = (capabilities.getService().Title != null )
+			? capabilities.getService().Title
+			: capabilities.getService().Name;
+		
+		logger.debug("Using tiled WMS layers. Parent node name=" 
+				+ nodeName + " Num layers=" + wwLayers.length);
+		
+		// All layers are disabled by default
+		view.addTiledWMSLayers(nodeName, wwLayers, false);
+		
+	}
+	
+	/**
+	 * Google Earth Docs
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleKmlKmz (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorView view )
+		throws Exception
+	{
+		// Build overlay from selected layers
+		GroundOverlayLayer[] ovs = 
+			ParserUtils.newGroundOverlay(selectedLayers, format);
+
+		// Reformat single file GroundOverlay URLs with ...&time=T1/T2
+		for (GroundOverlayLayer groundOverlay : ovs) 
+		{
+			String newURL = groundOverlay.getTextureURL().toString()
+				+ "&time=" + tmin.getText()  //$NON-NLS-1$
+				+ "/" + tmax.getText(); 	//$NON-NLS-1$
+			
+			logger.debug("Changing URL for " //$NON-NLS-1$
+					+ groundOverlay + " to " + newURL); //$NON-NLS-1$
+			
+			groundOverlay.setTextureURL(new URL(newURL));
+		}
+		
+		// Pre-fetch overlays
+		getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
+
+		// Loop thru
+		for (GroundOverlayLayer groundOverlay : ovs) 
+		{
+			if ( groundOverlay.isTileInCache()) 
+			{
+				final File f = groundOverlay.getFileFromCache();
+				
+				logger.debug("Overlay " + groundOverlay + " already in cache. Using " + f);
+				view.addKMLSource(new KMLSource(f, format), false);
+			}
+			else 
+			{
+				final URL u = groundOverlay.getTextureURL();
+				
+				logger.debug("Overlay " + groundOverlay + " NOT in cache. Downloading from " + u);
+
+				// this will download the KML from the URL and parse it.
+				view.addKMLSource(new KMLSource(u), false);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Handle Time series
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleTimeLoop (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorView view )
+		throws MalformedURLException
+	{
+		// dates[] should be the same for all layers
+		String[] dates = getSelectedTimes();
+
+		if ( dates == null) {
+			Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.63")); //$NON-NLS-1$
+			return;
+		}
+
+		logger.debug("Using TimeLoopOverlays. Dates size=" + dates.length); //$NON-NLS-1$
+		
+		TimeLoopGroundOverlay[] loopLayers = new TimeLoopGroundOverlay[selectedLayers.length];
+		
+		for (int i = 0; i < loopLayers.length; i++) {
+			loopLayers[i] = 
+				ParserUtils.newTimeLoopGroundOverlay (
+						selectedLayers[i]
+						, dates
+						, format);
+			
+			logger.debug("Adding loop layer: " + loopLayers[i]); //$NON-NLS-1$
+		}
+		
+		view.addLayers(loopLayers, false);
+	}
+	
+	/**
 	 * Build WWJ layers from the users selection when the Submit btn is pressed.
 	 * @return
 	 */
-	private boolean performFinish() 
+	private void performFinish() 
 	{
 		try {
 			// Grab layers view
@@ -779,15 +891,17 @@ public class WMSView extends ViewPart
 
 			if ( format == null || format.length() == 0 ) {
 				Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.64")); //$NON-NLS-1$
-				return false;
+				//return false;
 			}
 			
 			// User selected WMS layers
 			WMS_Capabilities.Layer[] selectedLayers = getSelectedLayers(capabilities, indices);
 			
 			logger.debug("WMS Capabilities ver=" + capabilities.getVersion()); //$NON-NLS-1$
-			logger.debug("# of selected layers=" + indices.length  //$NON-NLS-1$
-					+ " selected fmt=" + format + " selected layer incides=" + indices ); //$NON-NLS-1$ //$NON-NLS-2$
+			
+			logger.debug("Number of selected layers=" + indices.length  //$NON-NLS-1$
+					+ " selected fmt=" + format 
+					+ " selected layer incides=" + indices ); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			/**
 			 * Use TiledWMSLayes, commonly for WMS Caps < 1.3.0 
@@ -795,20 +909,7 @@ public class WMSView extends ViewPart
 			if ( chkUseTiles.getSelection() )  
 			//if ( capabilities.getVersion().mid < 3)
 			{
-				// Convert WMS Caps layers to TiledWMSLayer
-				TiledWMSLayer[] wwLayers = 
-					ParserUtils.newWMSTiledLayer(selectedLayers, format);
-				
-				// Add to Layers View
-				String nodeName = (capabilities.getService().Title != null )
-					? capabilities.getService().Title
-					: capabilities.getService().Name;
-				
-				logger.debug("Using tiled WMS layers. Parent node name=" 
-						+ nodeName + " Num layers=" + wwLayers.length);
-				
-				// All layers are disabled by default
-				view.addTiledWMSLayers(nodeName, wwLayers, false);
+				handleTiledWMS(selectedLayers, format, view);
 			}
 			/**
 			 *  Use ground overlays: TimeLoopGrounOverlays | GroundOverlay.  
@@ -821,41 +922,14 @@ public class WMSView extends ViewPart
 						+ " dates size=" + tmin.getItems().length); //$NON-NLS-1$
 				
 				//boolean noTimeSteps = tmin.getItems().length == 1;
-				boolean isKML 		= format.equals(SimpleHTTPClient.CT_KML) 
-										|| format.equals(SimpleHTTPClient.CT_KMZ);
+				boolean isKML = format.equals(SimpleHTTPClient.CT_KML) 
+								|| format.equals(SimpleHTTPClient.CT_KMZ);
 
-				if ( isKML) 
+				if ( isKML )
 				{
-					logger.debug("KML detected.");
+					logger.debug("KML/KMZ detected.");
 					
-					// Build overlay fro selected layers
-					GroundOverlayLayer[] ovs = 
-						ParserUtils.newGroundOverlay(selectedLayers, format);
-
-					// Reformat single file GroundOverlay URLs with ...&time=T1/T2
-					for (GroundOverlayLayer groundOverlay : ovs) 
-					{
-						String newURL = groundOverlay.getTextureURL().toString()
-							+ "&time=" + tmin.getText()  //$NON-NLS-1$
-							+ "/" + tmax.getText(); 	//$NON-NLS-1$
-						
-						logger.debug("Changing URL for " //$NON-NLS-1$
-								+ groundOverlay + " to " + newURL); //$NON-NLS-1$
-						
-						groundOverlay.setTextureURL(new URL(newURL));
-					}
-					
-					// Pre-fetch overlays
-					getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
-					
-					for (GroundOverlayLayer groundOverlay : ovs) 
-					{
-						// this will download the KML from the URL and parse it
-						KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
-						
-						logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
-						view.addKMLSource(kml, false);
-					}
+					handleKmlKmz(selectedLayers, format, view);
 				}
 				
 				// Use GroundOverlayLayer: Each GroundOverlay is a different layer
@@ -866,83 +940,17 @@ public class WMSView extends ViewPart
 					GroundOverlayLayer[] ovs = 
 						ParserUtils.newGroundOverlay(selectedLayers, format);
 					
-					// Loop Overlay w/ too many time steps
-					// Append "&time=T1/T2/PERIOD" to texture URL
-//					if ( isKML) { // showDates  ) {
-//						// Pre-fetch overlays
-//						getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
-//						
-//						for (GroundOverlayLayer groundOverlay : ovs) 
-//						{
-//							String newURL = groundOverlay.getTextureURL().toString()
-//								+ "&time=" + tmin.getText()  //$NON-NLS-1$
-//								+ "/" + tmax.getText(); 	//$NON-NLS-1$
-//							
-//							logger.debug("Using KML for " //$NON-NLS-1$
-//									+ groundOverlay + " New url " + newURL); //$NON-NLS-1$
-//							
-//							groundOverlay.setTextureURL(new URL(newURL));
-//							
-//							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
-//							
-//							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
-//							view.addKMLSource(kml, false);
-//						}
-//					}
-					
-					// Fetch ground overlays to WW cache.
-					// This is to speed up response time
-					//getViewSite().getWorkbenchWindow().run(true, true, new GroundOverlayFetchOperation(ovs));
-					
-					// KML/KMZ?
-//					if ( isKML ) 
-//					{
-//						// process each overlay as a KML object
-//						for (GroundOverlayLayer groundOverlay : ovs) 
-//						{
-//							KMLSource kml = new KMLSource(groundOverlay.getTextureURL());
-//							logger.debug("Adding kml " + kml.getDocument().getName()); //$NON-NLS-1$
-//							
-//							view.addKMLSource(kml, false);
-//						}
-//					}
-//					else {
-						// add to the layers view
-						view.addLayers(ovs, false);
-//					}
+					// add to the layers view
+					view.addLayers(ovs, false);
 				}
 				// Convert selected layers to TimeLoopGroundOverlay(s) 
 				else {
-					// dates[] should be the same for all layers
-					String[] dates = getSelectedTimes();
-
-					if ( dates == null) {
-						Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.63")); //$NON-NLS-1$
-						return false;
-					}
-
-					logger.debug("Using TimeLoopOverlays. Dates size=" + dates.length); //$NON-NLS-1$
-					
-					TimeLoopGroundOverlay[] loopLayers = new TimeLoopGroundOverlay[selectedLayers.length];
-					
-					for (int i = 0; i < loopLayers.length; i++) {
-						loopLayers[i] = 
-							ParserUtils.newTimeLoopGroundOverlay (
-									selectedLayers[i]
-									, dates
-									, format);
-						
-						logger.debug("Adding loop layer: " + loopLayers[i]); //$NON-NLS-1$
-					}
-					
-					view.addLayers(loopLayers, false);
+					handleTimeLoop(selectedLayers, format, view);
 				}
 			}
 			
 			// show places view
 			window.getActivePage().showView(NavigatorView.ID);
-			
-			return true;
 		} 
 		catch (Exception e) 
 		{
@@ -951,7 +959,6 @@ public class WMSView extends ViewPart
 			Messages.FatalErrorDialog(getViewSite().getShell()
 					, "Error processing layers from " + capabilities.getService().Title
 					, e);
-			return false;
 		}
 	}
 	
