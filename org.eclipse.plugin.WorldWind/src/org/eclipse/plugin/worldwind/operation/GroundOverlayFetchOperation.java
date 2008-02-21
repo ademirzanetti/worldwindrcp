@@ -12,6 +12,7 @@ package org.eclipse.plugin.worldwind.operation;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
@@ -25,6 +26,8 @@ import worldwind.contrib.layers.GroundOverlayLayer;
  */
 public class GroundOverlayFetchOperation implements IRunnableWithProgress
 {
+	private static final Logger logger = Logger.getLogger(GroundOverlayFetchOperation.class);
+	
 	GroundOverlayLayer[] overlays;
 	
 	public GroundOverlayFetchOperation(GroundOverlayLayer[] overlays) {
@@ -41,7 +44,11 @@ public class GroundOverlayFetchOperation implements IRunnableWithProgress
 			monitor.beginTask(layer.getName() +  " (" +i + "/" + overlays.length + ")"
 					, IProgressMonitor.UNKNOWN);
 			
-			layer.fetchOverlay(); 
+			logger.debug("Pre-fetching " + layer + " Texture url=" + layer.getTextureURL());
+			
+			// fetch synchronously...
+			layer.fetchOverlay(true); 
+			
 			monitor.done();
 		}
 
