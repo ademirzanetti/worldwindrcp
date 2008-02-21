@@ -29,7 +29,7 @@ public class BlueMarbleModel extends BasicModel
 		// Add LatLon pointer layer
 		layers.add(new PositionLayer(canvas));
 		
-		//getLayers().removeAll(getLayers());
+		getLayers().removeAll(getLayers());
 		
 		// Toolbar layer
         MasterUILayer toolbar = new MasterUILayer(canvas); 
