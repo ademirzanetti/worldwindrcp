@@ -75,17 +75,17 @@ public class BlueMarble3D extends JFrame
 	private void setFullScreen() 
 	{
         // Init full screen mode if supported
-        setUndecorated(isFullScreen);
-        setResizable(!isFullScreen);
-
-        if (isFullScreen) {
-            device.setFullScreenWindow(this);
-            validate();
-        }
-        else {
+//        setUndecorated(isFullScreen);
+//        setResizable(!isFullScreen);
+//
+//        if (isFullScreen) {
+//            device.setFullScreenWindow(this);
+//            validate();
+//        }
+//        else {
 			pack();
 			setVisible(true);			
-         }
+//         }
 	}
 	
 	/**

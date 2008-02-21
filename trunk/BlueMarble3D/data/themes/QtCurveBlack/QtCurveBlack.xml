@@ -4,11 +4,16 @@
 	
 	<FengGUI:init>
 		<Color value="white" name="textColor"/>
-
+<!-- 
 		<Color rgba="176, 186, 219, 255" name="SCB default light"/>
 		<Color rgba="142, 164, 203, 255" name="SCB default dark"/>
 		<Color rgba="186, 196, 229, 255" name="SCB mouseHover light"/>
 		<Color rgba="152, 174, 213, 255" name="SCB mouseHover dark"/>
+ -->
+		<Color rgba="100, 100, 100, 127" name="SCB default light"/>
+		<Color rgba="100, 100, 100, 127" name="SCB default dark"/>
+		<Color rgba="100, 100, 100, 127" name="SCB mouseHover light"/>
+		<Color rgba="100, 100, 100, 127" name="SCB mouseHover dark"/>
 	
 		<Font name="defaultFont">
 			<create fontName="Serif" type="plain" size="14" antialiasing="false"/>
@@ -31,7 +36,6 @@
 		<Texture name="QtCurveBlack" filename="pixmaps.png"/>
 		
 		<PlainBackground name="brightBackground">
-			<!-- <Color value="white"/> -->
 			<Color ref="widgetBackgroundColor"/>
 		</PlainBackground>
 		
@@ -222,7 +226,7 @@
 		
 			<decorators>
 				<PlainBackground>
-					<Color value="white"/>
+					<Color ref="widgetBackgroundColor"/>
 				</PlainBackground>		
 			</decorators>
 			
@@ -234,7 +238,7 @@
 			
 			<MouseHoverUnderlay>
 				<PlainBackground>
-					<Color value="light blue"/>
+					<Color ref="widgetBackgroundColor"/>
 				</PlainBackground>				
 			</MouseHoverUnderlay>
 		</Appearance>
@@ -515,7 +519,7 @@
 							<BottomLeftColor ref="SCB mouseHover light"/>
 							<BottomRightColor ref="SCB mouseHover dark"/>
 						</GradientBackground>	
-						<PixmapBorder ref="scrollButtonBorder"/>
+						<PixmapBorder ref="buttonBorder"/>
 					</decorators>
 					<switches clear="true"/>
 				</Appearance>
@@ -539,7 +543,7 @@
 							<BottomLeftColor ref="SCB mouseHover light"/>
 							<BottomRightColor ref="SCB mouseHover dark"/>
 						</GradientBackground>	
-						<PixmapBorder ref="scrollButtonBorder"/>
+						<PixmapBorder ref="buttonBorder"/>
 					</decorators>
 					<switches clear="true"/>
 				</Appearance>

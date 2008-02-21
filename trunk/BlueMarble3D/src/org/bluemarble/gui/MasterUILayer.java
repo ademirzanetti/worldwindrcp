@@ -1,29 +1,29 @@
 package org.bluemarble.gui;
 
-import javax.media.opengl.GLCanvas;
 
+import java.awt.Dimension;
+import java.awt.Point;
+
+import javax.media.opengl.GL;
+
+import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.pick.PickSupport;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.OrderedRenderable;
 
 import org.bluemarble.BlueMarble3D;
 import org.bluemarble.util.BM3DUtils;
-import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
 import org.fenggui.GameMenuButton;
-import org.fenggui.Label;
-import org.fenggui.TextEditor;
+import org.fenggui.IWidget;
 import org.fenggui.background.PlainBackground;
-import org.fenggui.border.TitledBorder;
 import org.fenggui.composites.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
-import org.fenggui.layout.Alignment;
-import org.fenggui.layout.FormAttachment;
-import org.fenggui.layout.FormData;
-import org.fenggui.layout.FormLayout;
-import org.fenggui.layout.GridLayout;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.render.Binding;
 import org.fenggui.render.jogl.EventBinding;
@@ -32,14 +32,13 @@ import org.fenggui.theme.DefaultTheme;
 import org.fenggui.theme.ITheme;
 import org.fenggui.theme.XMLTheme;
 import org.fenggui.util.Color;
-import org.fenggui.util.Spacing;
 
 public class MasterUILayer extends AbstractLayer 
 {
 	// the canvas on which the OpenGL will draw his stuff. We keep
 	// it as a field because we need the canvas to instantiate the
 	// JOGL binding.
-    private GLCanvas canvas = null;
+    private WorldWindowGLCanvas canvas = null;
     
 	// The root of the Widget tree.
     private Display display = null;	
@@ -55,7 +54,33 @@ public class MasterUILayer extends AbstractLayer
     // Navigator
     private Window wNav;
     
-    public MasterUILayer(GLCanvas canvas) {
+    // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
+    private OrderedIcon orderedImage = new OrderedIcon();
+
+    private class OrderedIcon implements OrderedRenderable
+    {
+        public double getDistanceFromEye()
+        {
+            return 0;
+        }
+
+        public void pick(DrawContext dc, Point pickPoint)
+        {
+        	MasterUILayer.this.draw(dc);
+        }
+
+        public void render(DrawContext dc)
+        {
+            MasterUILayer.this.draw(dc);
+        }
+    }
+    
+    /**
+     * Constructor
+     * @param canvas
+     */
+    public MasterUILayer(WorldWindowGLCanvas canvas) {
+    	super();
 		this.canvas = canvas;
 	}
     
@@ -81,90 +106,46 @@ public class MasterUILayer extends AbstractLayer
     {
     	
         display = FengGUI.createDisplay(new JOGLBinding(canvas));
+        display.setDepthTestEnabled(true);
         
         new EventBinding(canvas, display);
 
     	loadTheme();
         
      	createWindows();
-    	createToolbar();
+     	display.addWidget(createToolbar());
     }
 
     /**
      * Create all windows using the selected theme
      */
-    private void createWindows() {
-    	createSearchWindow();
+    private void createWindows() 
+    {
+    	// Places Search
+    	wSearch = new SearchWindow(canvas); 
+
+    	display.addWidget(wSearch);
+    	
+    	// no resizing
+    	wSearch.setResizable(false);
+
     }
     
-    /**
-     * Creatre search window
-     */
-    private void createSearchWindow() 
-    {
-    	wSearch = new Window(true, false, false, true);
-        wSearch.setXY(50, 50);
-        wSearch.setSize(250, 280);
-        wSearch.setTitle("Places Search");
-        
-		
-		wSearch.getContentContainer().setLayoutManager(new FormLayout());
-		
-		Container c = FengGUI.createContainer(wSearch.getContentContainer());
-		
-		c.getAppearance().setPadding(new Spacing(5,5));
-
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0,0);
-		fd.right = new FormAttachment(100,0);
-		fd.top = new FormAttachment(100,0);
-		
-		c.setLayoutData(fd);
-		c.setLayoutManager(new GridLayout(2,2));
-		
-		
-		TextEditor searchText = FengGUI.createTextField(c);
-		searchText.getAppearance().setMargin(new Spacing(0, 0, 0, 2));
-		searchText.setSize(80, searchText.getMinHeight());
-		searchText.setShrinkable(false);
-
-		Button goButton = FengGUI.createButton(c, "Go");
-		goButton.addButtonPressedListener(new IButtonPressedListener()
-		{
-			public void buttonPressed(ButtonPressedEvent e)
-			{
-				BM3DUtils.MessageBox(display, "Search!");
-			}
-		});		
-
-//		Label l1 = FengGUI.createLabel(c, "Button");
-//		l1.getAppearance().setMargin(new Spacing(0, 0, 0, 5));
-		
-//        Label l = new Label("Hello World!!");
-//        l.getAppearance().setAlignment(Alignment.MIDDLE);
-//        
-//        wSearch.getContentContainer().addWidget(l);
-		
-        wSearch.layout();
-        display.addWidget(wSearch);
-    }
     
     /**
      * Toolbar
      */
-    private void createToolbar () {
+    private IWidget createToolbar () 
+    {
 		final Container c = new Container();
 		c.getAppearance().add(new PlainBackground(Color.OPAQUE));
 		
 		c.setXY((display.getWidth() - 96 * 5)/2 , 0);
-		
-		display.addWidget(c);
-		display.setDepthTestEnabled(true);
-		
 		c.setLayoutManager(new RowLayout(true));
 
 		initButtons(c, display);
 		buildMainMenu(c, display);
+		return c;
     }
     
     /**
@@ -225,10 +206,41 @@ public class MasterUILayer extends AbstractLayer
 	
 	protected void doRender(DrawContext dc) 
 	{
+		dc.addOrderedRenderable(this.orderedImage);
+	}
+
+	@Override
+	protected void doPick(DrawContext dc, Point point) {
+		dc.addOrderedRenderable(this.orderedImage);
 		
+	}
+	
+//    private PickSupport pickSupport = new PickSupport();
+	
+	protected void draw(DrawContext dc) 
+	{
 		if (display == null) {
 			buildGUI();
 		}
+
+//		if ( dc.isPickingMode()) {
+//	        this.pickSupport.clearPickList();
+//	        this.pickSupport.beginPicking(dc);
+//	        // Where in the world are we picking ?
+//	        Position pickPosition = Position.ZERO;
+//	        
+//	        // Draw unique color across the map
+//	        java.awt.Color color = dc.getUniquePickColor();
+//	        int colorCode = color.getRGB();
+//
+//	        this.pickSupport.addPickableObject(colorCode, this, pickPosition, false);
+//	        // Done picking
+//	        this.pickSupport.endPicking(dc);
+//	        this.pickSupport.resolvePick(dc, dc.getPickPoint(), this);
+//	        
+//	        return;
+//		}
+		
 		// pass the control over the OpenGL context to FengGUI so that
         // it can render the GUI.
         display.display();
