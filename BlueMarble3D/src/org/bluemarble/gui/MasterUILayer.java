@@ -1,16 +1,11 @@
 package org.bluemarble.gui;
 
 
-import java.awt.Dimension;
 import java.awt.Point;
 
-import javax.media.opengl.GL;
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.AbstractLayer;
-import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.pick.PickSupport;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 
@@ -124,8 +119,10 @@ public class MasterUILayer extends AbstractLayer
     {
     	// Places Search
     	wSearch = new SearchWindow(canvas); 
-
+    	wNav	= new NavigatorWindow(display);
+    	
     	display.addWidget(wSearch);
+    	display.addWidget(wNav);
     	
     	// no resizing
     	wSearch.setResizable(false);
@@ -210,10 +207,10 @@ public class MasterUILayer extends AbstractLayer
 		dc.addOrderedRenderable(this.orderedImage);
 	}
 
-//	@Override
-//	protected void doPick(DrawContext dc, Point point) {
-//		dc.addOrderedRenderable(this.orderedImage);
-//	}
+	@Override
+	protected void doPick(DrawContext dc, Point point) {
+		dc.addOrderedRenderable(this.orderedImage);
+	}
 	
 //    private PickSupport pickSupport = new PickSupport();
 	
