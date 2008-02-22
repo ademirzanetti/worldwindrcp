@@ -1,6 +1,5 @@
 package org.bluemarble.gui;
 
-
 import worldwind.contrib.layers.PositionLayer;
 import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -11,6 +10,7 @@ import gov.nasa.worldwind.layers.Earth.USGSTopographicMaps;
 
 public class BlueMarbleModel extends BasicModel 
 {
+	private MasterUILayer uiLayer;
 	
 	public BlueMarbleModel(WorldWindowGLCanvas canvas)   
 	{
@@ -31,11 +31,15 @@ public class BlueMarbleModel extends BasicModel
 		
 		getLayers().removeAll(getLayers());
 		
-		// Toolbar layer
-        MasterUILayer toolbar = new MasterUILayer(canvas); 
-        toolbar.setEnabled(true);
+		// Feng GUI user interface layer
+		uiLayer = new MasterUILayer(canvas); 
+		uiLayer.setEnabled(true);
         
-        getLayers().add(toolbar);
+        getLayers().add(uiLayer);
 	}
 	
+	public void toogleGUI() 
+	{
+		uiLayer.setEnabled(!uiLayer.isEnabled());
+	}
 }

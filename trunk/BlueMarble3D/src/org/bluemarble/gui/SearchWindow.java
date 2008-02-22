@@ -66,7 +66,7 @@ public class SearchWindow extends Window
     	
     	setupTheme(SearchWindow.class);
     	
-        setXY(10, getDisplayY() + 200);
+        setXY(10, getDisplayY() + 50);
         setSize(250, 250);
         setTitle("Places Search");
         		

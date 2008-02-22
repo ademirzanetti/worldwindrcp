@@ -4,12 +4,7 @@
 	
 	<FengGUI:init>
 		<Color value="white" name="textColor"/>
-<!-- 
-		<Color rgba="176, 186, 219, 255" name="SCB default light"/>
-		<Color rgba="142, 164, 203, 255" name="SCB default dark"/>
-		<Color rgba="186, 196, 229, 255" name="SCB mouseHover light"/>
-		<Color rgba="152, 174, 213, 255" name="SCB mouseHover dark"/>
- -->
+
 		<Color rgba="100, 100, 100, 127" name="SCB default light"/>
 		<Color rgba="100, 100, 100, 127" name="SCB default dark"/>
 		<Color rgba="100, 100, 100, 127" name="SCB mouseHover light"/>
@@ -251,7 +246,7 @@
          <Border all="2"/>
 		 <Font ref="defaultFont"/>
          <decorators>
-			<PixmapBorder ref="buttonBorder"/>
+			<!-- <PixmapBorder ref="buttonBorder"/> -->
 			
 			<GradientBackground label="default">
 				<TopLeftColor rgba="29, 27, 22, 127"/>
@@ -612,6 +607,45 @@
    </Slider>
    
    <Container/>
+   
+   <TabContainer>
+		<Appearance>
+    		<Color ref="textColor"/>
+   			<Font ref="defaultFont"/>
+   			<PlainBorder>
+				<Color value="gray"/>
+			</PlainBorder>
+		</Appearance> 
+   </TabContainer>
+   
+	<TabItemLabel>
+		<Appearance>
+         <Margin left="1" right="1" top="2" bottom="2"/>
+         <Padding right="2" left="2"/>
+         <Border all="2"/>
+    		<Color ref="textColor"/>
+   			<Font ref="defaultFont"/>
+   			
+         <decorators>
+			<!--  <PixmapBorder ref="buttonBorder"/> -->
+			<!-- 
+			<PlainBackground label="default">
+				<Color value="gray"/>
+			</PlainBackground>
+ 			-->
+			<PlainBackground label="mouseHover">
+				<Color rgba="100, 100, 100, 200"/>
+			</PlainBackground>
+			<!-- 
+			<PlainBackground label="pressed">
+				<Color value="gray"/>
+			</PlainBackground>
+ 			-->
+         </decorators>
+         <Color ref="textColor"/>
+			
+		</Appearance> 
+	</TabItemLabel>  
    
    <SplitContainer>
 		<VerticalPixmap x="153" y="12" width="5" height="11"> 
