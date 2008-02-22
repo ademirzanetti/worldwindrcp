@@ -7,7 +7,7 @@
 
 		<Color rgba="100, 100, 100, 127" name="SCB default light"/>
 		<Color rgba="100, 100, 100, 127" name="SCB default dark"/>
-		<Color rgba="100, 100, 100, 127" name="SCB mouseHover light"/>
+		<Color rgba="255, 255, 255, 127" name="SCB mouseHover light"/>
 		<Color rgba="100, 100, 100, 127" name="SCB mouseHover dark"/>
 	
 		<Font name="defaultFont">
@@ -110,16 +110,24 @@
     		<Color ref="textColor"/>
    			<Font ref="defaultFont"/>
 	         <decorators>
-	            <GradientBackground enabled="true" label="default" span="padding">
-	               <TopLeftColor value="white"/>
-	               <TopRightColor green="1.0" red="1.0" blue="1.0" alpha="0.5"/>
-	               <BottomLeftColor value="white"/>
-	               <BottomRightColor green="1.0" red="1.0" blue="1.0" alpha="0.5"/>
-	            </GradientBackground>
+					         
+	         	<PlainBackground ref="brightBackground" enabled="true" label="default" span="padding" />
+
 	            <PlainBorder enabled="true" label="default" all="1" span="border">
 	               <Color value="gray"/>
 	            </PlainBorder>
 	         </decorators>
+			<SelectionUnderlay>
+				<PlainBackground>
+					<Color ref="SCB mouseHover light"/>
+				</PlainBackground>				
+			</SelectionUnderlay>
+			
+			<MouseHoverUnderlay>
+				<PlainBackground>
+					<Color ref="widgetBackgroundColor"/>
+				</PlainBackground>				
+			</MouseHoverUnderlay>	         
 		</Appearance>
 	</Menu>
    
