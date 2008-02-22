@@ -11,6 +11,7 @@ import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.List;
+import org.fenggui.ListItem;
 import org.fenggui.ScrollContainer;
 import org.fenggui.TextEditor;
 import org.fenggui.composites.Window;
@@ -29,11 +30,7 @@ public class SearchWindow extends Window
 	private List<Object> list;
 	private TextEditor searchText;
 	
-	// Yahoo search results
-	private YResult[] results;
-	
 	private WorldWindowGLCanvas canvas;
-//	private int selectedRow = -1;
 	
 	/**
 	 * Results list
@@ -67,7 +64,7 @@ public class SearchWindow extends Window
     	setupTheme(SearchWindow.class);
     	
         setXY(10, getDisplayY() + 50);
-        setSize(250, 250);
+        setSize(250, 200);
         setTitle("Places Search");
         		
 		getContentContainer().setLayoutManager(new FormLayout());
@@ -117,8 +114,6 @@ public class SearchWindow extends Window
         list.setSize(100, 100);
 		sc.addWidget(list);
 
-//		Button flyButton = FengGUI.createButton(getContentContainer(), "Fly to");
-//
 //		fd = new FormData();
 //		fd.left = new FormAttachment(0,0);
 //		fd.right = new FormAttachment(100,0);
@@ -145,12 +140,13 @@ public class SearchWindow extends Window
 		//int row = selectedRow; 
 		int row = list.getMouseOverRow();
 		
-		System.out.println("row=" + row + " res=" + results);
-		if ( row < 0 || results == null) return;
+		System.out.println("row=" + row);
+
+		if ( row < 0 ) return;
 		
-		YResult Yresult = results[row];
+		YResult Yresult = (YResult)list.getItem(row).getValue(); 
 		
-		//System.out.println("fly to=" + Yresult);
+		System.out.println("fly to=" + Yresult);
 		
 		BM3DUtils.flyTo(canvas, new LatLon(
 				Angle.fromDegrees(Double.parseDouble(Yresult.latitude))
@@ -161,6 +157,7 @@ public class SearchWindow extends Window
 	/**
 	 * Search
 	 */
+	@SuppressWarnings("unchecked")
 	private void search ()
 	{
 		final String loc = searchText.getText();
@@ -170,11 +167,15 @@ public class SearchWindow extends Window
 		list.clear();
 		
 		try {
-			results = new YGeoSearch(loc).getLocations();
+			YResult[] results = new YGeoSearch(loc).getLocations();
 			
-			if ( results != null ) {
+			if ( results != null ) 
+			{
+				// Add search results to the list
 				for (int i = 0; i < results.length; i++) {
-					FengGUI.createListItem(list).setText(results[i].toString());
+					final ListItem<YResult> item = FengGUI.createListItem(list);
+					item.setText(results[i].toString());
+					item.setValue(results[i]);
 				}
 			}
 		} 

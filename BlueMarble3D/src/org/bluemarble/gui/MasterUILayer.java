@@ -77,6 +77,7 @@ public class MasterUILayer extends AbstractLayer
      */
     public MasterUILayer(WorldWindowGLCanvas canvas) {
     	super();
+    	setName("User Interface");
 		this.canvas = canvas;
 	}
     
@@ -119,14 +120,11 @@ public class MasterUILayer extends AbstractLayer
     {
     	// Places Search
     	wSearch = new SearchWindow(canvas); 
-    	wNav	= new NavigatorWindow(display);
+    	wNav	= new NavigatorWindow(canvas, display);
     	
     	display.addWidget(wSearch);
     	display.addWidget(wNav);
     	
-    	// no resizing
-    	wSearch.setResizable(false);
-
     }
     
     
