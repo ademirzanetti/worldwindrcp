@@ -103,9 +103,14 @@ public class BlueMarble3D extends JFrame
 			{
 				// Repaint UI for widgets that use key strokes
 				wwd.redraw();
-				
-				// F2 = Quit
+
+				// F2 = Toggle UI
 				if ( e.getKeyCode() == KeyEvent.VK_F2) {
+					toggleUI ();
+				}
+				
+				// F10 = Quit
+				if ( e.getKeyCode() == KeyEvent.VK_F10) {
 					quit();
 				}
 			}
@@ -117,6 +122,14 @@ public class BlueMarble3D extends JFrame
 	 */
 	public static void quit () {
 		System.exit(0);
+	}
+	
+	/**
+	 * Toggle visibility of the master UI layer affecting all Widgets
+	 */
+	private void toggleUI ()
+	{
+		((BlueMarbleModel)wwd.getModel()).toogleGUI();
 	}
 	
 	/**

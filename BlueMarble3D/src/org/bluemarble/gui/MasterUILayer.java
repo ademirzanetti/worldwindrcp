@@ -166,7 +166,7 @@ public class MasterUILayer extends AbstractLayer
 		{
 			public void buttonPressed(ButtonPressedEvent e)
 			{
-				BM3DUtils.MessageBox(display, "Nothing yet!");
+				BM3DUtils.toggleWidget(display, wNav);
 			}
 		});
 
