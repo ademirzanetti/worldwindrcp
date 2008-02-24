@@ -11,7 +11,7 @@
 		<Color rgba="100, 100, 100, 127" name="SCB mouseHover dark"/>
 	
 		<Font name="defaultFont">
-			<create fontName="Serif" type="plain" size="14" antialiasing="false"/>
+			<create fontName="Arial" type="plain" size="14" antialiasing="false"/>
 		</Font>
 
 		<Color value="white" name="windowTitleColor"/>
@@ -19,7 +19,7 @@
 		<Color rgba="100, 100, 100, 60" name="widgetBackgroundColor"/>
 		
 		<Font name="windowTitleFont">
-			<create fontName="Serif" type="bold" size="14" antialiasing="false"/>
+			<create fontName="Arial" type="bold" size="14" antialiasing="false"/>
 		</Font>
 	
 		<!-- Load the texture that contains this skins for the buttons, etc.
@@ -202,7 +202,8 @@
    			</decorators>
 		</Appearance>
 		
-		<Pixmap x="0" y="23" width="17" height="18"> 
+		 
+		<Pixmap x="33" y="23" width="15" height="15">
 			<Texture ref="QtCurveBlack"/>
 		</Pixmap>
 				
@@ -636,20 +637,11 @@
    			
          <decorators>
 			<!--  <PixmapBorder ref="buttonBorder"/> -->
-			<!-- 
-			<PlainBackground label="default">
-				<Color value="gray"/>
-			</PlainBackground>
- 			-->
 			<PlainBackground label="mouseHover">
-				<Color rgba="100, 100, 100, 200"/>
+				<Color rgba="200, 200, 200, 127"/>
 			</PlainBackground>
-			<!-- 
-			<PlainBackground label="pressed">
-				<Color value="gray"/>
-			</PlainBackground>
- 			-->
          </decorators>
+
          <Color ref="textColor"/>
 			
 		</Appearance> 
