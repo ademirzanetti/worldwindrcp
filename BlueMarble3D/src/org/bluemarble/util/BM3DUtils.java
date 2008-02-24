@@ -8,6 +8,10 @@ import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
 import gov.nasa.worldwind.view.OrbitView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.bluemarble.BlueMarble3D;
@@ -70,6 +74,31 @@ public class BM3DUtils {
         		, Angle.ZERO	// Pitch
         		, 3e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
         		);
+	}
+	
+	/**
+	 * Input stream util 
+	 * @param clazz
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+    public static InputStream getInputStream (Class<? extends Object> clazz, String path)
+		throws FileNotFoundException
+	{
+		InputStream is = clazz.getResourceAsStream(path);
+	
+		if ( is == null ) {
+			File file = new File(path);
+			
+			if ( file.exists() ) {
+				return new FileInputStream(file);
+			}
+			else {
+				throw new IllegalArgumentException(path + ": file not found");
+			}
+		}
+		return is;
 	}
 	
 }

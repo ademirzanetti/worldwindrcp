@@ -13,17 +13,14 @@ import org.fenggui.Container;
 import org.fenggui.Display;
 import org.fenggui.IContainer;
 import org.fenggui.IWidget;
-import org.fenggui.Label;
 import org.fenggui.TabContainer;
 import org.fenggui.composites.Window;
 import org.fenggui.event.mouse.IMouseReleasedListener;
 import org.fenggui.event.mouse.MouseButton;
 import org.fenggui.event.mouse.MouseReleasedEvent;
-import org.fenggui.layout.GridLayout;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.menu.Menu;
 import org.fenggui.menu.MenuItem;
-
 import worldwind.contrib.layers.PositionLayer;
 
 public class NavigatorWindow extends Window
@@ -37,7 +34,7 @@ public class NavigatorWindow extends Window
 	private Display display;
 	
 	/**
-	 * Contructor
+	 * Constructor: Window with 2 tabs
 	 */
 	public NavigatorWindow(WorldWindowGLCanvas canvas, Display display) 
 	{
@@ -46,21 +43,21 @@ public class NavigatorWindow extends Window
         
     	this.display = display;
     	
-        setSize(250, 400);
-        setXY(10, display.getHeight() - 450);
+        setSize(350, 500);
+        setXY(10, display.getHeight() - 520);
         setTitle("Navigator");
 
-        // Tabs
+        // Tab Container
 		TabContainer tabContainer = new TabContainer();
 		getContentContainer().addWidget(tabContainer);
 		
 		CLayers = buildLayersTab(canvas.getModel().getLayers());
 		
+		// Tabs: WW Layers and WMS UI
 		tabContainer.addTab("Layers", null, CLayers );
-		tabContainer.addTab("Web Map Service", null, buildWMSTab());
-		tabContainer.addTab("NetCDF", null, buildNetCDFTab());
+		tabContainer.addTab("Web Map Service", null, new WMSTab(display)); 
 		
-		// Popup menu
+		// Layers tab Popup menu
 		popupMenu.addItem(new MenuItem("test"));
 		popupMenu.addItem(new MenuItem("test1"));
 		
@@ -96,7 +93,7 @@ public class NavigatorWindow extends Window
 	}
 	
 	/**
-	 * 
+	 * Add a check box layer to the list
 	 * @param c
 	 * @param layer
 	 */
@@ -154,18 +151,6 @@ public class NavigatorWindow extends Window
 		}
 		return c;
 	}
-	
-	private IWidget buildWMSTab()
-	{
-		Container c = new Container(new GridLayout(2, 1));
-		c.addWidget(new Label("tab 2"));
-		return c;
-	}
 
-	private IWidget buildNetCDFTab()
-	{
-		Container c = new Container(new GridLayout(2, 1));
-		return c;
-	}
 	
 }

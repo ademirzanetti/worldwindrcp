@@ -137,12 +137,11 @@ public class SearchWindow extends Window
 	@SuppressWarnings("unchecked")
 	private void flyToListElement (List list) 
 	{
-		//int row = selectedRow; 
 		int row = list.getMouseOverRow();
 		
 		System.out.println("row=" + row);
 
-		if ( row < 0 ) return;
+		if ( row < 0 || list.size() < row ) return;
 		
 		YResult Yresult = (YResult)list.getItem(row).getValue(); 
 		

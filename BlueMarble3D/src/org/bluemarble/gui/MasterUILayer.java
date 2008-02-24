@@ -6,6 +6,7 @@ import java.awt.Point;
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 
@@ -210,7 +211,6 @@ public class MasterUILayer extends AbstractLayer
 		dc.addOrderedRenderable(this.orderedImage);
 	}
 	
-//    private PickSupport pickSupport = new PickSupport();
 	
 	protected void draw(DrawContext dc) 
 	{
@@ -218,27 +218,14 @@ public class MasterUILayer extends AbstractLayer
 			buildGUI();
 		}
 
-//		if ( dc.isPickingMode()) {
-//	        this.pickSupport.clearPickList();
-//	        this.pickSupport.beginPicking(dc);
-//	        // Where in the world are we picking ?
-//	        Position pickPosition = Position.ZERO;
-//	        
-//	        // Draw unique color across the map
-//	        java.awt.Color color = dc.getUniquePickColor();
-//	        int colorCode = color.getRGB();
-//
-//	        this.pickSupport.addPickableObject(colorCode, this, pickPosition, false);
-//	        // Done picking
-//	        this.pickSupport.endPicking(dc);
-//	        this.pickSupport.resolvePick(dc, dc.getPickPoint(), this);
-//	        
-//	        return;
-//		}
-		
-		// pass the control over the OpenGL context to FengGUI so that
-        // it can render the GUI.
-        display.display();
+		if ( dc.isPickingMode()) {
+			dc.addPickedObject(new PickedObject(dc.getUniquePickColor().getRGB(), this));
+		}
+		else {
+			// pass the control over the OpenGL context to FengGUI so that
+	        // it can render the GUI.
+	        display.display();
+		}
 	}
 
 	public Display getDisplay () {

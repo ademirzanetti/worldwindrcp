@@ -25,6 +25,7 @@ public class BlueMarble3D extends JFrame
 {
 	private static final long serialVersionUID 	= 4176551277009947767L;
 	public static final String APP_NAME 		= "Blue Marble 3D";
+	static public String NL 					= System.getProperty("line.separator");
 	
 	// for full screen mode
 	private final GraphicsEnvironment env 	= GraphicsEnvironment.getLocalGraphicsEnvironment();
