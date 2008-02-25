@@ -15,8 +15,9 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.bluemarble.BlueMarble3D;
-import org.bluemarble.util.BM3DUtils;
+import org.bluemarble.util.BlueMarbeUtils;
 import org.fenggui.Button;
+import org.fenggui.CheckBox;
 import org.fenggui.ComboBox;
 import org.fenggui.Container;
 import org.fenggui.Display;
@@ -31,6 +32,7 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.SelectionChangedEvent;
+import org.fenggui.event.mouse.MousePressedEvent;
 import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
@@ -38,8 +40,10 @@ import org.fenggui.layout.FormAttachment;
 import org.fenggui.layout.FormData;
 import org.fenggui.layout.FormLayout;
 import org.fenggui.layout.GridLayout;
+import org.fenggui.table.Table;
 import org.fenggui.util.Spacing;
 
+import worldwind.contrib.layers.GroundOverlayLayer;
 import worldwind.contrib.parsers.ParserUtils;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.SimpleWMSParser;
@@ -47,6 +51,11 @@ import worldwind.contrib.parsers.WMS_Capabilities;
 import worldwind.contrib.parsers.ParserUtils.PublicWMSServer;
 import worldwind.contrib.parsers.WMS_Capabilities.Layer;
 
+/**
+ * WMS Tab
+ * @author Owner
+ *
+ */
 public class WMSTab extends Container
 {
 	private static final Logger logger = Logger.getLogger(WMSTab.class);
@@ -59,7 +68,9 @@ public class WMSTab extends Container
 	
 	private Display display;
 	
-	private LayersList layersList;
+	// Layers table within a scroll container
+	private final ScrollContainer listSC 	= new ScrollContainer();
+	private final WMSLayersTable layersList = new WMSLayersTable();
 	
 	private Label lStatus;
 	
@@ -76,30 +87,62 @@ public class WMSTab extends Container
 	// Date labels (may be hidden dynamically) 
 	private Label l3,l4;
 
+	private CheckBox chkUseTiles;
+	
 	/**
-	 * Layers List class
+	 * WMS Layers Table class
 	 * @author Owner
 	 *
 	 */
 	@SuppressWarnings("unchecked")
-	class LayersList extends List {
-		public LayersList() {
+	class WMSLayersTable extends Table 
+	{
+		public WMSLayersTable() {
 			super();
-			setupTheme(LayersList.class);
+			setupTheme(WMSLayersTable.class);
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public void mouseReleased(MouseReleasedEvent mr) 
 		{
-			List list 	= (List)mr.getSource();
-			int row 	= list.getMouseOverRow();
+			//List list 	= (List)mr.getSource();
+			Table list 	= (Table)mr.getSource();
+			if (list.getModel() == null ) return;
 			
+			int row 	= list.getSelection(); //getMouseOverRow();
 			if ( row < 0 ) return;
 			
 			handleListSelection(row);
 		}
+		
+		@Override
+		public void mousePressed(MousePressedEvent mp) {
+			try {
+				super.mousePressed(mp);
+			} catch (Exception e) {	}
+		}
+		
+		/**
+		 * Get all selected indices
+		 */
+		public int[] getSelectionIndices()
+		{
+			int[] indices = new int[getSelectionCount()];
+			int j = 0;
+			
+			if (getModel() == null)
+				throw new IllegalStateException("No table model set!");
+
+			for (int i = 0; i < selected.length; i++)
+			{
+				if (selected[i] == true)
+					indices[j++] = i;
+			}
+			return indices;
+		}
 	}
+	
 	
 	/**
 	 * Default constructor
@@ -116,9 +159,9 @@ public class WMSTab extends Container
 		super(lm);
 		this.display = display;
 		
-		Container c1 = buildWMServersSection();
-		Container c2 = buildWMSLayersSection(c1);
-		Container c3 = buildWMSCoverageSection(c2);
+		Container c1 = buildServersSection();
+		Container c2 = buildLayersSection(c1);
+		Container c3 = buildCoverageSection(c2);
 		
 		addWidget(c1);
 		addWidget(c2);
@@ -130,7 +173,7 @@ public class WMSTab extends Container
 		} catch (Exception e) {
 			// A bug!
 			e.printStackTrace();
-			BM3DUtils.MessageBox(display, e.getMessage());
+			BlueMarbeUtils.MessageBox(display, e.getMessage());
 		}
 	}
 	
@@ -139,20 +182,23 @@ public class WMSTab extends Container
 	 * @param prev
 	 * @return
 	 */
-	private Container buildWMSLayersSection (Container prev)
+	private Container buildLayersSection (Container prev)
 	{
 		Container c 			= new Container(new BorderLayout()); 
-		ScrollContainer listSC 	= new ScrollContainer();
+		//ScrollContainer listSC 	= new ScrollContainer();
 
 		c.getAppearance().setPadding(new Spacing(5,5));
 		
 		lStatus = new Label("Layers");
 		lStatus.setLayoutData(BorderLayoutData.NORTH);
 		
-		layersList = new LayersList();
+		//layersList = new WMSLayersTable();
+		layersList.getAppearance().setHeaderVisible(false);
+		layersList.getAppearance().setGridVisible(false);
+		layersList.setMultipleSelection(true);
 		layersList.setHeight(150);
 		
-		listSC.addWidget(layersList);
+		listSC.setInnerWidget(layersList);
 		listSC.setLayoutData(BorderLayoutData.CENTER);
 		
 		c.addWidget(lStatus);
@@ -173,9 +219,9 @@ public class WMSTab extends Container
 	 * @param prev
 	 * @return
 	 */
-	private Container buildWMSCoverageSection (Container prev)
+	private Container buildCoverageSection (Container prev)
 	{
-		Container c = new Container(new GridLayout(6, 3));
+		Container c = new Container(new GridLayout(7, 3));
 		c.getAppearance().setPadding(new Spacing(5,5));
 
 		// row 1 : Lat
@@ -208,13 +254,18 @@ public class WMSTab extends Container
 		tmax = FengGUI.createTextField(c); 
 		c.addWidget(new Label(""));
 
-		// row 6 - Go button
+		// row 6
+		c.addWidget(new Label(""));
+		chkUseTiles = FengGUI.createCheckBox(c, "Tile images");
+		c.addWidget(new Label(""));
+		
+		// row 7 - Go button
 		Button goButton = FengGUI.createButton(c, "Go");
 		goButton.addButtonPressedListener(new IButtonPressedListener()
 		{
 			public void buttonPressed(ButtonPressedEvent e)
 			{
-				System.out.println("Finish.");
+				performFinish();
 			}
 		});	
 
@@ -232,11 +283,12 @@ public class WMSTab extends Container
 		
 		return c;
 	}
+	
 	/**
 	 * WMS Servers section: Label (Servers), A Servers combo, and a 'New' button
 	 * @return
 	 */
-	private Container buildWMServersSection ()
+	private Container buildServersSection ()
 	{
 		Container c = new Container(new GridLayout(1, 3));
 		c.getAppearance().setPadding(new Spacing(5,5));
@@ -294,13 +346,15 @@ public class WMSTab extends Container
 				capabilities = capabilitiesCache.get(url.toString());
 				
 				// Populate list: remove any previous elements
-				layersList.clear();
+				//layersList.clear();
 				
 				// Ad layers to the list box
-				for (WMS_Capabilities.Layer layer : capabilities.getLayers()) {
-					layersList.addItem(layer.Title);
-				}
-
+//				for (WMS_Capabilities.Layer layer : capabilities.getLayers()) {
+//					layersList.addItem(layer.Title);
+//				}
+				layersList.setModel(new WMSLayersTableModel(capabilities.getLayers()));
+				listSC.layout();
+				
 				// Status
 				lStatus.setText(server.name + " has " 
 						+ capabilities.getLayers().size() + " layers." );
@@ -333,12 +387,14 @@ public class WMSTab extends Container
 						capabilitiesCache.put(server.capabilitiesURL.toString(), capabilities);
 
 						// clear table
-						layersList.clear();
+						//layersList.clear();
 						
 						// Load table with layer names
-						for (WMS_Capabilities.Layer layer : capabilities.getLayers()) {
-							layersList.addItem(layer.Title);
-						}
+//						for (WMS_Capabilities.Layer layer : capabilities.getLayers()) {
+//							layersList.addItem(layer.Title);
+//						}
+						layersList.setModel(new WMSLayersTableModel(capabilities.getLayers()));
+						listSC.layout();
 						
 						// Done. Show status
 						lStatus.setText(server.name + " has " 
@@ -348,15 +404,15 @@ public class WMSTab extends Container
 						e0.printStackTrace();
 					}
 					catch (Exception e) {
-						BM3DUtils.MessageBox(display, e.getMessage());
+						BlueMarbeUtils.MessageBox(display, e.getMessage());
 						lStatus.setText("Layers");
 					}
 				}
 			}).start();
 		}
-		else {
-			System.out.println("duplicate call");
-		}
+//		else {
+//			System.out.println("duplicate call");
+//		}
 	}
 	
 	/**
@@ -382,7 +438,7 @@ public class WMSTab extends Container
 					showDates = true;
 					
 					// Comma sep string of ISO dates for this layer time span
-					//logger.debug("Building ISO time list for " + layer.ISOTimeSpan); //$NON-NLS-1$
+					logger.debug("Building ISO time list for " + layer.ISOTimeSpan); //$NON-NLS-1$
 						
 					final String csvDates = WMS_Capabilities.buildWMSTimeList(layer.ISOTimeSpan);
 					
@@ -482,7 +538,7 @@ public class WMSTab extends Container
 		// load public cmbServers from config folder
 		String list = "config/skylab_public_wmslist.html";
 		
-	    InputStream buffer  = new BufferedInputStream(BM3DUtils.getInputStream(WMSTab.class, list));   
+	    InputStream buffer  = new BufferedInputStream(BlueMarbeUtils.getInputStream(WMSTab.class, list));   
 	    OutputStream os = new ByteArrayOutputStream();
 		
 	    ParserUtils.readStream(buffer, os);
@@ -570,6 +626,87 @@ public class WMSTab extends Container
 		tmax.setVisible(showDates);
 		l3.setVisible(showDates);
 		l4.setVisible(showDates);
+	}
+
+	private void performFinish() 
+	{
+		try {
+			// selected table indices
+			int[] indices = layersList.getSelectionIndices();
+			
+			// image format
+			final String format = formats.getSelectedValue();
+			
+			if ( indices == null || indices.length == 0) {
+				BlueMarbeUtils.MessageBox(display, "Select one or more layers.");
+				return ;
+			}
+			
+			// User selected WMS layers
+			WMS_Capabilities.Layer[] selectedLayers = getSelectedLayers(indices);
+			
+			logger.debug("WMS Capabilities ver=" + capabilities.getVersion()); //$NON-NLS-1$
+			logger.debug("Number of selected layers=" + indices.length  //$NON-NLS-1$
+					+ " selected fmt=" + format);
+			
+			/**
+			 * Use TiledWMSLayes, commonly for WMS Caps < 1.3.0 
+			 */
+			if ( chkUseTiles.isSelected() )  
+			{
+				//handleTiledWMS(selectedLayers, format, view);
+			}
+			/**
+			 *  Use ground overlays: TimeLoopGrounOverlays | GroundOverlay.  
+			 */
+			else 
+			{
+				// Use GroundOverlay or AnimatedGroundOverlay
+				logger.debug("Using Overlays. WMS version=" + capabilities.getVersion()); 
+				
+				//boolean noTimeSteps = tmin.getItems().length == 1;
+				boolean isKML = format.equals(SimpleHTTPClient.CT_KML) 
+								|| format.equals(SimpleHTTPClient.CT_KMZ);
+
+				if ( isKML )
+				{
+					logger.debug("KML/KMZ detected.");
+					
+					//handleKmlKmz(selectedLayers, format, view);
+				}
+				// Use GroundOverlayLayer: Each GroundOverlay is a different layer
+//				else if ( !showDates )   
+//				{
+//					logger.debug("Using GroundOverlays.");
+//					
+//					GroundOverlayLayer[] ovs = 
+//						ParserUtils.newGroundOverlay(selectedLayers, format);
+//					
+//					// add to the layers view
+//					
+//				}
+				// Convert selected layers to TimeLoopGroundOverlay(s) 
+				else {
+					//handleTimeLoop(selectedLayers, format, view);
+				}
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get user selected WMS layers
+	 */
+	private WMS_Capabilities.Layer[] getSelectedLayers(int[] indices) 
+	{
+		WMS_Capabilities.Layer[] layers = new WMS_Capabilities.Layer[indices.length];
+		
+		for (int i = 0; i < layers.length; i++) {
+			layers[i] = capabilities.getLayers().get(indices[i]);
+		}
+		return layers;
 	}
 	
 }
