@@ -8,6 +8,8 @@ import gov.nasa.worldwind.layers.Earth.ScalebarLayer;
 import gov.nasa.worldwind.layers.Earth.SkyGradientLayer;
 import gov.nasa.worldwind.layers.Earth.StarsLayer;
 
+import org.apache.log4j.Logger;
+import org.bluemarble.util.LayerSet;
 import org.fenggui.CheckBox;
 import org.fenggui.Container;
 import org.fenggui.Display;
@@ -22,17 +24,25 @@ import org.fenggui.layout.RowLayout;
 import org.fenggui.menu.Menu;
 import org.fenggui.menu.MenuItem;
 import worldwind.contrib.layers.PositionLayer;
+import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.parsers.KMLSource;
 
 public class NavigatorWindow extends Window
 {
-	//private WorldWindowGLCanvas canvas;
+	private static final Logger logger = Logger.getLogger(NavigatorWindow.class);
+	
+	private WorldWindowGLCanvas canvas;
+	
 	// Container for layers. Used for adding removing
 	private IWidget CLayers;
 	
 	// Layers popup
 	private Menu popupMenu = new Menu();
 	private Display display;
-	
+
+	// Tab Container
+	private final TabContainer tabContainer = new TabContainer();
+
 	/**
 	 * Constructor: Window with 2 tabs
 	 */
@@ -42,13 +52,12 @@ public class NavigatorWindow extends Window
     	setupTheme(NavigatorWindow.class);
         
     	this.display = display;
+    	this.canvas	= canvas;
     	
         setSize(350, 530);
         setXY(10, display.getHeight() - 550);
         setTitle("Navigator");
 
-        // Tab Container
-		TabContainer tabContainer = new TabContainer();
 		getContentContainer().addWidget(tabContainer);
 		
 		CLayers = buildLayersTab(canvas.getModel().getLayers());
@@ -107,9 +116,9 @@ public class NavigatorWindow extends Window
 			public void mouseReleased(MouseReleasedEvent e) 
 			{
 				// On Left click toggle, else cancel
-				if ( e.getButton() == MouseButton.LEFT) {
-					final Layer layer = cb.getValue();
-					layer.setEnabled( cb.isSelected());
+				if ( e.getButton() == MouseButton.LEFT) 
+				{
+					handleCheckState(cb.isSelected(), cb.getValue());
 				}
 				else if ( e.getButton() == MouseButton.RIGHT) 
 				{
@@ -121,15 +130,14 @@ public class NavigatorWindow extends Window
 			}
 		});
 		
+		logger.debug("Adding checkbox for " + layer + " selected=" + layer.isEnabled());
+		
 		cb.setValue(layer);
 		cb.setSelected(layer.isEnabled());
+		
 		c.addWidget(cb);			
 	}
 
-	public void addLayer(Layer layer)
-	{
-		addCheckBox((IContainer)CLayers, layer);
-	}
 	
 	/**
 	 * Layers Tab
@@ -152,5 +160,79 @@ public class NavigatorWindow extends Window
 		return c;
 	}
 
+	/**
+	 * Add aleyer to the view
+	 * @param layer
+	 */
+	public void addLayer(Layer layer)
+	{
+		addCheckBox((IContainer)CLayers, layer);
+	}
 	
+	/**
+	 * Add an array of {@link Layer} to the view as 1 entity
+	 * to the view
+	 * @param parentName Name of the tree parent node
+	 * @param layers WW layers
+	 */
+	public void addLayers( String parentName, Layer[] layers) //, boolean enabled) 
+	{
+		try {
+			addCheckBox((IContainer)CLayers, new LayerSet(parentName, layers));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+	
+	/**
+	 * Add a kml/kmz source. All layers regardless of protocol are cached as KML in
+	 * WW cache.
+	 * @param kml The {@link KMLSource} object to store
+	 */
+	public void addKMLSource (KMLSource kml) //,  boolean enabled) 
+	{
+		try {
+			addCheckBox((IContainer)CLayers, new LayerSet(kml.getDocument().getName(), kml.toLayerList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Handle layer visibility
+	 * @param checked
+	 * @param layer
+	 */
+	private void handleCheckState (boolean checked, Layer layer)
+	{
+		logger.debug("Layer " + layer + " Type: " + layer.getClass() + " Checked=" + checked);
+		try {
+			if  ( layer instanceof TimeLoopGroundOverlay) 
+			{
+				handleTimeLoop(checked, (TimeLoopGroundOverlay)layer);
+			}
+			else {
+				layer.setEnabled( checked);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void handleTimeLoop (boolean checked, TimeLoopGroundOverlay layer)
+	{
+		if ( checked) {
+			layer.addToModel(canvas);
+			layer.play();
+		}
+		else {
+			layer.stop();
+			layer.removeFromModel();
+		}
+	}
+	
+	public void showLayers () {
+		tabContainer.selectTab(0);
+	}
 }

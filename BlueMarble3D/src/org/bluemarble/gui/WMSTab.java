@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -41,9 +42,13 @@ import org.fenggui.layout.FormData;
 import org.fenggui.layout.FormLayout;
 import org.fenggui.layout.GridLayout;
 import org.fenggui.table.Table;
+import org.fenggui.util.Color;
 import org.fenggui.util.Spacing;
 
 import worldwind.contrib.layers.GroundOverlayLayer;
+import worldwind.contrib.layers.TiledWMSLayer;
+import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.ParserUtils;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 import worldwind.contrib.parsers.SimpleWMSParser;
@@ -228,15 +233,20 @@ public class WMSTab extends Container
 		FengGUI.createLabel(c, "Latitude");
 		latMin = FengGUI.createTextField(c);
 		latMin.setShrinkable(false);
-
+		latMin.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
+		
 		latMax = FengGUI.createTextField(c);
 		latMax.setShrinkable(false);
+		latMax.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
 		
 		// row 2
 		c.addWidget(new Label("Longitude"));
 		lonMin = FengGUI.createTextField(c); 
 		lonMax = FengGUI.createTextField(c); 
 
+		lonMin.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
+		lonMax.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
+		
 		// row 3
 		c.addWidget(new Label("Format"));
 		formats = FengGUI.createComboBox(c); 
@@ -246,12 +256,16 @@ public class WMSTab extends Container
 		l3 = FengGUI.createLabel(c, "Start time"); 
 		
 		tmin = FengGUI.createTextField(c); 
+		tmin.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
+		
 		c.addWidget(new Label(""));
 
 		// row 5
 		l4 = FengGUI.createLabel(c, "End time"); 
 		
 		tmax = FengGUI.createTextField(c); 
+		tmax.getAppearance().getCursorPainter().setCursorColor(Color.WHITE);
+		
 		c.addWidget(new Label(""));
 
 		// row 6
@@ -405,7 +419,7 @@ public class WMSTab extends Container
 					}
 					catch (Exception e) {
 						BlueMarbeUtils.MessageBox(display, e.getMessage());
-						lStatus.setText("Layers");
+						setStatusMessage(null); // reset
 					}
 				}
 			}).start();
@@ -528,6 +542,9 @@ public class WMSTab extends Container
 				this.formats.addItem(format);
 			}
 		}
+		
+		// Use WW tiles for layers with no time dimension (usually wms 1.1.x)
+		chkUseTiles.setSelected(! tmin.isVisible());
 	}
 	
 	/**
@@ -592,8 +609,10 @@ public class WMSTab extends Container
 		}
 	}
 	
+	
 	private void  setStatusMessage (String text){
-		lStatus.setText(text);
+		if ( text == null ) lStatus.setText("Layers"); // reset
+		else lStatus.setText(text);
 	}
 
 	/**
@@ -628,9 +647,18 @@ public class WMSTab extends Container
 		l4.setVisible(showDates);
 	}
 
+	/**
+	 * Submit routine
+	 */
 	private void performFinish() 
 	{
 		try {
+			if ( layersList.getModel() == null) 
+				return;
+			
+			// Grab Nav window
+			NavigatorWindow view = (NavigatorWindow)getParent().getParent().getParent();
+			
 			// selected table indices
 			int[] indices = layersList.getSelectionIndices();
 			
@@ -654,7 +682,7 @@ public class WMSTab extends Container
 			 */
 			if ( chkUseTiles.isSelected() )  
 			{
-				//handleTiledWMS(selectedLayers, format, view);
+				handleTiledWMS(selectedLayers, format, view);
 			}
 			/**
 			 *  Use ground overlays: TimeLoopGrounOverlays | GroundOverlay.  
@@ -662,7 +690,7 @@ public class WMSTab extends Container
 			else 
 			{
 				// Use GroundOverlay or AnimatedGroundOverlay
-				logger.debug("Using Overlays. WMS version=" + capabilities.getVersion()); 
+				logger.debug("Using Overlays."); 
 				
 				//boolean noTimeSteps = tmin.getItems().length == 1;
 				boolean isKML = format.equals(SimpleHTTPClient.CT_KML) 
@@ -672,27 +700,34 @@ public class WMSTab extends Container
 				{
 					logger.debug("KML/KMZ detected.");
 					
-					//handleKmlKmz(selectedLayers, format, view);
+					handleKmlKmz(selectedLayers, format, view);
 				}
 				// Use GroundOverlayLayer: Each GroundOverlay is a different layer
-//				else if ( !showDates )   
-//				{
-//					logger.debug("Using GroundOverlays.");
-//					
-//					GroundOverlayLayer[] ovs = 
-//						ParserUtils.newGroundOverlay(selectedLayers, format);
-//					
-//					// add to the layers view
-//					
-//				}
+				else if ( !tmin.isVisible() ) // ! showDates )   
+				{
+					logger.debug("Using GroundOverlays.");
+					
+					GroundOverlayLayer[] ovs = 
+						ParserUtils.newGroundOverlay(selectedLayers, format);
+					
+					// add to the layers view
+					view.addLayers(capabilities.getService().Title, ovs); //, false);
+					
+				}
 				// Convert selected layers to TimeLoopGroundOverlay(s) 
 				else {
-					//handleTimeLoop(selectedLayers, format, view);
+					handleTimeLoop(selectedLayers, format, view);
 				}
 			}
+			
+			// Show layers
+			view.showLayers();
 		} 
-		catch (Exception e) {
-			e.printStackTrace();
+		catch (NullPointerException e) {
+			e.printStackTrace(); // bug
+		}
+		catch ( Exception e) {
+			BlueMarbeUtils.MessageBox(display, e.getMessage());
 		}
 	}
 	
@@ -709,4 +744,152 @@ public class WMSTab extends Container
 		return layers;
 	}
 	
+	/**
+	 * Tiled WMS 
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleTiledWMS (WMS_Capabilities.Layer[] selectedLayers
+			, String format, NavigatorWindow view )
+	{
+		// Convert WMS Caps layers to TiledWMSLayer
+		TiledWMSLayer[] wwLayers = 
+			ParserUtils.newWMSTiledLayer(selectedLayers, format);
+		
+		// Add to Layers View
+		String nodeName = (capabilities.getService().Title != null )
+			? capabilities.getService().Title
+			: capabilities.getService().Name;
+		
+		logger.debug("Using tiled WMS layers. Parent node name=" 
+				+ nodeName + " Num layers=" + wwLayers.length);
+		
+		// All layers are disabled by default
+		view.addLayers(nodeName, wwLayers); //, false);
+		
+	}	
+	
+	/**
+	 * Handle Time series WMS layers
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleTimeLoop (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorWindow view )
+		throws MalformedURLException
+	{
+		// dates[] should be the same for all layers
+		String[] dates = getSelectedTimes();
+		
+		// Mzx # of allowed time steps
+		int MAX_DATE_LEN = 100;
+
+		logger.debug("Using TimeLoopOverlays. Dates size=" + dates.length); //$NON-NLS-1$
+		
+		if ( dates.length > MAX_DATE_LEN) {
+			BlueMarbeUtils.MessageBox(display, "Time span too large: " 
+					+ dates.length + " . Max =" + MAX_DATE_LEN);
+			return;
+		}
+		
+		TimeLoopGroundOverlay loopLayer;
+		
+		for (int i = 0; i < selectedLayers.length; i++) 
+		{
+			loopLayer = //s[i] = 
+				ParserUtils.newTimeLoopGroundOverlay (
+						selectedLayers[i]
+						, dates
+						, format);
+			
+			loopLayer.setEnabled(false);
+			
+			logger.debug("Submitting loop layer: " + loopLayer);//$NON-NLS-1$
+			view.addLayer(loopLayer);
+		}
+	}
+	
+	/**
+	 * Handle Google Earth Docs
+	 * @param selectedLayers
+	 * @param format
+	 * @param view
+	 */
+	private void handleKmlKmz (WMS_Capabilities.Layer[] selectedLayers, final String format, final NavigatorWindow view )
+		throws Exception
+	{
+		// Build overlay from selected layers
+		final GroundOverlayLayer[] overlays = 
+			ParserUtils.newGroundOverlay(selectedLayers, format);
+
+		// Reformat single file GroundOverlay URLs with ...&time=T1/T2
+		for (GroundOverlayLayer groundOverlay : overlays) 
+		{
+			String newURL = groundOverlay.getTextureURL().toString()
+				+ "&time=" + tmin.getText()  //$NON-NLS-1$
+				+ "/" + tmax.getText(); 	//$NON-NLS-1$
+			
+			logger.debug("Changing URL for " //$NON-NLS-1$
+					+ groundOverlay + " to " + newURL); //$NON-NLS-1$
+			
+			groundOverlay.setTextureURL(new URL(newURL));
+		}
+		
+		setStatusMessage("Fetching " + selectedLayers.length + " layers...");
+		
+		// Pre-fetch overlays
+		new Thread(new Runnable() 
+		{
+			public void run() 
+			{
+				for (GroundOverlayLayer overlay : overlays) 
+				{
+					// fetch synchronously
+					overlay.fetchOverlay(true);
+					
+					try {
+						// Add to the view
+						view.addKMLSource(new KMLSource(overlay.getFileFromCache(), format) );
+					} 
+					catch (Exception e) {
+						BlueMarbeUtils.MessageBox(display, e.getMessage());
+						e.printStackTrace();
+					}
+				}
+				setStatusMessage(null);
+			}
+		}).start();
+	}
+	
+	/**
+	 * Build an array of ISO dates for the selected layers
+	 * @return String array of dates for the user selected time span
+	 */
+	private String[] getSelectedTimes () 
+	{
+		//String[] times;
+
+		// selected table indices
+		int[] selectedIndices = layersList.getSelectionIndices();
+		
+		// WMS time dimension of the 1st selected layer
+		String isoTime 	= capabilities.getLayers().get(selectedIndices[0]).ISOTimeSpan;
+		String[] tmp 	= isoTime.split("/");
+		String period 	= (tmp != null && tmp.length == 3 ) ? tmp[2] : null;
+		
+		logger.debug("Manual input for time span? Layer iso time=" + isoTime + " Period=" +period);
+
+		if ( period != null) {
+			String iso = tmin.getText() + "/" + tmax.getText() + "/" + period;
+			try {
+				return WMS_Capabilities.buildWMSTimeList(iso).split(",");
+			} catch (Exception e) {
+				return new String[] { tmin.getText(), tmax.getText() };
+			}
+		}
+		else
+			return new String[] { tmin.getText(), tmax.getText() };
+		
+	}
 }
