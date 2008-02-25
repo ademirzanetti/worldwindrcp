@@ -368,6 +368,10 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 	/** Enable/disable all layers */
 	public void setEnabled (boolean enabled)
 	{
+		// super class
+		super.setEnabled(enabled);
+		
+		// children
 		setAllEnabled(enabled);
 	}
 
