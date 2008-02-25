@@ -163,6 +163,7 @@
 	            <PlainBorder enabled="true" label="default" all="1" span="border">
 	               <Color green="0.25" red="0.25" blue="0.25" alpha="1.0"/>
 	            </PlainBorder>
+	            
 	         </decorators>
       	</Appearance>
 	</TextEditor>
@@ -207,7 +208,31 @@
 			<Texture ref="QtCurveBlack"/>
 		</Pixmap>
 				
-		<List/>
+		<List>
+			<Appearance>
+	    		<Color ref="textColor"/>
+	   			<Font ref="defaultFont"/>
+			
+				<decorators>
+					<PlainBackground>
+						<Color value="gray"/>
+					</PlainBackground>		
+				</decorators>
+				
+				<SelectionUnderlay>
+					<PlainBackground>
+						<Color value="blue"/>
+					</PlainBackground>				
+				</SelectionUnderlay>
+				
+				<MouseHoverUnderlay>
+					<PlainBackground>
+						<Color ref="widgetBackgroundColor"/>
+					</PlainBackground>				
+				</MouseHoverUnderlay>
+			</Appearance>
+		</List>
+		
 		<Label/>
 
 		<PopupContainer>
