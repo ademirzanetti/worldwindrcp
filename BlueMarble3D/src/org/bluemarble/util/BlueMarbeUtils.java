@@ -20,8 +20,11 @@ import org.fenggui.IWidget;
 import org.fenggui.composites.MessageWindow;
 import org.fenggui.layout.StaticLayout;
 
-public class BM3DUtils {
-
+public class BlueMarbeUtils 
+{
+	public static final String EXT_KML = "kml";
+	public static final String EXT_KMZ = "kmz";
+	
 	/**
 	 * Helper {@link MessageWindow}
 	 * @param display
@@ -52,8 +55,10 @@ public class BM3DUtils {
 				break;
 			}
 		}
+		
 		if (  found ) display.removeWidget(w);
 		else display.addWidget(w);
+
 	}
 	
 	/**
@@ -101,4 +106,17 @@ public class BM3DUtils {
 		return is;
 	}
 	
+    /**
+     * Get the extension of a file.
+     */
+    public static String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }    
 }

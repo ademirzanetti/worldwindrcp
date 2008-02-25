@@ -4,7 +4,7 @@ import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 
-import org.bluemarble.util.BM3DUtils;
+import org.bluemarble.util.BlueMarbeUtils;
 import org.bluemarble.util.YGeoSearch;
 import org.bluemarble.util.YGeoSearch.YResult;
 import org.fenggui.Button;
@@ -63,7 +63,7 @@ public class SearchWindow extends Window
     	
     	setupTheme(SearchWindow.class);
     	
-        setXY(10, getDisplayY() + 50);
+        setXY(10, getDisplayY() + 10);
         setSize(250, 200);
         setTitle("Places Search");
         		
@@ -147,7 +147,7 @@ public class SearchWindow extends Window
 		
 		System.out.println("fly to=" + Yresult);
 		
-		BM3DUtils.flyTo(canvas, new LatLon(
+		BlueMarbeUtils.flyTo(canvas, new LatLon(
 				Angle.fromDegrees(Double.parseDouble(Yresult.latitude))
 				, Angle.fromDegrees(Double.parseDouble(Yresult.longitude))));
 
@@ -180,7 +180,7 @@ public class SearchWindow extends Window
 		} 
 		catch (Exception e) {
 			// Should not happen
-			BM3DUtils.MessageBox(getDisplay(), e.getMessage());
+			BlueMarbeUtils.MessageBox(getDisplay(), e.getMessage());
 		}
 	}
 	

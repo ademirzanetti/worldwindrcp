@@ -1,4 +1,6 @@
-package org.bluemarble.gui;
+package org.bluemarble;
+
+import org.bluemarble.gui.MasterUILayer;
 
 import worldwind.contrib.layers.PositionLayer;
 import gov.nasa.worldwind.BasicModel;

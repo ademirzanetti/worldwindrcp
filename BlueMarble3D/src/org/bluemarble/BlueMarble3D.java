@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
-import org.bluemarble.gui.BlueMarbleModel;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;

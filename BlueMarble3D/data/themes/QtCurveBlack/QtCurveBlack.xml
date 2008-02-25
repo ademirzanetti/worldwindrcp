@@ -11,7 +11,7 @@
 		<Color rgba="100, 100, 100, 127" name="SCB mouseHover dark"/>
 	
 		<Font name="defaultFont">
-			<create fontName="Arial" type="plain" size="14" antialiasing="false"/>
+			<create fontName="Arial" type="plain" size="12" antialiasing="false"/>
 		</Font>
 
 		<Color value="white" name="windowTitleColor"/>
@@ -676,5 +676,30 @@
 		</SliderPixmap>
 	</SnappingSlider>						
 
+
+	<Table>
+		<Appearance>
+    		<Color ref="textColor"/>
+   			<Font ref="defaultFont"/>
+		
+			<decorators>
+				<PlainBackground>
+					<Color ref="widgetBackgroundColor"/>
+				</PlainBackground>		
+			</decorators>
+			
+			<SelectionUnderlay>
+				<PlainBackground>
+					<Color value="blue"/>
+				</PlainBackground>				
+			</SelectionUnderlay>
+			
+			<MouseHoverUnderlay>
+				<PlainBackground>
+					<Color ref="widgetBackgroundColor"/>
+				</PlainBackground>				
+			</MouseHoverUnderlay>
+		</Appearance>
+	</Table>
 
 </FengGUI:Theme>

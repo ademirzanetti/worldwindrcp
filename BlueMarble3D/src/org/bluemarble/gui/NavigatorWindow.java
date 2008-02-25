@@ -43,8 +43,8 @@ public class NavigatorWindow extends Window
         
     	this.display = display;
     	
-        setSize(350, 500);
-        setXY(10, display.getHeight() - 520);
+        setSize(350, 530);
+        setXY(10, display.getHeight() - 550);
         setTitle("Navigator");
 
         // Tab Container

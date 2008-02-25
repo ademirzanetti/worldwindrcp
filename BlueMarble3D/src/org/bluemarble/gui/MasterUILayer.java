@@ -2,6 +2,10 @@ package org.bluemarble.gui;
 
 
 import java.awt.Point;
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -11,7 +15,7 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 
 import org.bluemarble.BlueMarble3D;
-import org.bluemarble.util.BM3DUtils;
+import org.bluemarble.util.BlueMarbeUtils;
 import org.fenggui.Container;
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
@@ -49,7 +53,7 @@ public class MasterUILayer extends AbstractLayer
     private Window wSearch; 
     
     // Navigator
-    private Window wNav;
+    private Window wNavigator;
     
     // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
     private OrderedIcon orderedImage = new OrderedIcon();
@@ -121,10 +125,10 @@ public class MasterUILayer extends AbstractLayer
     {
     	// Places Search
     	wSearch = new SearchWindow(canvas); 
-    	wNav	= new NavigatorWindow(canvas, display);
+    	wNavigator	= new NavigatorWindow(canvas, display);
     	
-    	display.addWidget(wSearch);
-    	display.addWidget(wNav);
+    	//display.addWidget(wSearch);
+    	display.addWidget(wNavigator);
     	
     }
     
@@ -165,15 +169,23 @@ public class MasterUILayer extends AbstractLayer
 		{
 			public void buttonPressed(ButtonPressedEvent e)
 			{
-				BM3DUtils.toggleWidget(display, wNav);
+				BlueMarbeUtils.toggleWidget(display, wNavigator);
 			}
 		});
 
+		open.addButtonPressedListener(new IButtonPressedListener()
+		{
+			public void buttonPressed(ButtonPressedEvent e)
+			{
+				handleFileOpen();
+			}
+		});
+		
 		search.addButtonPressedListener(new IButtonPressedListener()
 		{
 			public void buttonPressed(ButtonPressedEvent e)
 			{
-				BM3DUtils.toggleWidget(display, wSearch);
+				BlueMarbeUtils.toggleWidget(display, wSearch);
 			}
 		});
 		
@@ -187,6 +199,11 @@ public class MasterUILayer extends AbstractLayer
 		
 	}
 
+	/**
+	 * Main menu
+	 * @param c
+	 * @param display
+	 */
 	private void buildMainMenu(final Container c, final Display display)
 	{
 		c.removeAllWidgets();
@@ -211,7 +228,10 @@ public class MasterUILayer extends AbstractLayer
 		dc.addOrderedRenderable(this.orderedImage);
 	}
 	
-	
+	/**
+	 * Draw layer
+	 * @param dc
+	 */
 	protected void draw(DrawContext dc) 
 	{
 		if (display == null) {
@@ -230,5 +250,77 @@ public class MasterUILayer extends AbstractLayer
 
 	public Display getDisplay () {
 		return display;
+	}
+	
+	/**
+	 * Fires on file open pressed
+	 */
+	private void handleFileOpen () 
+	{
+		//Create a file chooser
+		final JFileChooser fc	= new JFileChooser();
+		
+		//Add a custom file filter and disable the default
+	    //(Accept All) file filter.
+        fc.setAcceptAllFileFilterUsed(false);
+        fc.addChoosableFileFilter(new BlueMarbleFileFilter("Google KML/KMZ", new String[]{"kml", "kmz"}));
+        fc.addChoosableFileFilter(new BlueMarbleFileFilter("NetCDF (.nc .ncf .*)", new String[]{"*"}));
+
+		final int returnVal 	= fc.showOpenDialog(canvas);
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) 
+		{
+			File file	= fc.getSelectedFile();
+			String ext	= BlueMarbeUtils.getExtension(file);
+			
+			// 3 types of files can be opened: KM, KMZ, NetCDF
+			if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KML)) {
+				System.out.println("Opening kml: " + file.getName());
+			}
+			else if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KMZ)) {
+				System.out.println("Opening kmz: " + file.getName());
+			}
+			else {
+				System.out.println("Opening necdf: " + file.getName());
+			}
+		}
+	}
+	
+	/**
+	 * File filter class for the {@link JFileChooser} 
+	 * @author Owner
+	 */
+	private class BlueMarbleFileFilter extends FileFilter
+	{
+		private String[] extensions;
+		private String description;
+		
+		public BlueMarbleFileFilter(String description, String[] extensions) {
+			this.description = description;
+			this.extensions = extensions;
+		}
+		
+		@Override
+		public boolean accept(File f) 
+		{
+			if (f.isDirectory()) return true;
+			
+			String extension = BlueMarbeUtils.getExtension(f);
+			
+			// accept all
+			if ( extension.equals("*")) return true;
+			
+			boolean found = false;
+			
+			for (int i = 0; i < extensions.length; i++) {
+				if  ( extension.equals(extensions[i])) return true;
+			}
+			return found;
+		}
+
+		@Override
+		public String getDescription() {
+			return description;
+		}
 	}
 }
