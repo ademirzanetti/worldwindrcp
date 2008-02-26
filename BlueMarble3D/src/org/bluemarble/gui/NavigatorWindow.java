@@ -1,6 +1,7 @@
 package org.bluemarble.gui;
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.layers.AnnotationLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.Earth.FogLayer;
@@ -98,7 +99,8 @@ public class NavigatorWindow extends Window
 			|| layer instanceof SkyGradientLayer
 			|| layer instanceof ScalebarLayer
 			|| layer instanceof PositionLayer
-			|| layer instanceof FogLayer;
+			|| layer instanceof FogLayer
+			|| layer instanceof AnnotationLayer;
 	}
 	
 	/**

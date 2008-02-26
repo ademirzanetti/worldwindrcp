@@ -17,6 +17,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.bluemarble.BlueMarble3D;
 import org.bluemarble.util.BlueMarbeUtils;
+import org.bluemarble.util.NewServerDialog;
 import org.fenggui.Button;
 import org.fenggui.CheckBox;
 import org.fenggui.ComboBox;
@@ -309,6 +310,7 @@ public class WMSTab extends Container
 		Container c = new Container(new GridLayout(1, 3));
 		c.getAppearance().setPadding(new Spacing(5,5));
 		
+		// WMS servers combo
 		cmbServers = new ComboBox<ParserUtils.PublicWMSServer>();
 		cmbServers.addSelectionChangedListener(new ISelectionChangedListener()
 		{
@@ -323,9 +325,16 @@ public class WMSTab extends Container
 			
 		});
 		
+		// row 1: 'Servers' Combo [New BTN]
 		c.addWidget(new Label("Server"));
 		c.addWidget(cmbServers);
-		c.addWidget(new Button("New"));
+		Button btnNew = FengGUI.createButton(c, "New");//c.addWidget(new Button("New"));
+		
+		btnNew.addButtonPressedListener(new IButtonPressedListener(){
+			public void buttonPressed(ButtonPressedEvent e) {
+				handleNewServer();
+			}
+		});
 		
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(0,0);
@@ -891,5 +900,38 @@ public class WMSTab extends Container
 		else
 			return new String[] { tmin.getText(), tmax.getText() };
 		
+	}
+	
+	/**
+	 * New WMS server
+	 */
+	private void handleNewServer()
+	{
+		NewServerDialog d = new NewServerDialog();
+		d.setVisible(true);
+
+		if ( ! d.isCanceled() ) {
+			final String name 	= d.getServerName();
+			final String url	= d.getServerURL();
+			
+			logger.debug("Adding Server=" + name + " u=" +url);
+			
+			try {
+				PublicWMSServer server = new ParserUtils.PublicWMSServer(name, new URL(url));
+				
+				ListItem<ParserUtils.PublicWMSServer> li = 
+					new ListItem<ParserUtils.PublicWMSServer>(server.name);
+				
+				li.setValue(server);
+				cmbServers.addItem(li);
+				
+				layout();
+			} 
+			catch (Exception e) {
+				BlueMarbeUtils.MessageBox(display
+						, "Error adding server " + name + ": " + e.getMessage());
+			}
+		}
+		d.dispose();
 	}
 }
