@@ -106,6 +106,7 @@ public class PositionLayer extends RenderableLayer
     	sa.getAttributes().setOpacity(0);
     	
     	netStatus.addAnnotation(sa);
+    	netStatus.setName("Network");
     }
     
     /**
