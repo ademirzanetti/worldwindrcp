@@ -362,7 +362,7 @@ public class TimeLoopGroundOverlay extends RenderableLayer
         	layer.setEnabled(enabled);
         }
         // legend
-        // if ( legend != null ) legend.setEnabled(enabled);
+        if ( legend != null ) legend.setEnabled(enabled);
 	}
 	
 	/** Enable/disable all layers */
@@ -372,7 +372,11 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		super.setEnabled(enabled);
 		
 		// children
-		setAllEnabled(enabled);
+		//setAllEnabled(enabled);
+		if ( canvas != null) {
+			if ( enabled ) play();
+			else stop();
+		}
 	}
 
 	/**
