@@ -373,6 +373,10 @@ public class TimeLoopGroundOverlay extends RenderableLayer
 		
 		// children
 		//setAllEnabled(enabled);
+		
+		// legend
+        if ( legend != null ) legend.setEnabled(enabled);
+        
 		if ( canvas != null) {
 			if ( enabled ) play();
 			else stop();
