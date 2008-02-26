@@ -92,6 +92,7 @@ public class WMSTab extends Container
 	// Date labels (may be hidden dynamically) 
 	private Label l3,l4;
 
+	@SuppressWarnings("unchecked")
 	private CheckBox chkUseTiles;
 	
 	/**
@@ -224,6 +225,7 @@ public class WMSTab extends Container
 	 * @param prev
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private Container buildCoverageSection (Container prev)
 	{
 		Container c = new Container(new GridLayout(7, 3));
@@ -853,7 +855,7 @@ public class WMSTab extends Container
 						view.addKMLSource(new KMLSource(overlay.getFileFromCache(), format) );
 					} 
 					catch (Exception e) {
-						BlueMarbeUtils.MessageBox(display, e.getMessage());
+						BlueMarbeUtils.MessageBox(display, "Unable to load KML: " + e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -868,8 +870,6 @@ public class WMSTab extends Container
 	 */
 	private String[] getSelectedTimes () 
 	{
-		//String[] times;
-
 		// selected table indices
 		int[] selectedIndices = layersList.getSelectionIndices();
 		

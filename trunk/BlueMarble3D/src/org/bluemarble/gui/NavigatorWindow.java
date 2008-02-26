@@ -130,7 +130,7 @@ public class NavigatorWindow extends Window
 			}
 		});
 		
-		logger.debug("Adding checkbox for " + layer + " selected=" + layer.isEnabled());
+		logger.debug("Adding checkbox for " + layer.getName() + " selected=" + layer.isEnabled());
 		
 		cb.setValue(layer);
 		cb.setSelected(layer.isEnabled());
@@ -189,14 +189,21 @@ public class NavigatorWindow extends Window
 	 * WW cache.
 	 * @param kml The {@link KMLSource} object to store
 	 */
-	public void addKMLSource (KMLSource kml) //,  boolean enabled) 
+	public void addKMLSource (KMLSource kml)  
 	{
 		try {
-			addCheckBox((IContainer)CLayers, new LayerSet(kml.getDocument().getName(), kml.toLayerList()));
-		} catch (Exception e) {
+			logger.debug("Adding KML doc: " + kml.getDocument().getName());
+			
+			LayerSet layer = new LayerSet(kml.getDocument().getName(), kml.toLayerList());
+
+			layer.addToModel(canvas);
+			layer.setEnabled(false);
+			
+			addCheckBox((IContainer)CLayers, layer);
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**
