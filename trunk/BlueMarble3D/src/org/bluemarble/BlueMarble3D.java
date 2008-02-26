@@ -8,6 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 
 import gov.nasa.worldwind.Configuration;
@@ -131,12 +132,24 @@ public class BlueMarble3D extends JFrame
 	{
 		((BlueMarbleModel)wwd.getModel()).toogleGUI();
 	}
+
+	/**
+	 * LAF
+	 */
+	private static void setLookAndFeel () {
+		try {
+			UIManager.setLookAndFeel(
+				    UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		}
+	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		try {
+			setLookAndFeel();
 			BlueMarble3D frame = new BlueMarble3D();
 			
 			frame.setTitle(APP_NAME);

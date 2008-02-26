@@ -61,6 +61,8 @@ public class MasterUILayer extends AbstractLayer
     // Draw it as ordered with an eye distance of 0 so that it shows up in front of most other things.
     private OrderedIcon orderedImage = new OrderedIcon();
 
+//    private final PickSupport pickSupport = new PickSupport();
+    
     private class OrderedIcon implements OrderedRenderable
     {
         public double getDistanceFromEye()
@@ -70,7 +72,14 @@ public class MasterUILayer extends AbstractLayer
 
         public void pick(DrawContext dc, Point pickPoint)
         {
-        	MasterUILayer.this.draw(dc);
+        	//MasterUILayer.this.draw(dc);
+        	dc.addPickedObject(new PickedObject(dc.getUniquePickColor().getRGB(), this));
+//        	pickSupport.clearPickList();
+//            pickSupport.beginPicking(dc);
+//            java.awt.Color color = dc.getUniquePickColor();
+//            pickSupport.addPickableObject(color.getRGB(), MasterUILayer.this);
+//            pickSupport.endPicking(dc);
+//            pickSupport.resolvePick(dc, pickPoint, MasterUILayer.this);            
         }
 
         public void render(DrawContext dc)
@@ -241,14 +250,14 @@ public class MasterUILayer extends AbstractLayer
 			buildGUI();
 		}
 
-		if ( dc.isPickingMode()) {
-			dc.addPickedObject(new PickedObject(dc.getUniquePickColor().getRGB(), this));
-		}
-		else {
+//		if ( dc.isPickingMode()) {
+//			dc.addPickedObject(new PickedObject(dc.getUniquePickColor().getRGB(), this));
+//		}
+//		else {
 			// pass the control over the OpenGL context to FengGUI so that
 	        // it can render the GUI.
 	        display.display();
-		}
+//		}
 	}
 
 	public Display getDisplay () {

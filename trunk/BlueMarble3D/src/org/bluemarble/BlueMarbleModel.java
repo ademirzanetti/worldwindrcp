@@ -5,6 +5,7 @@ import org.bluemarble.gui.MasterUILayer;
 import worldwind.contrib.layers.PositionLayer;
 import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.layers.AnnotationLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.Earth.LandsatI3;
@@ -22,7 +23,8 @@ public class BlueMarbleModel extends BasicModel
 		// disable some layers: LandSat, USGS Topo
 		LayerList layers = getLayers();
 		
-		for (Layer layer : layers) {
+		for (Layer layer : layers) 
+		{
 			if ( layer instanceof USGSTopographicMaps 
 					|| layer instanceof LandsatI3)
 				layer.setEnabled(false);
@@ -31,7 +33,7 @@ public class BlueMarbleModel extends BasicModel
 		// Add LatLon pointer layer
 		layers.add(new PositionLayer(canvas));
 		
-		//getLayers().removeAll(getLayers());
+		getLayers().removeAll(getLayers());
 		
 		// Feng GUI user interface layer
 		uiLayer = new MasterUILayer(canvas); 
