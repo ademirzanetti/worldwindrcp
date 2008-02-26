@@ -34,6 +34,9 @@ import org.fenggui.theme.ITheme;
 import org.fenggui.theme.XMLTheme;
 import org.fenggui.util.Color;
 
+import worldwind.contrib.parsers.KMLSource;
+import worldwind.contrib.parsers.SimpleHTTPClient;
+
 public class MasterUILayer extends AbstractLayer 
 {
 	// the canvas on which the OpenGL will draw his stuff. We keep
@@ -273,15 +276,23 @@ public class MasterUILayer extends AbstractLayer
 			File file	= fc.getSelectedFile();
 			String ext	= BlueMarbeUtils.getExtension(file);
 			
-			// 3 types of files can be opened: KM, KMZ, NetCDF
-			if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KML)) {
-				System.out.println("Opening kml: " + file.getName());
-			}
-			else if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KMZ)) {
-				System.out.println("Opening kmz: " + file.getName());
-			}
-			else {
-				System.out.println("Opening necdf: " + file.getName());
+			try {
+				// 3 types of files can be opened: KM, KMZ, NetCDF
+				if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KML)) {
+					((NavigatorWindow)wNavigator).addKMLSource(new KMLSource(file, SimpleHTTPClient.CT_KML));
+					((NavigatorWindow)wNavigator).showLayers();
+				}
+				else if ( ext.equalsIgnoreCase(BlueMarbeUtils.EXT_KMZ)) {
+					((NavigatorWindow)wNavigator).addKMLSource(new KMLSource(file, SimpleHTTPClient.CT_KMZ));
+					((NavigatorWindow)wNavigator).showLayers();
+				}
+				else {
+					System.out.println("Opening necdf: " + file.getName());
+				}
+			} 
+			catch (Exception e) {
+				BlueMarbeUtils.MessageBox(display, "Unable to open " 
+						+ file + " " + e.getMessage() );
 			}
 		}
 	}
@@ -308,7 +319,7 @@ public class MasterUILayer extends AbstractLayer
 			String extension = BlueMarbeUtils.getExtension(f);
 			
 			// accept all
-			if ( extension.equals("*")) return true;
+			if ( extension == null || extension.equals("*")) return true;
 			
 			boolean found = false;
 			

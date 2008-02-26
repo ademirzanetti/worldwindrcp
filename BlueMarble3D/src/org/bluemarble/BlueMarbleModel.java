@@ -31,7 +31,7 @@ public class BlueMarbleModel extends BasicModel
 		// Add LatLon pointer layer
 		layers.add(new PositionLayer(canvas));
 		
-		getLayers().removeAll(getLayers());
+		//getLayers().removeAll(getLayers());
 		
 		// Feng GUI user interface layer
 		uiLayer = new MasterUILayer(canvas); 
