@@ -45,7 +45,6 @@ public class NewServerDialog extends JDialog implements PropertyChangeListener
 		// Set the characteristics for this dialog instance
 		setTitle("Add a new WMS Server");
 		setSize(WIDTH, HEIGHT);
-		// setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 
 		// center dialog

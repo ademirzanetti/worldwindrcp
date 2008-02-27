@@ -18,7 +18,9 @@
  * USA.
  */ 
 
-package tests.gui;
+package org.bluemarble.gui.www;
+
+import gov.nasa.worldwind.layers.LayerList;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,8 +31,10 @@ import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import org.bluemarble.gui.NavigatorWindow;
 import org.jdesktop.jdic.browser.*;
 
+import worldwind.contrib.parsers.KMLSource;
 import worldwind.contrib.parsers.SimpleHTTPClient;
 
 
@@ -41,8 +45,11 @@ import worldwind.contrib.parsers.SimpleHTTPClient;
  * <code>org.jdesktop.jdic.browser</code> (Browser component).
  */
 
-public class Browser extends JPanel {
-    public static ImageIcon browseIcon = new ImageIcon(
+public class Browser extends JFrame // JPanel 
+{
+	private static final long serialVersionUID = 6255830829611296729L;
+
+	public static ImageIcon browseIcon = new ImageIcon(
         Browser.class.getResource("/images/browser/Right.gif"));
 
     BorderLayout borderLayout1 = new BorderLayout();
@@ -63,51 +70,64 @@ public class Browser extends JPanel {
     JTextField jAddressTextField = new JTextField();
     JButton jGoButton = new JButton();
     JPanel jAddrToolBarPanel = new JPanel();
-    MyStatusBar statusBar = new MyStatusBar();
+    StatusBar statusBar = new StatusBar();
     JPanel jBrowserPanel = new JPanel();
 
     IWebBrowser webBrowser;
 
+    private static Browser browser;
+    private NavigatorWindow navigator;
+
+    /**
+     * Constructor
+     */
     public Browser() {
-        try {
+    	super("Web Browser");
+        try 
+        {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            setPreferredSize(new Dimension(screenSize.width * 6 / 10
+            		, screenSize.height * 8 / 10));
+            
+            setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            
             jbInit();
-        } catch (Exception e) {
+            pack();
+        } 
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public static Browser getInstance() {
+    	if ( browser == null ) {
+    		browser =  new Browser();
+    	}
+    	return browser;
+    }
+    
+    /**
+     * Main
+     * @param args
+     */
+    
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {}
-
-        JFrame frame = new JFrame("JDIC API Demo - Browser");
-        
-        Container contentPane = frame.getContentPane();
-
-        contentPane.setLayout(new GridLayout(1, 1));
-        contentPane.add(new Browser());
-
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-
-        frame.pack();
-        frame.setVisible(true);
+        final Browser browser = new Browser();
+        browser.pack();
+        browser.setVisible(true);
     }
 
-    private void jbInit() throws Exception {
+//    private boolean duplicate = false;
+    
+    private void jbInit() throws Exception 
+    {
         this.setLayout(borderLayout1);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        this.setPreferredSize(new Dimension(screenSize.width * 6 / 10,
-                screenSize.height * 8 / 10));
-
         ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
-
+        
         jAddressLabel.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
         jAddressLabel.setToolTipText("");
         jAddressLabel.setText(" URL: ");
@@ -176,23 +196,35 @@ public class Browser extends JPanel {
         try {
             BrowserEngineManager bem = BrowserEngineManager.instance();
             webBrowser = bem.getActiveEngine().getWebBrowser();
-            webBrowser.setURL(new URL("http://java.net"));
+            webBrowser.setURL(new URL("http://www.google.com"));
 
-            // Print out debug messages in the command line.
-            //webBrowser.setDebug(true);
         } catch (MalformedURLException e) {
             System.out.println(e.getMessage());
             return;
         }
 
+        
         webBrowser.addWebBrowserListener(new WebBrowserListener() {
             public void downloadStarted(WebBrowserEvent event) {
-                updateStatusInfo("Loading started.");
+                //updateStatusInfo("Loading started.");
+//            	if ( ! duplicate) {
+            		System.out.println("Loading started. evt id=" 
+            				+ event.getID() + " u=" + ((WebBrowser)event.getSource()).getURL());
+//            		duplicate = true;
+//            	}
+//            	else {
+//            		System.out.println("Loading started duplicate");
+//            	}
             }
             
-			public void initializationCompleted(WebBrowserEvent event){;}
+			public void initializationCompleted(WebBrowserEvent event){
+				System.out.println("Loading init complete. evt id=" + event.getID());
+			}
 			
-            public void downloadCompleted(WebBrowserEvent event) {
+            public void downloadCompleted(WebBrowserEvent event) 
+            {
+            	System.out.println("Loading completed. evt id=" + event.getID());
+            	
                 jBackButton.setEnabled(webBrowser.isBackEnabled());
                 jForwardButton.setEnabled(webBrowser.isForwardEnabled());
                 
@@ -207,6 +239,7 @@ public class Browser extends JPanel {
 
             public void downloadProgress(WebBrowserEvent event) {
                 // updateStatusInfo("Loading in progress...");
+            	System.out.println("Loading progress. evt id=" + event.getID());
             }
 
             public void downloadError(WebBrowserEvent event) {
@@ -214,6 +247,8 @@ public class Browser extends JPanel {
             }
 
             public void documentCompleted(WebBrowserEvent event) {
+//            	duplicate = false;
+            	
                 updateStatusInfo("Document loading completed.");
 
                 URL currentUrl = webBrowser.getURL();
@@ -221,19 +256,38 @@ public class Browser extends JPanel {
                 if (currentUrl != null) {
 	                System.out.println("Doc complete " + webBrowser.getURL());
 	                
-	        		// download manually
+	        		// Duplicate download for URL to extract content type
+	                // No other way to get the CT :(
 	        		try {
 	        			System.out.println("Loading manually " + currentUrl);
 	        			
 	        			SimpleHTTPClient client = new SimpleHTTPClient(currentUrl);
 	        			
 	        			client.doGet();
-	        			String contentType = client.getContentType();
+	        			//String contentType = client.getContentType();
 	        			
-	        			System.out.println("ct=" + contentType);
+	        			// Handle content type
+	        			// Google earth or OpeNDAP
+	        			if ( client.isContentTypeKML() || client.isContentTypeKMZ()) {
+	        				// handle kml/kmz
+	        				handleKmlKmz( currentUrl );
+	        			}
+	        			else {
+	        				// is this a DODS Request?
+	        				// GDS HTTP Headers: XDODS-Server=[3.1], Content-Description=[dods_info]
+	        				// THREDDS Headers: XDODS-Server=[opendap/3.7], Content-Description=[dods-error]
+	        				boolean isDODS = client.getHeaders().get("XDODS-Server") != null;
+	        				
+	        				if ( isDODS ) {
+	        					
+	        					System.out.println("DODS URL detected: " + currentUrl);
+	        					//handleDODSLocation(currentUrl);
+	        				}
+	        			}
 	        			
 					} catch (Exception e) {
 						e.printStackTrace();
+						updateStatusInfo(e.getMessage());
 					}
                 }
             }
@@ -245,7 +299,8 @@ public class Browser extends JPanel {
             public void statusTextChange(WebBrowserEvent event) {
                 // updateStatusInfo("Status text changed.");
             } 
-            public void windowClose(WebBrowserEvent event) {;} 
+            public void windowClose(WebBrowserEvent event) {
+            } 
         });
 
         jBrowserPanel.setLayout(new BorderLayout());
@@ -256,6 +311,31 @@ public class Browser extends JPanel {
         this.add(jBrowserPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Target {@link NavigatorWindow} for HTTP content types: {@link KMLSource} or NetCDF
+     * @param navigator
+     */
+    public void setNavigatorWindow ( NavigatorWindow navigator) {
+    	this.navigator = navigator;
+    }
+    
+    /**
+	 * Deal with KML or KMZ files
+	 * @param location
+	 */
+	private void handleKmlKmz ( URL location ) throws Exception
+	{
+		KMLSource kml = new KMLSource(location);
+		LayerList list = kml.toLayerList();
+
+		if ( list.size() == 0 )
+			throw new Exception("No Ground, Screen or Placemark overlays in document.");
+		
+		if ( navigator != null)
+			navigator.addKMLSource(kml);
+	}
+	
+	
     void updateStatusInfo(String statusMessage) {
         statusBar.lblStatus.setText(statusMessage);
     }
