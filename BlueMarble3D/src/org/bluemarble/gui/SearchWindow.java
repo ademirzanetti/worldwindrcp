@@ -24,7 +24,11 @@ import org.fenggui.layout.FormLayout;
 import org.fenggui.layout.GridLayout;
 import org.fenggui.util.Spacing;
 
-
+/**
+ * Search Window
+ * @author Owner
+ *
+ */
 public class SearchWindow extends Window 
 {
 	private List<Object> list;
