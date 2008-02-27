@@ -15,6 +15,7 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 
 import org.bluemarble.BlueMarble3D;
+import org.bluemarble.gui.www.Browser;
 import org.bluemarble.util.BlueMarbeUtils;
 import org.fenggui.Container;
 import org.fenggui.Display;
@@ -198,6 +199,14 @@ public class MasterUILayer extends AbstractLayer
 			public void buttonPressed(ButtonPressedEvent e)
 			{
 				BlueMarbeUtils.toggleWidget(display, wSearch);
+			}
+		});
+
+		www.addButtonPressedListener(new IButtonPressedListener()
+		{
+			public void buttonPressed(ButtonPressedEvent e)
+			{
+				Browser.getInstance().setVisible(true);
 			}
 		});
 		

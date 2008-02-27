@@ -903,7 +903,7 @@ public class WMSTab extends Container
 	}
 	
 	/**
-	 * New WMS server
+	 * Add a new WMS server using the {@link NewServerDialog}
 	 */
 	private void handleNewServer()
 	{

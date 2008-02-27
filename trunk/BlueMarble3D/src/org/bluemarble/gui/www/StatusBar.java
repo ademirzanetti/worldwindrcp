@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA.
  */ 
-package tests.gui;
+package org.bluemarble.gui.www;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +29,14 @@ import java.awt.*;
  * The class represents a status bar.
  */
 
-class MyStatusBar extends Box {
-    public JLabel lblStatus, lblDesc;
+class StatusBar extends Box 
+{
+	private static final long serialVersionUID = 1L;
+	
+	public JLabel lblStatus, lblDesc;
 
-    public MyStatusBar() {
+    public StatusBar() 
+    {
         super(BoxLayout.X_AXIS);
 
         Toolkit kit = Toolkit.getDefaultToolkit();
