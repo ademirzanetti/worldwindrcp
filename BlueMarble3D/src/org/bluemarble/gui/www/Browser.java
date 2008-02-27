@@ -120,7 +120,7 @@ public class Browser extends JFrame // JPanel
         browser.setVisible(true);
     }
 
-//    private boolean duplicate = false;
+    private boolean duplicate = false;
     
     private void jbInit() throws Exception 
     {
@@ -202,28 +202,32 @@ public class Browser extends JFrame // JPanel
             System.out.println(e.getMessage());
             return;
         }
-
         
         webBrowser.addWebBrowserListener(new WebBrowserListener() {
             public void downloadStarted(WebBrowserEvent event) {
+            	WebBrowser browser = ((WebBrowser)event.getSource());
+            	URL url = browser.getURL();
+            	
                 //updateStatusInfo("Loading started.");
-//            	if ( ! duplicate) {
-            		System.out.println("Loading started. evt id=" 
-            				+ event.getID() + " u=" + ((WebBrowser)event.getSource()).getURL());
-//            		duplicate = true;
-//            	}
-//            	else {
-//            		System.out.println("Loading started duplicate");
-//            	}
+            	if ( ! duplicate ) {
+            		duplicate = true;
+            		System.out.println("Loading started. evt id=" + event.getID() + " u=" + url);
+            		
+//            		if ( url != null) {
+//            			handleURL(browser);
+//            		}
+            	}
+            	else {
+            		System.out.println("Loading started duplicate u=" + url);
+            	}
             }
             
 			public void initializationCompleted(WebBrowserEvent event){
-				System.out.println("Loading init complete. evt id=" + event.getID());
 			}
 			
             public void downloadCompleted(WebBrowserEvent event) 
             {
-            	System.out.println("Loading completed. evt id=" + event.getID());
+            	//System.out.println("Loading completed. evt id=" + event.getID());
             	
                 jBackButton.setEnabled(webBrowser.isBackEnabled());
                 jForwardButton.setEnabled(webBrowser.isForwardEnabled());
@@ -239,7 +243,7 @@ public class Browser extends JFrame // JPanel
 
             public void downloadProgress(WebBrowserEvent event) {
                 // updateStatusInfo("Loading in progress...");
-            	System.out.println("Loading progress. evt id=" + event.getID());
+            	//System.out.println("Loading progress. evt id=" + event.getID());
             }
 
             public void downloadError(WebBrowserEvent event) {
@@ -247,49 +251,9 @@ public class Browser extends JFrame // JPanel
             }
 
             public void documentCompleted(WebBrowserEvent event) {
-//            	duplicate = false;
-            	
+            	duplicate = false;
                 updateStatusInfo("Document loading completed.");
-
-                URL currentUrl = webBrowser.getURL();
-
-                if (currentUrl != null) {
-	                System.out.println("Doc complete " + webBrowser.getURL());
-	                
-	        		// Duplicate download for URL to extract content type
-	                // No other way to get the CT :(
-	        		try {
-	        			System.out.println("Loading manually " + currentUrl);
-	        			
-	        			SimpleHTTPClient client = new SimpleHTTPClient(currentUrl);
-	        			
-	        			client.doGet();
-	        			//String contentType = client.getContentType();
-	        			
-	        			// Handle content type
-	        			// Google earth or OpeNDAP
-	        			if ( client.isContentTypeKML() || client.isContentTypeKMZ()) {
-	        				// handle kml/kmz
-	        				handleKmlKmz( currentUrl );
-	        			}
-	        			else {
-	        				// is this a DODS Request?
-	        				// GDS HTTP Headers: XDODS-Server=[3.1], Content-Description=[dods_info]
-	        				// THREDDS Headers: XDODS-Server=[opendap/3.7], Content-Description=[dods-error]
-	        				boolean isDODS = client.getHeaders().get("XDODS-Server") != null;
-	        				
-	        				if ( isDODS ) {
-	        					
-	        					System.out.println("DODS URL detected: " + currentUrl);
-	        					//handleDODSLocation(currentUrl);
-	        				}
-	        			}
-	        			
-					} catch (Exception e) {
-						e.printStackTrace();
-						updateStatusInfo(e.getMessage());
-					}
-                }
+                System.out.println("Document loading completed  u=" + webBrowser.getURL());
             }
 
             public void titleChange(WebBrowserEvent event) {
@@ -311,6 +275,53 @@ public class Browser extends JFrame // JPanel
         this.add(jBrowserPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Handle URL
+     * @param currentUrl
+     */
+    private void handleURL (WebBrowser browser ) // URL currentUrl)
+    {
+		// Duplicate download for URL to extract content type
+        // No other way to get the CT :(
+		try {
+			URL url = browser.getURL();
+			
+			System.out.println("Loading manually " + url);
+			
+			SimpleHTTPClient client = new SimpleHTTPClient(url);
+			
+			client.doGet();
+			//String contentType = client.getContentType();
+			
+			// Handle content type
+			// Google earth or OpeNDAP
+			if ( client.isContentTypeKML() || client.isContentTypeKMZ()) {
+				browser.stop();
+				
+				// handle kml/kmz
+				handleKmlKmz( url );
+			}
+			else {
+				browser.stop();
+				
+				// is this a DODS Request?
+				// GDS HTTP Headers: XDODS-Server=[3.1], Content-Description=[dods_info]
+				// THREDDS Headers: XDODS-Server=[opendap/3.7], Content-Description=[dods-error]
+				boolean isDODS = client.getHeaders().get("XDODS-Server") != null;
+				
+				if ( isDODS ) {
+					
+					System.out.println("DODS URL detected: " + url);
+					//handleDODSLocation(currentUrl);
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			updateStatusInfo(e.getMessage());
+		}
+    }
+    
     /**
      * Target {@link NavigatorWindow} for HTTP content types: {@link KMLSource} or NetCDF
      * @param navigator
