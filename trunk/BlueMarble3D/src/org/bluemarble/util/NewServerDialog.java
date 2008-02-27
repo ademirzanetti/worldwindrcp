@@ -148,18 +148,5 @@ public class NewServerDialog extends JDialog implements PropertyChangeListener
 	public boolean isCanceled () {
 		return canceled;
 	}
-	
-//	public static void main(String[] args) {
-//		try {
-//			NewServerDialog d = new NewServerDialog();
-//			d.setVisible(true);
-//
-//			System.out.println("Cancel=" + d.isCanceled() + " Server=" + d.getServerName() + " u="
-//					+ d.getServerURL());
-//			d.dispose();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 }

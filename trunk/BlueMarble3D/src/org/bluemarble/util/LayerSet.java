@@ -1,11 +1,17 @@
 package org.bluemarble.util;
 
 import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.RenderableLayer;
 
+/**
+ * A set of {@link WorldWind} {@link Layer}s contained within a single entity.
+ * @author Owner
+ *
+ */
 public class LayerSet extends RenderableLayer 
 {
 	LayerList list;
