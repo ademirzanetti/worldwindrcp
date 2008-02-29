@@ -213,9 +213,9 @@ public class Browser extends JFrame // JPanel
             		duplicate = true;
             		System.out.println("Loading started. evt id=" + event.getID() + " u=" + url);
             		
-//            		if ( url != null) {
-//            			handleURL(browser);
-//            		}
+            		if ( url != null) {
+            			handleURL(browser);
+            		}
             	}
             	else {
             		System.out.println("Loading started duplicate u=" + url);
