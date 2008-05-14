@@ -844,7 +844,7 @@ public class WMSView extends ViewPart
 	 * @param format
 	 * @param view
 	 */
-	private void handleTimeLoop (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorView view )
+	private boolean handleTimeLoop (WMS_Capabilities.Layer[] selectedLayers, String format, NavigatorView view )
 		throws MalformedURLException
 	{
 		// dates[] should be the same for all layers
@@ -852,7 +852,7 @@ public class WMSView extends ViewPart
 
 		if ( dates == null) {
 			Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.63")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		logger.debug("Using TimeLoopOverlays. Dates size=" + dates.length); //$NON-NLS-1$
@@ -870,6 +870,8 @@ public class WMSView extends ViewPart
 		}
 		
 		view.addLayers(loopLayers, false);
+		
+		return true;
 	}
 	
 	/**
@@ -890,8 +892,9 @@ public class WMSView extends ViewPart
 			final String format = formats.getText();
 
 			if ( format == null || format.length() == 0 ) {
+				// Image format is required, return if error
 				Messages.showErrorMessage(getViewSite().getShell(), Messages.getString("WMSView.64")); //$NON-NLS-1$
-				//return false;
+				return;		 
 			}
 			
 			// User selected WMS layers
@@ -907,7 +910,6 @@ public class WMSView extends ViewPart
 			 * Use TiledWMSLayes, commonly for WMS Caps < 1.3.0 
 			 */
 			if ( chkUseTiles.getSelection() )  
-			//if ( capabilities.getVersion().mid < 3)
 			{
 				handleTiledWMS(selectedLayers, format, view);
 			}
@@ -933,7 +935,7 @@ public class WMSView extends ViewPart
 				}
 				
 				// Use GroundOverlayLayer: Each GroundOverlay is a different layer
-				else if ( !showDates ) //|| ( showDates && noTimeSteps))  
+				else if ( !showDates )   
 				{
 					logger.debug("Using GroundOverlays.");
 					
@@ -945,7 +947,8 @@ public class WMSView extends ViewPart
 				}
 				// Convert selected layers to TimeLoopGroundOverlay(s) 
 				else {
-					handleTimeLoop(selectedLayers, format, view);
+					if ( ! handleTimeLoop(selectedLayers, format, view) )
+						return ; // User error
 				}
 			}
 			
@@ -954,7 +957,7 @@ public class WMSView extends ViewPart
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 			
 			Messages.FatalErrorDialog(getViewSite().getShell()
 					, "Error processing layers from " + capabilities.getService().Title
