@@ -1,0 +1,1165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<Document>
+<name>3199_22125</name>
+<open>1</open>
+
+
+
+<ScreenOverlay>
+    <name>Legend</name>
+    <visibility>1</visibility>
+    <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/vis/a000000/a003100/a003199/lhfx_bar.0000.png]]></href>
+     </Icon>
+    <color>ffffffff</color>
+    <drawOrder>0</drawOrder>
+    <overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+    <screenXY x="0" y="1" xunits="fraction" yunits="fraction"/>
+    <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+    <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    <rotation>0</rotation>
+</ScreenOverlay>
+
+<Folder>
+    <name>3199_22125</name>
+    
+    <description>
+    <![CDATA[
+    <table border=0>
+<tr><td width=90>Name</td><td>3199_22125</td></tr>
+<tr><td>Title</td><td>Global Surface Latent Heat Flux during Hurricane <font class="result-match">Frances</font> (1000x721 Animation)</td></tr>
+<tr><td valign="top">Abstract</td><td>As the Sun's energy reaches the Earth, it is either reflected, absorbed by the clouds, or absorbed by the Earth's surface.  The part absorbed by the surface heats the Earth, which causes surface water to evaporate to the air, particularly over oceans or moist land.  Similarly, a cold surface causes water to condense from the air onto the land or ocean.  Latent heat flux is the amount of energy moving from the surface to the air due to evapolation (positive values) or from the air to the land due to condensation (negative values).  This animation shows the latent heat flux for the whole globe from September 1, 2004, through September 5, 2004, during the period of Hurricane Frances in the western Atlantic Ocean and Typhoon Songda in the western Pacific Ocean.  The animation clearly shows the evaporation over land only during the heat of the day, while the evaporation over the ocean is continuous throughout the day.  The highest positive latent heat flux occurs during hurricanes and typhoons, as these events are powered by the movement of heat energy from the warm ocean to the atmosphere, seen here in Hurricane Frances and Typhoon Songda.  Significant negative latent heat flux is somewhat rare and occurs over the ocean only during certain configurations of air and surface conditions.</td></tr>
+<tr><td>Lat/Lon Box</td><td>-180,-90,180,90</td></tr>
+<tr><td>Time</td><td>2004-09-01T03Z/2004-09-06T00Z/PT3H</td></tr>
+</table><br/><table><tr><td width=90>Service</td><td>OGC:WMS</td></tr><tr><td>Title</td><td>NASA SVS Image Server</td></tr><tr><td valign="top">Abstract</td><td>Web Map Server maintained by the Scientific Visualization Studio at NASA's Goddard Space Flight Center</td></tr><tr><td colspan=2 valign="top"><a target=_new style="color:blue" href="http://svs.gsfc.nasa.gov/">http://svs.gsfc.nasa.gov/</a></td></tr></table><br/><br/><a href="http://gds.rtpnc.epa.gov:9090/geo/jsp/tools/wms_view.jsp?layer=3199_22125">View/Modify</a>
+    ]]>
+    </description>
+
+    <open>1</open>
+
+
+
+<Folder>
+    <name>2004-09-01T03Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T03Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T03:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T06Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T06Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T06:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T06Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T09Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T09Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T09:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T09Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T12Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T12Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T12:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T12Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T15Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T15Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T15:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T15Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T18Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T18Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T18:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T18Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-01T21Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-01T21Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-01T21:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-01T21Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T00Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T00Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T00:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T00Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T03Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T03Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T03:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T06Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T06Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T06:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T06Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T09Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T09Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T09:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T09Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T12Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T12Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T12:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T12Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T15Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T15Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T15:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T15Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T18Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T18Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T18:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T18Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-02T21Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-02T21Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-02T21:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-02T21Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T00Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T00Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T00:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T00Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T03Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T03Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T03:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T06Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T06Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T06:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T06Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T09Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T09Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T09:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T09Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T12Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T12Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T12:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T12Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T15Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T15Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T15:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T15Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T18Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T18Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T18:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T18Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-03T21Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-03T21Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-03T21:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-03T21Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T00Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T00Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T00:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T00Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T03Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T03Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T03:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T06Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T06Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T06:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T06Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T09Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T09Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T09:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T09Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T12Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T12Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T12:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T12Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T15Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T15Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T15:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T15Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T18Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T18Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T18:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T18Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-04T21Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-04T21Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-04T21:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-04T21Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T00Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T00Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T00:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T00Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T03Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T03Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T03:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T03Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T06Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T06Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T06:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T06Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T09Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T09Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T09:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T09Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T12Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T12Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T12:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T12Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T15Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T15Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T15:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T15Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T18Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T18Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T18:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T18Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-05T21Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-05T21Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-05T21:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-05T21Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+
+<Folder>
+    <name>2004-09-06T00Z</name>
+
+
+
+    <GroundOverlay>
+      <name>2004-09-06T00Z</name>
+
+      <TimeSpan>
+			<begin>2004-09-06T00:00:00Z</begin>
+      </TimeSpan>
+
+	  <color>99ffffff</color>
+      <Icon>
+        <href><![CDATA[http://svs.gsfc.nasa.gov/cgi-bin/wms?service=WMS&request=GetMap&layers=3199_22125&time=2004-09-06T00Z&bbox=-180,-90,180,90&width=1000&height=721&srs=EPSG:4326&format=image/png&version=1.1.1]]></href>
+      </Icon>
+
+      <LatLonBox>
+        <north>90</north>
+        <south>-90</south>
+        <east>180</east>
+        <west>-180</west>
+      </LatLonBox>
+    </GroundOverlay>
+    
+ </Folder>
+    
+</Folder>
+</Document>
+</kml>
+
