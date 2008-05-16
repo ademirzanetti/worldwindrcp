@@ -24,8 +24,8 @@ import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
-import gov.nasa.worldwind.layers.Earth.WorldMapLayer;
+import gov.nasa.worldwind.layers.TerrainProfileLayer;
+import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwind.pick.PickedObjectList;
 import gov.nasa.worldwind.render.WWIcon;
 import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
@@ -122,8 +122,12 @@ public class EarthView extends ViewPart
 	                    
 	                    // Use a PanToIterator
 	                    view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
-	                            view, globe, new LatLon(targetPos.getLatitude(), targetPos.getLongitude()),
-	                            Angle.ZERO, Angle.ZERO, targetPos.getElevation()));
+	                            view
+	                            , globe
+	                            , new Position(new LatLon(targetPos.getLatitude(), targetPos.getLongitude()), 0)
+	                            , Angle.ZERO
+	                            , Angle.ZERO
+	                            , targetPos.getElevation()));
 	                }
 	                else if  (event.getTopObject() instanceof WWIcon ) 
 	                {
@@ -259,7 +263,7 @@ public class EarthView extends ViewPart
 		view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
         		(OrbitView)view
         		, globe
-        		, latlon		// bbox
+        		, new Position( latlon, 0)		// bbox
         		, Angle.ZERO	// Heading
         		, Angle.ZERO	// Pitch
         		, 3e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
