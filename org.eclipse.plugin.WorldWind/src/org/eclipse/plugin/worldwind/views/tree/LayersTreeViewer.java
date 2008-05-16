@@ -16,7 +16,7 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.layers.Earth.BMNGOneImage;
 import gov.nasa.worldwind.layers.Earth.BMNGSurfaceLayer;
 import gov.nasa.worldwind.layers.Earth.LandsatI3;
-import gov.nasa.worldwind.layers.Earth.TerrainProfileLayer;
+import gov.nasa.worldwind.layers.TerrainProfileLayer;
 import gov.nasa.worldwind.layers.Earth.USGSDigitalOrtho;
 import gov.nasa.worldwind.layers.Earth.USGSTopoHighRes;
 import gov.nasa.worldwind.layers.Earth.USGSTopographicMaps;

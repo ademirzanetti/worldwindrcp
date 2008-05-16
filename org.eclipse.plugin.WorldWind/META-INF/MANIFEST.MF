@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WorldWind Plug-in
 Bundle-SymbolicName: org.eclipse.plugin.WorldWind;singleton:=true
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Bundle-Activator: org.eclipse.plugin.worldwind.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,8 +14,6 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  config/,
- lib/worldwind-041.jar,
- lib/wwcontrib-041.jar,
  lib/netcdf/bufr-1.1.00.jar,
  lib/netcdf/commons-codec-1.3.jar,
  lib/netcdf/commons-httpclient-3.1.jar,
@@ -26,7 +24,9 @@ Bundle-ClassPath: .,
  lib/netcdf/netcdf-2.2.22.jar,
  lib/netcdf/netcdf-plot.jar,
  lib/netcdf/nlog4j-1.2.25.jar,
- lib/netcdf/opendap-2.1.jar
+ lib/netcdf/opendap-2.1.jar,
+ lib/worldwind-050.jar,
+ lib/wwcontrib-050.jar
 Export-Package: gov.nasa.worldwind,
  gov.nasa.worldwind.avlist,
  gov.nasa.worldwind.awt,

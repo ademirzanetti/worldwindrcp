@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/worldwind-050.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wwcontrib-050.jar"/>
 	<classpathentry exported="true" kind="lib" path="config" sourcepath="config"/>
-	<classpathentry exported="true" kind="lib" path="lib/worldwind-041.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/wwcontrib-041.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netcdf/bufr-1.1.00.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netcdf/commons-codec-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netcdf/commons-httpclient-3.1.jar"/>
