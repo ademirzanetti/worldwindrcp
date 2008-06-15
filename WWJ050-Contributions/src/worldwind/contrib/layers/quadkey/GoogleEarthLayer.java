@@ -21,9 +21,9 @@ import gov.nasa.worldwind.render.DrawContext;
  * Google 
  * Examples
  * 	Satellite (jpg)
- *     http://kh0.google.com/kh?n=404&v=17&t=tqtsqrqtrtttqsqsrrtr
+ *     http://kh0.google.com/kh?n=404&v=28&t=tqtsqrqtrtttqsqsrrtr
  *  Map (png)
- *      http://mt1.google.com/mt?n=404&v=w2.39&x=329&y=792&zoom=6
+ *      http://mt1.google.com/mt?n=404&v=w2p.71&x=329&y=792&zoom=6
  *  Hybrid (png)
  *      http://mt1.google.com/mt?n=404&v=w2t.39&x=329&y=792&zoom=6
  *  Rules
@@ -65,6 +65,8 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 		super.cacheRoot 	= "GoogleEarth/";
 		super.mapExtension 	= ".jpg";
 		
+		// must be "" for sat GE
+		setMapType(""); 
 		setOpacity(opacity);
 
 		// Logo
@@ -106,6 +108,7 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 		
 		String tileURL = buildRequestUrl(quadKey, null, null);
 		
+		// Tile key: quadKey + mapExtension
 		renderTile(dc, quadKey + mapExtension, tileURL, sector);
 
 	}
@@ -123,7 +126,7 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 	{
 		// random server # (0-3)
 		int server = (int)(Math.random() * 4.0);
-		return "http://kh" + server + ".google.com/kh?n=404&v=23&t=t" + quadKey;
+		return "http://kh" + server + ".google.com/kh?n=404&v=28&t=t" + quadKey;
 	}
 	
 	
