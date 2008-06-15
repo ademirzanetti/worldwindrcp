@@ -1,13 +1,15 @@
 package worldwind.contrib.layers.quadkey;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
+
+import worldwind.contrib.parsers.SimpleHTTPClient;
 
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.retrieve.HTTPRetriever;
@@ -27,7 +29,7 @@ public class QuadKeyEarthTile
 	private static final Logger logger 	= Logger.getLogger(QuadKeyEarthTile.class);
 	
 	// HTTP request read timeout
-	private final int READ_TIMEOUT = 8000;
+//	private final int READ_TIMEOUT = 8000;
 	
 	private String cacheRoot = "Earth/";
 	private String tileKey;
@@ -72,8 +74,11 @@ public class QuadKeyEarthTile
 				} 
 				catch (Exception e) 
 				{
-					file.delete();
-					//logger.error(e);
+					logger.debug("Error " + e.getMessage() + ". Attempting delete.");
+					
+					if (! file.delete() )
+						logger.error("Uable to delete " + file);
+					
 				}
 				finally {
 					loading = false;
@@ -165,13 +170,20 @@ public class QuadKeyEarthTile
 	 * @param url
 	 * @param file
 	 */
-	private void downloadUrl(String url, File file) throws MalformedURLException
+	private void downloadUrl(String url, File file) throws IOException, MalformedURLException
 	{
-		Retriever retriever = new HTTPRetriever(new URL(url)
-			, new DownloadPostProcessor(file));
+//		Retriever retriever = new HTTPRetriever(new URL(url)
+//			, new DownloadPostProcessor(file));
+//		
+//		retriever.setReadTimeout(READ_TIMEOUT);
+//		WorldWind.getRetrievalService().runRetriever(retriever);
 		
-		retriever.setReadTimeout(READ_TIMEOUT);
-		WorldWind.getRetrievalService().runRetriever(retriever);
+		// Use a simple client that sets a User-Agent header!
+		SimpleHTTPClient client = new SimpleHTTPClient(url);
+		client.doGet(new FileOutputStream(file));
+		
+		logger.debug("Download Result=" + client.getStatus() + " " + client.getResponseMessage());
+		client.close();
 	}
 	
 }

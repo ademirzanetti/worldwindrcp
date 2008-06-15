@@ -279,7 +279,7 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 				}
 				else {
 					// No, load from remote url
-					logger.debug("Tile from Remote url:" + tileURL);
+					logger.debug("Tile from Remote url:" + tileURL + " Key=" + tileKey);
 					
 					loadingTiles.put(tileKey, quadTile);
 					
@@ -295,7 +295,6 @@ public abstract class AbstractQuadKeyLayer extends AbstractLayer
 		} 
 		catch (Exception e) 
 		{
-			//e.printStackTrace();
 			logger.error(e + " for tile:" + tileKey);
 			loadingTiles.remove(tileKey);
 			

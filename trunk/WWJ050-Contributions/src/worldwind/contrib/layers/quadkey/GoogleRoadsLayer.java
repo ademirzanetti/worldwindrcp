@@ -15,6 +15,7 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		super("Google Roads");
 		super.cacheRoot 	= "GoogleRoads/";
 		super.mapExtension	= ".png";
+		setMapType("");
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		// Use a rand server # (0-3) Zoom level starts at 17 (whole earth)
 		return "http://mt"
 			+ (int)(Math.random() * 4.0) 
-			+ ".google.com/mt?n=404&v=w2t.63&x=" + tileX  
+			+ ".google.com/mt?n=404&v=w2t.75&x=" + tileX  
 			+ "&y=" + tileY + "&zoom=" + zoom;
 		
 	}

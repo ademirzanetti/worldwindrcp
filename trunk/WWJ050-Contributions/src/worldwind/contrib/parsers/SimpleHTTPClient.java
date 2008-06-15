@@ -29,11 +29,15 @@ public class SimpleHTTPClient
 	
 	public static final String CT_KMZ = "application/vnd.google-earth.kmz";
 	public static final String CT_KML = "application/vnd.google-earth.kml+xml";
+	public static final String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14";
+	
+	private int READ_TIMEOUT = 8000;
 	
 	private Map<String, List<String>> headers;
 	private URL url;
     private int status;
     private HttpURLConnection uc;
+    private String responseMessage;
     
 	public SimpleHTTPClient(String url) throws MalformedURLException {
 		this.url = new URL(url);
@@ -49,28 +53,41 @@ public class SimpleHTTPClient
      * @throws IOException
      */
     public void doGet (OutputStream os)
-		throws MalformedURLException, IOException
+		throws  IOException //, MalformedURLException
 	{
-	    uc = (HttpURLConnection)url.openConnection();
-	    
-	    logger.debug("Connect timeout=" + uc.getConnectTimeout() 
-	    		+ " read timeout=" + uc.getReadTimeout() + " u=" + url);
-	    
-	    InputStream buffer  = new BufferedInputStream(uc.getInputStream());   
-	    
-	    int c;
-	    
-	    while ((c = buffer.read()) != -1) 
-	    {
-	      os.write(c);
-	    } 
-	    
-	    os.close();
-	    
-	    headers = uc.getHeaderFields();
-	    status = uc.getResponseCode();
-	    
-		logger.debug("HTTP status=" + status);
+    	try {
+    	    uc = (HttpURLConnection)url.openConnection();
+    	    uc.setRequestProperty("User-Agent", USER_AGENT);
+    	    uc.setReadTimeout(READ_TIMEOUT);
+    	    
+    	    logger.debug("Connect timeout=" + uc.getConnectTimeout() 
+    	    		+ " read timeout=" + uc.getReadTimeout() + " u=" + url);
+    	    
+    	    InputStream buffer  = new BufferedInputStream(uc.getInputStream());   
+    	    
+    	    int c;
+    	    
+    	    while ((c = buffer.read()) != -1) 
+    	    {
+    	      os.write(c);
+    	    } 
+    	    
+    	    headers = uc.getHeaderFields();
+    	    status = uc.getResponseCode();
+    	    responseMessage = uc.getResponseMessage();
+    	    
+		} catch (Exception e) {
+			throw new IOException(e.getMessage());
+		}
+		finally {
+			if ( status != 200)
+				logger.error("Download failed status: " + status + " " + responseMessage + " for " + url);
+			else
+				logger.debug("HTTP status=" + status + " " + uc.getResponseMessage());
+			
+			os.close();
+			uc.disconnect();
+		}
 	}
 
     /**
@@ -111,6 +128,10 @@ public class SimpleHTTPClient
 	
 	public int getStatus (){
 		return status;
+	}
+	
+	public String getResponseMessage () throws IOException {
+		return responseMessage;
 	}
 	
 	public String getContentType() {
