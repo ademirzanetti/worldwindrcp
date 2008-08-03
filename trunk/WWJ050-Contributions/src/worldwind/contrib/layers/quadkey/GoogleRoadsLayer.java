@@ -89,8 +89,8 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		// Use a rand server # (0-3) Zoom level starts at 17 (whole earth)
 		return "http://mt"
 			+ (int)(Math.random() * 4.0) 
-			+ ".google.com/mt?n=404&v=w2t.75&x=" + tileX  
-			+ "&y=" + tileY + "&zoom=" + zoom;
+			+ ".google.com/mt?v=w2t.80&nl=en&x=" + tileX  
+			+ "&y=" + tileY + "&zoom=" + zoom + "&s=Galileo";
 		
 	}
 	
@@ -124,7 +124,7 @@ public class GoogleRoadsLayer extends AbstractQuadKeyLayer
 		// render MT (mass transit) tile 
 		final String mtUrl = buildRoadsTileUrl(tileX, tileY, 17 - zoomLevel);
 		final String mtKey = tileX + "." + tileY + mapExtension;
-		
+
 		renderTile(dc, mtKey , mtUrl, sector);
 
 		// Render other tiles outwards in surrounding circles

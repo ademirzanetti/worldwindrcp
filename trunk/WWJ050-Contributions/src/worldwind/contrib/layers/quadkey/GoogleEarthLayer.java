@@ -21,7 +21,7 @@ import gov.nasa.worldwind.render.DrawContext;
  * Google 
  * Examples
  * 	Satellite (jpg)
- *     http://kh0.google.com/kh?n=404&v=28&t=tqtsqrqtrtttqsqsrrtr
+ *     http://khm0.google.com/kh?n=404&v=30&t=tqtsqrqtrtttqsqsrrtr
  *  Map (png)
  *      http://mt1.google.com/mt?n=404&v=w2p.71&x=329&y=792&zoom=6
  *  Hybrid (png)
@@ -126,7 +126,7 @@ public class GoogleEarthLayer extends AbstractQuadKeyLayer
 	{
 		// random server # (0-3)
 		int server = (int)(Math.random() * 4.0);
-		return "http://kh" + server + ".google.com/kh?n=404&v=28&t=t" + quadKey;
+		return "http://khm" + server + ".google.com/kh?hl=en&v=30&t=t" + quadKey;
 	}
 	
 	
