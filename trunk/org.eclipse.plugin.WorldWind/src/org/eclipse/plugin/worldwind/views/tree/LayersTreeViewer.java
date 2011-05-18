@@ -42,10 +42,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISharedImages;
 
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.ScreenOverlayLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.ScreenOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 
 /**
  * CheckedBoxTreeViewer with logic to add/remove nodes + track the

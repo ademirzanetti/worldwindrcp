@@ -19,7 +19,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
-import gov.nasa.worldwind.examples.BasicDragger;
+//import gov.nasa.worldwind.examples.BasicDragger;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
@@ -28,8 +28,12 @@ import gov.nasa.worldwind.layers.TerrainProfileLayer;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwind.pick.PickedObjectList;
 import gov.nasa.worldwind.render.WWIcon;
-import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
-import gov.nasa.worldwind.view.OrbitView;
+import gov.nasa.worldwind.util.BasicDragger;
+import gov.nasa.worldwind.view.firstperson.FlyToFlyViewAnimator;
+import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
+import gov.nasa.worldwind.view.orbit.OrbitView;
+//import gov.nasa.worldwind.view.FlyToOrbitViewStateIterator;
+//import gov.nasa.worldwind.view.OrbitView;
 import gov.nasa.worldwind.View;
 
 import java.awt.BorderLayout;
@@ -43,8 +47,8 @@ import org.eclipse.ui.part.ViewPart;
 
 import org.eclipse.plugin.worldwind.views.EarthView;
 
-import worldwind.contrib.layers.PlacemarkLayer;
-import worldwind.contrib.layers.PositionLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.PlacemarkLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.PositionLayer;
 
 
 /**
@@ -120,6 +124,8 @@ public class EarthView extends ViewPart
 	                    OrbitView view 		= (OrbitView)world.getView();
 	                    Globe globe 		= world.getModel().getGlobe();
 	                    
+	                    view.goTo(targetPos, targetPos.getAltitude());
+	                    /*
 	                    // Use a PanToIterator
 	                    view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
 	                            view
@@ -127,7 +133,7 @@ public class EarthView extends ViewPart
 	                            , new Position(new LatLon(targetPos.getLatitude(), targetPos.getLongitude()), 0)
 	                            , Angle.ZERO
 	                            , Angle.ZERO
-	                            , targetPos.getElevation()));
+	                            , targetPos.getElevation())); */
 	                }
 	                else if  (event.getTopObject() instanceof WWIcon ) 
 	                {
@@ -219,7 +225,7 @@ public class EarthView extends ViewPart
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
 
 		// Add Position Layer
-		m.getLayers().add(new PositionLayer(world));
+		//m.getLayers().add(new PositionLayer(world));
 
         m.setShowWireframeExterior(false);
         m.setShowWireframeInterior(false);
@@ -258,8 +264,10 @@ public class EarthView extends ViewPart
 	public void flyTo (LatLon latlon) 
 	{
 		View view 			= world.getView();
-		Globe globe 		= world.getModel().getGlobe();
+		//Globe globe 		= world.getModel().getGlobe();
 		
+		view.goTo(new Position( latlon, 0), 3e3);
+		/*
 		view.applyStateIterator(FlyToOrbitViewStateIterator.createPanToIterator(
         		(OrbitView)view
         		, globe
@@ -267,6 +275,6 @@ public class EarthView extends ViewPart
         		, Angle.ZERO	// Heading
         		, Angle.ZERO	// Pitch
         		, 3e3 ) 		// Altitude/Zoom (m) Angle.ZERO.degrees)
-        		);
+        		); */
 	}
 }

@@ -22,10 +22,10 @@ import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.EarthView;
 import org.eclipse.swt.widgets.Display;
 
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.ScreenOverlayLayer;
-import worldwind.contrib.layers.GroundOverlayLayer.OverlayListener;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.ScreenOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer.OverlayListener;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 /**
  * An eclipse job to make animations smoother. The class {@link TimeLoopGroundOverlay}

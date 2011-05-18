@@ -21,8 +21,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import worldwind.contrib.parsers.ParserUtils;
-import worldwind.contrib.parsers.SimpleHTTPClient;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleHTTPClient;
 
 
 

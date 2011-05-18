@@ -23,9 +23,9 @@ import org.eclipse.plugin.worldwind.actions.ICommandIds;
 import org.eclipse.plugin.worldwind.views.NavigatorView;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
-import worldwind.contrib.layers.GeoRSSLayer;
-import worldwind.contrib.parsers.KMLSource;
-import worldwind.contrib.parsers.SimpleHTTPClient;
+import org.eclipse.plugin.worldwind.contrib.layers.GeoRSSLayer;
+import org.eclipse.plugin.worldwind.contrib.parsers.KMLSource;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleHTTPClient;
 
 
 public class OpenFileAction extends Action 

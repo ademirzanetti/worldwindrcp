@@ -34,6 +34,7 @@ import org.eclipse.plugin.worldwind.ApplicationActionBarAdvisor;
 import org.eclipse.plugin.worldwind.Messages;
 import org.eclipse.plugin.worldwind.operation.GroundOverlayFetchOperation;
 import org.eclipse.plugin.worldwind.operation.WMSParseOperation;
+import org.eclipse.plugin.worldwind.utils.LayerUtils;
 import org.eclipse.plugin.worldwind.utils.NewRemoteServerDialog;
 import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.swt.SWT;
@@ -58,14 +59,14 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.TiledWMSLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.parsers.KMLSource;
-import worldwind.contrib.parsers.ParserUtils;
-import worldwind.contrib.parsers.SimpleHTTPClient;
-import worldwind.contrib.parsers.WMS_Capabilities;
-import worldwind.contrib.parsers.WMS_Capabilities.Layer;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.TiledWMSLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.parsers.KMLSource;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleHTTPClient;
+import org.eclipse.plugin.worldwind.contrib.parsers.WMS_Capabilities;
+import org.eclipse.plugin.worldwind.contrib.parsers.WMS_Capabilities.Layer;
 
 /**
  * Web Map Service (WMS) Viewer: Populates a local server list from a local html file and
@@ -1030,11 +1031,14 @@ public class WMSView extends ViewPart
 	 */
 	private void saveServer (String name, String wmsUrl) {
 		try {
-			URL url 	= WorldWind.getDataFileCache().findFile("wms-bookmarks.txt", false); //$NON-NLS-1$
+			// ww 0.5 URL url 	= WorldWind.getDataFileCache().findFile("wms-bookmarks.txt", false); //$NON-NLS-1$
+			URL url 	= LayerUtils.getWWFileStore().findFile("wms-bookmarks.txt", false); //$NON-NLS-1$
 			File file	= null;
 			
-			if ( url == null)
-				file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			if ( url == null) {
+				// ww 0.5 file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+				file = LayerUtils.getWWFileStore().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			}
 			else
 				file = new File(url.toURI());
 					
@@ -1055,7 +1059,9 @@ public class WMSView extends ViewPart
 	 */
 	private String[] loadBookmarks() {
 		try {
-			File file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			// ww 0.5 File file = WorldWind.getDataFileCache().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			File file = LayerUtils.getWWFileStore().newFile("wms-bookmarks.txt"); //$NON-NLS-1$
+			
 			RandomAccessFile raf = new RandomAccessFile(file,"r"); //$NON-NLS-1$
 			
 			byte[] bytes = new byte[(int)raf.length()];

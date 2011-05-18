@@ -29,7 +29,6 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import worldwind.contrib.layers.PositionLayer;
 
 
 /**
@@ -44,13 +43,22 @@ public class MoonView extends ViewPart
 	public static final String ID 			= MoonView.class.getName(); 
 	private final WorldWindowGLCanvas world = new WorldWindowGLCanvas(); ;
 	
-
+	/* ww 0.5
     private static final String LAYERS = "gov.nasa.worldwind.layers.Earth.StarsLayer"
         + ",gov.nasa.worldwind.layers.Moon.Clementine40Layer"
         + ",gov.nasa.worldwind.layers.Moon.Clementine30Layer"
         + ",gov.nasa.worldwind.layers.Moon.ShadedElevationLayer"
         + ",gov.nasa.worldwind.layers.Earth.ScalebarLayer"
+        + ",gov.nasa.worldwind.layers.CompassLayer"; */
+	
+    private static final String LAYERS = "gov.nasa.worldwind.layers.StarsLayer"
+        + ",gov.nasa.worldwind.layers.Moon.Clementine40BaseLayer"
+        + ",gov.nasa.worldwind.layers.Moon.Clementine40Layer"
+        + ",gov.nasa.worldwind.layers.Moon.Clementine30Layer"
+        + ",gov.nasa.worldwind.layers.Moon.ShadedElevationLayer"
+        + ",gov.nasa.worldwind.layers.ScalebarLayer"
         + ",gov.nasa.worldwind.layers.CompassLayer";
+	
 	
 	public MoonView() {
 		/**
@@ -87,11 +95,15 @@ public class MoonView extends ViewPart
 	{
         Configuration.setValue(AVKey.GLOBE_CLASS_NAME, gov.nasa.worldwind.globes.Moon.class.getName());
         Configuration.setValue(AVKey.LAYERS_CLASS_NAMES, LAYERS);
-		
+
+        // ww 0.6
+        Configuration.setValue(AVKey.MOON_ELEVATION_MODEL_CONFIG_FILE, "config/Moon/MoonElevationModel.xml");
+        Configuration.setValue(AVKey.INITIAL_ALTITUDE, 6000e3);  // 6000km
+        
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
 
 		// Add Position Layer
-		m.getLayers().add(new PositionLayer(world));
+		//m.getLayers().add(new PositionLayer(world));
 
         m.setShowWireframeExterior(false);
         m.setShowWireframeInterior(false);

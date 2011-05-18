@@ -18,7 +18,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
-import gov.nasa.worldwind.layers.FogLayer;
+//import gov.nasa.worldwind.layers.FogLayer;
 import gov.nasa.worldwind.layers.SkyGradientLayer;
 import gov.nasa.worldwind.layers.Mars.MDIMLayer;
 import gov.nasa.worldwind.layers.Mars.MOCColorizedLayer;
@@ -35,7 +35,7 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import worldwind.contrib.layers.PositionLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.PositionLayer;
 
 
 /**
@@ -50,9 +50,9 @@ public class MarsView extends ViewPart
 	public final String ID 							= MarsView.class.getName(); 
 	private final WorldWindowGLCanvas world 	= new WorldWindowGLCanvas(); ;
 	
-
+	/* ww 0.5 
     private static final String LAYERS = "gov.nasa.worldwind.layers.Earth.StarsLayer"
-        + ",gov.nasa.worldwind.layers.Earth.SkyGradientLayer"
+        + ",gov.nasa.worldwind.layers.SkyGradientLayer"
         + ",gov.nasa.worldwind.layers.Earth.FogLayer"
         + ",gov.nasa.worldwind.layers.Mars.MOCLayer"
         + ",gov.nasa.worldwind.layers.Mars.MOCColorizedLayer"
@@ -62,6 +62,18 @@ public class MarsView extends ViewPart
         + ",gov.nasa.worldwind.layers.Mars.THEMISLayer"
         + ",gov.nasa.worldwind.layers.Mars.THEMISColorLayer"
         + ",gov.nasa.worldwind.layers.Earth.ScalebarLayer"
+        + ",gov.nasa.worldwind.layers.CompassLayer"; */
+    private static final String LAYERS = "gov.nasa.worldwind.layers.StarsLayer"
+        + ",gov.nasa.worldwind.layers.SkyGradientLayer"
+        + ",gov.nasa.worldwind.layers.Mars.MOCColorizedBaseLayer"
+        + ",gov.nasa.worldwind.layers.Mars.MOCLayer"
+        + ",gov.nasa.worldwind.layers.Mars.MOCColorizedLayer"
+        + ",gov.nasa.worldwind.layers.Mars.MolaColorASULayer"
+        + ",gov.nasa.worldwind.layers.Mars.MolaColoredJPLLayer"
+        + ",gov.nasa.worldwind.layers.Mars.MDIMLayer"
+        + ",gov.nasa.worldwind.layers.Mars.THEMISLayer"
+        + ",gov.nasa.worldwind.layers.Mars.THEMISColorLayer"
+        + ",gov.nasa.worldwind.layers.ScalebarLayer"
         + ",gov.nasa.worldwind.layers.CompassLayer";
 	
 	
@@ -100,11 +112,14 @@ public class MarsView extends ViewPart
 	{
         Configuration.setValue(AVKey.GLOBE_CLASS_NAME, gov.nasa.worldwind.globes.Mars.class.getName());
         Configuration.setValue(AVKey.LAYERS_CLASS_NAMES, LAYERS);
+        // ww 0.6
+        Configuration.setValue(AVKey.MARS_ELEVATION_MODEL_CONFIG_FILE, "config/Mars/MarsElevationModel.xml");
+        Configuration.setValue(AVKey.INITIAL_ALTITUDE, 10000e3);  // 10000km
 		
         Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
 
 		// Add Position Layer
-		m.getLayers().add(new PositionLayer(world));
+		//m.getLayers().add(new PositionLayer(world));
 
         m.setShowWireframeExterior(false);
         m.setShowWireframeInterior(false);
@@ -124,11 +139,12 @@ public class MarsView extends ViewPart
                 sky.setZenithColor(new Color(183, 117, 3));
                 sky.setAtmosphereThickness(40000);
             }
+/* WW 0.5            
             else if(layer instanceof FogLayer)
             {
                 FogLayer fog = (FogLayer) layer;
                 fog.setColor(new Color(236, 223, 174));
-            }
+            } */
             else if(layer instanceof MOCLayer
             		|| layer instanceof MOCColorizedLayer
                     || layer instanceof MolaColorASULayer

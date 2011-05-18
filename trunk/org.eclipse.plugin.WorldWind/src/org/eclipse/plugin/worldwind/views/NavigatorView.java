@@ -48,6 +48,7 @@ import org.eclipse.plugin.worldwind.operation.AnimationJob;
 import org.eclipse.plugin.worldwind.operation.UpdatesCheckJob;
 import org.eclipse.plugin.worldwind.operation.LayerLoaderJob;
 import org.eclipse.plugin.worldwind.utils.LayerControlsDialog;
+import org.eclipse.plugin.worldwind.utils.LayerUtils;
 import org.eclipse.plugin.worldwind.utils.LayersToolTipSupport;
 import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.utils.YGeoSearch;
@@ -94,14 +95,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import worldwind.contrib.LayerUtils;
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.TiledWMSLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay.OverlayLoopListener;
-import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
-import worldwind.contrib.parsers.KMLSource;
-import worldwind.contrib.parsers.ParserUtils;
+// ww 0.5 import worldwind.contrib.LayerUtils;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.TiledWMSLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay.OverlayLoopListener;
+import org.eclipse.plugin.worldwind.contrib.layers.quadkey.VirtualEarthLayer;
+import org.eclipse.plugin.worldwind.contrib.parsers.KMLSource;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils;
 
 /**
  * Layer Navigator View using eclipse forms + Yahoo Geo Search
@@ -229,8 +230,9 @@ public class NavigatorView extends ViewPart
 		loadLayers();
 		
 		// check 4 updates
+		/* vsilva: Updates...too anoying
 		UpdatesCheckJob job = new UpdatesCheckJob(getViewSite().getWorkbenchWindow());
-		job.schedule(120000);
+		job.schedule(120000); */
 	}
 
 	
@@ -437,12 +439,13 @@ public class NavigatorView extends ViewPart
 	private void loadLayers() {
 		try {
 			// Read kml from cache
-			URL url 	= WorldWind.getDataFileCache().findFile("layers.xml", false);
+			// WW 0.5 URL url 	= WorldWind.getDataFileCache().findFile("layers.xml", false);
+			URL url 	= WorldWind.getDataFileStore().findFile("layers.xml", false);
 			
 			if ( url == null ) return;
 			
 			File file 	= new File(url.toURI());
-			String xml 	= new String(worldwind.contrib.Messages.readFile(file));
+			String xml 	= new String(org.eclipse.plugin.worldwind.contrib.Messages.readFile(file));
 			
 			// Each <kml> element represents a WW layer
 			Document doc 	= ParserUtils.parse(new ByteArrayInputStream(xml.getBytes()));
@@ -745,9 +748,11 @@ public class NavigatorView extends ViewPart
 			Object obj = ((IStructuredSelection)selection).getFirstElement();
 			
 			// move globe position to layer centroid
+			
 			LayerUtils.moveViewTo(EarthView.world.getView()
 					, EarthView.world.getModel().getGlobe()
-					, ((TreeObject)obj).getLayer());
+					, ((TreeObject)obj).getLayer()); 
+			
 	}
 
 	/**
@@ -1031,9 +1036,10 @@ public class NavigatorView extends ViewPart
 			buf.append("</xml>");
 
 			// save XML in WW cache folder
-			File file = WorldWind.getDataFileCache().newFile("layers.xml");
+			// WW 0.5 File file = WorldWind.getDataFileCache().newFile("layers.xml");
+			File file = WorldWind.getDataFileStore().newFile("layers.xml");
 			
-			worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
+			org.eclipse.plugin.worldwind.contrib.Messages.writeToFile(file, buf.toString().getBytes());
 		} 
 		catch (Exception e) 
 		{

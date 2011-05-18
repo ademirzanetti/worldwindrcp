@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import worldwind.contrib.parsers.WMS_Capabilities;
+import org.eclipse.plugin.worldwind.contrib.parsers.WMS_Capabilities;
 
 /**
  * Coverage selection wizard page: BBOX, time span (if applicable), and format

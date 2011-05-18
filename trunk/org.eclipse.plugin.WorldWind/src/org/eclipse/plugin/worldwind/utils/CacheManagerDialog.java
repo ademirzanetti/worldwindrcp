@@ -107,7 +107,8 @@ public class CacheManagerDialog extends Dialog
 	 */
 	private void loadData () {
 		// load combo with WW caches
-		List<File> caches =  WorldWind.getDataFileCache().getCacheLocations();
+		//List<File> caches =  WorldWind.getDataFileCache().getCacheLocations();
+		List<? extends File> caches =  WorldWind.getDataFileStore().getLocations();
 		
 		for (File file : caches) {
 			combo.add(file.toString());

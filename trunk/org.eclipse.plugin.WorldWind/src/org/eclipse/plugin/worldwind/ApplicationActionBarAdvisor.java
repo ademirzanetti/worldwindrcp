@@ -43,6 +43,7 @@ import org.eclipse.plugin.worldwind.actions.OpenViewAction;
 import org.eclipse.plugin.worldwind.actions.ShowPerspectiveAction;
 import org.eclipse.plugin.worldwind.actions.WeatherWizardAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
+import org.eclipse.plugin.worldwind.operation.UpdatesCheckJob;
 import org.eclipse.plugin.worldwind.utils.CacheManagerDialog;
 import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.NetCDFView;
@@ -71,7 +72,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private IWorkbenchAction exitAction;
 
 	private Action cacheManagerAction;
-//	private Action updatesCheckAction;
+	private Action updatesCheckAction;
 	
 	// Help Menu actions
 	private IWorkbenchAction aboutAction;
@@ -170,12 +171,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		cacheManagerAction.setText(Messages.getString("menu.cache.name"));
 		
 		// check for updates
-//		updatesCheckAction = new Action(){ 
-//			public void run() {
-//				updatesCheck(window.getShell());
-//			}
-//		};
-//		updatesCheckAction.setText(Messages.getString("menu.upd.name"));
+		updatesCheckAction = new Action(){ 
+			public void run() {
+				//updatesCheck(window.getShell());
+				UpdatesCheckJob job = new UpdatesCheckJob(window);
+				job.schedule();
+			}
+		};
+		updatesCheckAction.setText(Messages.getString("menu.upd.name"));
 		
 		// Help menu
 		aboutAction = ActionFactory.ABOUT.create(window);
@@ -203,7 +206,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		fileMenu.add(weatherWizardAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(openWebBrowser);
-//		fileMenu.add(updatesCheckAction);
+		fileMenu.add(updatesCheckAction);
 	    fileMenu.add(new Separator());
 		fileMenu.add(exitAction);
 

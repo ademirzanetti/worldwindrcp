@@ -27,9 +27,9 @@ import org.eclipse.plugin.worldwind.views.tree.TreeObject;
 import org.eclipse.plugin.worldwind.views.tree.TreeParent;
 import org.eclipse.swt.widgets.Display;
 
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.HTTPSatLoopLayerList;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 
 /**

@@ -30,12 +30,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import worldwind.contrib.layers.loop.HTTPLoopFileLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.HTTPLoopFileLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 //import worldwind.contrib.layers.loop.HTTPGOESLoopFileLayer;
 //import worldwind.contrib.layers.loop.HTTPNavyWeatherLayer;
-import worldwind.contrib.parsers.ParserUtils;
-import worldwind.contrib.parsers.ParserUtils.HTTPDataSet;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils.HTTPDataSet;
 
 /**
  * Weather Wizard Page
