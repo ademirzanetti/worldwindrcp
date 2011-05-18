@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell; 
 
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.layers.quadkey.VirtualEarthLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.quadkey.VirtualEarthLayer;
 
 /**
  * Layer controls: Opacity, animation speed (if applicable), and others

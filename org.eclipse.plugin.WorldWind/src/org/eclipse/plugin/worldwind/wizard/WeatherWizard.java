@@ -18,9 +18,9 @@ import org.eclipse.plugin.worldwind.views.NavigatorView;
 import org.eclipse.ui.IWorkbenchWindow;
 
 
-import worldwind.contrib.layers.loop.HTTPLoopFileLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
-import worldwind.contrib.parsers.ParserUtils;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.HTTPLoopFileLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.parsers.ParserUtils;
 
 /**
  * Navy Research Labs near real time weather access wizard:

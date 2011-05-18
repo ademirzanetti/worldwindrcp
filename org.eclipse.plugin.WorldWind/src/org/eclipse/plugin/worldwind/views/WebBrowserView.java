@@ -12,7 +12,6 @@ package org.eclipse.plugin.worldwind.views;
 
 
 import gov.nasa.worldwind.layers.LayerList;
-import gov.nasa.worldwind.WorldWind;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,11 +56,12 @@ import org.eclipse.ui.part.*;
 
 import org.eclipse.plugin.worldwind.actions.OpenViewAction;
 import org.eclipse.plugin.worldwind.actions.OpenViewAction.VIEW_TYPE;
+import org.eclipse.plugin.worldwind.utils.LayerUtils;
 import org.eclipse.plugin.worldwind.utils.StatusLine;
 import org.eclipse.plugin.worldwind.views.WebBrowserView;
 
-import worldwind.contrib.parsers.KMLSource;
-import worldwind.contrib.parsers.SimpleHTTPClient;
+import org.eclipse.plugin.worldwind.contrib.parsers.KMLSource;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleHTTPClient;
 
 /**
  * Web Browser View: The rationale of this view is a built in web browser
@@ -485,7 +485,9 @@ public class WebBrowserView extends ViewPart
 	 */
 	private void saveBookmarks () {
 		try {
-			File file = WorldWind.getDataFileCache().newFile("bookmarks.txt");
+			// ww 0.5 File file = WorldWind.getDataFileCache().newFile("bookmarks.txt");
+			File file = LayerUtils.getWWFileStore().newFile("bookmarks.txt");
+			
 			FileOutputStream fos = new FileOutputStream(file);
 			
 			IContributionItem[] items = getViewSite().getActionBars().getMenuManager().getItems();
@@ -513,7 +515,9 @@ public class WebBrowserView extends ViewPart
 	 */
 	private String[] loadBookmarks() {
 		try {
-			File file = WorldWind.getDataFileCache().newFile("bookmarks.txt");
+			// ww 5.5 File file = WorldWind.getDataFileCache().newFile("bookmarks.txt");
+			File file = LayerUtils.getWWFileStore().newFile("bookmarks.txt");
+			
 			RandomAccessFile raf = new RandomAccessFile(file,"r");
 			
 			byte[] bytes = new byte[(int)raf.length()];

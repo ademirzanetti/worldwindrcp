@@ -11,6 +11,8 @@
 package org.eclipse.plugin.worldwind;
 
 import gov.nasa.worldwind.Configuration;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.cache.FileStore;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;

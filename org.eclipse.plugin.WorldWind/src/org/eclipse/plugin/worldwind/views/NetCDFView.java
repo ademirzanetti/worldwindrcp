@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.plugin.worldwind.Activator;
 import org.eclipse.plugin.worldwind.Messages;
+import org.eclipse.plugin.worldwind.utils.LayerUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -52,9 +53,9 @@ import ucar.nc2.dt.grid.NetcdfCFWriter;
 import ucar.nc2.units.DateFormatter;
 import ucar.nc2.util.NamedObject;
 import ucar.unidata.geoloc.LatLonRect;
-import worldwind.contrib.layers.GroundOverlayLayer;
-import worldwind.contrib.layers.ScreenOverlayLayer;
-import worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.ScreenOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.loop.TimeLoopGroundOverlay;
 
 /**
  * NetCDF View: 
@@ -459,13 +460,16 @@ public class NetCDFView extends ViewPart
 				+ "/" + grid.getName() + ".t" + i + ".z" + z; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			// look for frame in cache
-			URL frame = WorldWind.getDataFileCache().findFile(cacheName + ".png", false); //$NON-NLS-1$
+			// ww 0.5 URL frame = WorldWind.getDataFileCache().findFile(cacheName + ".png", false); //$NON-NLS-1$
+			URL frame = LayerUtils.getWWFileStore().findFile(cacheName + ".png", false); //$NON-NLS-1$
 			
 			// if file not in cache plot
 			if (  frame == null) 
 			{
-				final File imF 		= WorldWind.getDataFileCache().newFile(cacheName + ".png"); //$NON-NLS-1$
-				final File legendF 	= WorldWind.getDataFileCache().newFile(cacheName + ".legend.png"); //$NON-NLS-1$
+//				final File imF 		= WorldWind.getDataFileCache().newFile(cacheName + ".png"); //$NON-NLS-1$
+//				final File legendF 	= WorldWind.getDataFileCache().newFile(cacheName + ".legend.png"); //$NON-NLS-1$
+				final File imF 		= LayerUtils.getWWFileStore().newFile(cacheName + ".png"); //$NON-NLS-1$
+				final File legendF 	= LayerUtils.getWWFileStore().newFile(cacheName + ".legend.png"); //$NON-NLS-1$
 				
 				logger.debug("Plotting:" + cacheName + " to " + imF); //$NON-NLS-1$ //$NON-NLS-2$
 				
@@ -531,7 +535,9 @@ public class NetCDFView extends ViewPart
 			// grab 1st legend
 			if ( i  == t1 ) 
 			{
-				final URL legendU = WorldWind.getDataFileCache().findFile(cacheName + ".legend.png", false); //$NON-NLS-1$
+				// ww 0.5 final URL legendU = WorldWind.getDataFileCache().findFile(cacheName + ".legend.png", false); //$NON-NLS-1$
+				URL legendU = LayerUtils.getWWFileStore().findFile(cacheName + ".legend.png", false); //$NON-NLS-1$
+				
 				if ( legendU != null)
 					loop.setLegend(new ScreenOverlayLayer("legend" //$NON-NLS-1$
 						, legendU

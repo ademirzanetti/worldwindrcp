@@ -20,9 +20,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 
-import worldwind.contrib.parsers.SimpleHTTPClient;
-import worldwind.contrib.parsers.SimpleWMSParser;
-import worldwind.contrib.parsers.WMS_Capabilities;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleHTTPClient;
+import org.eclipse.plugin.worldwind.contrib.parsers.SimpleWMSParser;
+import org.eclipse.plugin.worldwind.contrib.parsers.WMS_Capabilities;
 
 /**
  * WMS Parse JFace Operation

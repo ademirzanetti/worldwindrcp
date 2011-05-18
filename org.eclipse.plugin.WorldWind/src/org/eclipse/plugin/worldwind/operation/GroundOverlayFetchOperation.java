@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-import worldwind.contrib.layers.GroundOverlayLayer;
+import org.eclipse.plugin.worldwind.contrib.layers.GroundOverlayLayer;
 
 /**
  * JFace operation to pre-fetch ground overlay layers. Used by the WMS Wizard
