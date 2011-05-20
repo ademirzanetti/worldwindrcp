@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jogl Plug-in
 Bundle-SymbolicName: org.eclipse.plugin.jogl
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Vendor: JOGL
 Bundle-ClassPath: gluegen-rt.jar,
  jogl.jar,
