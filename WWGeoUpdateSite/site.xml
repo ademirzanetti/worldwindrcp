@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/WWGeoFeatures_1.0.0.qualifier.jar" id="WWGeoFeatures" version="1.0.0.qualifier" os="linux,macosx,win32" ws="cocoa,gtk,win32">
+      <category name="WWGeo"/>
+   </feature>
+   <category-def name="WWGeo" label="WWGeo"/>
+</site>
