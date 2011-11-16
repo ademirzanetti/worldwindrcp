@@ -50,6 +50,7 @@ plugin_customization.ini</programArgs>
       <plugin id="com.jcraft.jsch"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
@@ -57,6 +58,7 @@ plugin_customization.ini</programArgs>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
